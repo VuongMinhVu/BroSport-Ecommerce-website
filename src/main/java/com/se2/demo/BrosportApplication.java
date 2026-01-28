@@ -8,6 +8,7 @@ public class BrosportApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BrosportApplication.class, args);
+		System.out.println("--- BROSPORT APP STARTED SUCCESSFULLY ---");
 	}
 
 }
