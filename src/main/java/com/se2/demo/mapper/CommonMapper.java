@@ -30,11 +30,17 @@ public interface CommonMapper {
 
     List<SizeResponse> toSizeResponseList(List<Size> entities);
 
-    TargetCustomer toEntity(TargetCustomerRequest request);
+    Gender toEntity(GenderRequest request);
 
-    TargetCustomerResponse toResponse(TargetCustomer entity);
+    GenderResponse toResponse(Gender entity);
 
-    List<TargetCustomerResponse> toTargetCustomerResponseList(List<TargetCustomer> entities);
+    List<GenderResponse> toGenderResponseList(List<Gender> entities);
+
+    Sport toEntity(SportRequest request);
+
+    SportResponse toResponse(Sport entity);
+
+    List<SportResponse> toSportResponseList(List<Sport> entities);
 
     @Mapping(target = "parentCategory", ignore = true)
     Category toEntity(CategoryRequest request);

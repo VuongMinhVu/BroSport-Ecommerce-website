@@ -4,17 +4,17 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "TARGET_CUSTOMER")
+@Table(name = "sport")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TargetCustomer {
+public class Sport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,9 @@ public class TargetCustomer {
     @Column(nullable = false, length = 100)
     String name;
 
-    @ManyToMany(mappedBy = "targetCustomers")
-    Set<Product> products;
+    @Column(columnDefinition = "TEXT")
+    String description;
+
+    @OneToMany(mappedBy = "sport")
+    List<Product> products;
 }

@@ -3,10 +3,11 @@ package com.se2.demo.service;
 import com.se2.demo.dto.request.ProductRequest;
 import com.se2.demo.dto.response.ProductResponse;
 
-import java.util.List;
+import com.se2.demo.dto.request.ProductFilterRequest;
+import com.se2.demo.dto.response.PageResponse;
 
 public interface ProductService {
-    List<ProductResponse> getAllProducts();
+    PageResponse<ProductResponse> getAllProducts(ProductFilterRequest filterRequest);
 
     ProductResponse getProductById(Integer id);
 

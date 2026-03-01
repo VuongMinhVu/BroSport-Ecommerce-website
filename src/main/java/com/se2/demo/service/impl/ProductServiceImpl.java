@@ -5,15 +5,22 @@ import com.se2.demo.dto.response.ProductResponse;
 import com.se2.demo.mapper.ProductMapper;
 import com.se2.demo.model.entity.*;
 import com.se2.demo.repository.*;
+import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.service.ProductService;
 import com.se2.demo.utils.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import com.se2.demo.dto.request.ProductFilterRequest;
+import com.se2.demo.dto.response.PageResponse;
+import com.se2.demo.repository.specification.ProductSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,15 +30,49 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
-    private final TargetCustomerRepository targetCustomerRepository;
+    private final GenderRepository genderRepository;
+    private final SportRepository sportRepository;
     private final ColorRepository colorRepository;
     private final SizeRepository sizeRepository;
     private final ProductMapper productMapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponse> getAllProducts() {
-        return productMapper.toProductResponseList(productRepository.findAll());
+    public PageResponse<ProductResponse> getAllProducts(ProductFilterRequest filterRequest) {
+
+        Sort sort = Sort.unsorted();
+        if (filterRequest.getSortBy() != null && !filterRequest.getSortBy().isEmpty()) {
+            Sort.Direction direction = "desc".equalsIgnoreCase(filterRequest.getSortDir()) ? Sort.Direction.DESC
+                    : Sort.Direction.ASC;
+            String sortBy = filterRequest.getSortBy();
+
+            List<String> allowedSortFields = java.util.Arrays.asList("id", "name", "price", "createdAt", "updatedAt");
+            if (!allowedSortFields.contains(sortBy)) {
+                sortBy = "id";
+            }
+
+            sort = Sort.by(direction, sortBy);
+        }
+
+        int page = (filterRequest.getPage() != null) ? filterRequest.getPage() : 0;
+        int size = (filterRequest.getSize() != null && filterRequest.getSize() > 0) ? filterRequest.getSize() : 10;
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<Product> spec = ProductSpecification.filterProducts(filterRequest);
+
+        Page<Product> productPage = productRepository.findAll(spec, pageable);
+
+        List<ProductResponse> content = productMapper.toProductResponseList(productPage.getContent());
+
+        return PageResponse.<ProductResponse>builder()
+                .content(content)
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
     }
 
     @Override
@@ -45,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public ProductResponse getProductBySlug(String slug) {
-         return null;
+        return null;
     }
 
     @Override
@@ -62,20 +103,26 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Brand not found with id: " + request.getBrandId()));
         product.setBrand(brand);
 
-        if (request.getTargetCustomerIds() != null && !request.getTargetCustomerIds().isEmpty()) {
-            Set<TargetCustomer> targetCustomers = new HashSet<>(
-                    targetCustomerRepository.findAllById(request.getTargetCustomerIds()));
-            product.setTargetCustomers(targetCustomers);
+        if (request.getGenderId() != null) {
+            Gender gender = genderRepository.findById(request.getGenderId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Gender not found with id: " + request.getGenderId()));
+            product.setGender(gender);
+        }
+
+        if (request.getSportId() != null) {
+            Sport sport = sportRepository.findById(request.getSportId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Sport not found with id: " + request.getSportId()));
+            product.setSport(sport);
         }
 
         if (request.getProductDetails() != null) {
             List<ProductDetail> details = request.getProductDetails().stream().map(detailReq -> {
                 ProductDetail pd = new ProductDetail();
                 pd.setProduct(product);
-                pd.setPrice(detailReq.getPrice());
-                pd.setCompareAtPrice(detailReq.getCompareAtPrice());
                 pd.setStockQuantity(detailReq.getStockQuantity());
-                pd.setWeightGrams(detailReq.getWeightGrams());
+                pd.setWeightInGrams(detailReq.getWeightInGrams());
                 pd.setSku(detailReq.getSku());
 
                 Color color = colorRepository.findById(detailReq.getColorId())
@@ -93,7 +140,9 @@ public class ProductServiceImpl implements ProductService {
                         ProductImage img = new ProductImage();
                         img.setProduct(product);
                         img.setVariant(pd);
-                        img.setImageUrl(imgReq.getImageUrl());
+//                        if (imgReq.getImage() != null && !imgReq.getImage().isEmpty()) {
+//                            img.setImageUrl(cloudinaryService.uploadFile(imgReq.getImage(), "products/variants"));
+//                        }
                         img.setIsMain(imgReq.getIsMain());
                         img.setSortOrder(imgReq.getSortOrder());
                         return img;
@@ -110,7 +159,11 @@ public class ProductServiceImpl implements ProductService {
             List<ProductImage> mainImages = request.getProductImages().stream().map(imgReq -> {
                 ProductImage img = new ProductImage();
                 img.setProduct(product);
-                img.setImageUrl(imgReq.getImageUrl());
+
+                if (imgReq.getImage() != null && !imgReq.getImage().isEmpty()) {
+                    img.setImageUrl(cloudinaryService.uploadFile(imgReq.getImage(), "products"));
+                }
+
                 img.setIsMain(imgReq.getIsMain());
                 img.setSortOrder(imgReq.getSortOrder());
                 return img;
@@ -130,7 +183,11 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setName(request.getName());
         existingProduct.setSlug(request.getSlug());
         existingProduct.setDescription(request.getDescription());
+        existingProduct.setFeature(request.getFeature());
+        existingProduct.setInformation(request.getInformation());
         existingProduct.setStatus(request.getStatus());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setCompareAtPrice(request.getCompareAtPrice());
 
         return productMapper.toResponse(productRepository.save(existingProduct));
     }

@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Entity
 @Table(name = "PRODUCTS")
@@ -30,18 +31,35 @@ public class Product {
     @JoinColumn(name = "brand_id", nullable = false)
     Brand brand;
 
-    @ManyToMany
-    @JoinTable(name = "PRODUCT_GROUP_MAPPING", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "target_customer_id"))
-    Set<TargetCustomer> targetCustomers;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genderId")
+    Gender gender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sportId")
+    Sport sport;
 
     @Column(nullable = false, length = 150)
     String name;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    BigDecimal price;
+
+    @Column(name = "compare_at_price", precision = 12, scale = 2)
+    BigDecimal compareAtPrice;
 
     @Column(nullable = false, unique = true, length = 150)
     String slug;
 
     @Column(columnDefinition = "TEXT")
     String description;
+
+    @Column(columnDefinition = "TEXT")
+    String feature;
+
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(columnDefinition = "json")
+    Map<String, Object> information;
 
     @Column(length = 50)
     String status;

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,14 +15,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDetailResponse {
     Integer id;
-    ColorResponse color;
-    SizeResponse size;
-    BigDecimal price;
-    BigDecimal compareAtPrice;
+    String color;
+    String size;
     Integer stockQuantity;
-    Float weightGrams;
+    Float weightInGrams;
     String sku;
-    List<ProductImageResponse> variantImages;
+//    List<ProductImageResponse> variantImages;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

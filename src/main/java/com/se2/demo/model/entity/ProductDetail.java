@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,17 +33,11 @@ public class ProductDetail {
     @JoinColumn(name = "size_id", nullable = false)
     Size size;
 
-    @Column(nullable = false, precision = 12, scale = 2)
-    BigDecimal price;
-
-    @Column(name = "compare_at_price", precision = 12, scale = 2)
-    BigDecimal compareAtPrice;
-
     @Column(name = "stock_quantity", nullable = false)
     Integer stockQuantity;
 
-    @Column(name = "weight_grams")
-    Float weightGrams;
+    @Column(name = "weight_in_grams")
+    Float weightInGrams;
 
     @Column(nullable = false, unique = true, length = 100)
     String sku;

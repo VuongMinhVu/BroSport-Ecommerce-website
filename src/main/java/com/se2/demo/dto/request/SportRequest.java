@@ -1,4 +1,4 @@
-package com.se2.demo.dto.response;
+package com.se2.demo.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TargetCustomerResponse {
-    Integer id;
+public class SportRequest {
     String name;
+    String description;
 }

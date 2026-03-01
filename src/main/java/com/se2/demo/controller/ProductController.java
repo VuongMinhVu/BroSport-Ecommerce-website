@@ -1,14 +1,14 @@
 package com.se2.demo.controller;
 
+import com.se2.demo.dto.request.ProductFilterRequest;
 import com.se2.demo.dto.request.ProductRequest;
+import com.se2.demo.dto.response.PageResponse;
 import com.se2.demo.dto.response.ProductResponse;
 import com.se2.demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -18,8 +18,9 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<PageResponse<ProductResponse>> getAllProducts(
+            @ModelAttribute ProductFilterRequest filterRequest) {
+        return ResponseEntity.ok(productService.getAllProducts(filterRequest));
     }
 
     @GetMapping("/{id}")
@@ -27,14 +28,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
+    @PostMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> createProduct(@ModelAttribute ProductRequest request) {
         return new ResponseEntity<>(productService.createProduct(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Integer id,
-            @RequestBody ProductRequest request) {
+            @ModelAttribute ProductRequest request) {
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
