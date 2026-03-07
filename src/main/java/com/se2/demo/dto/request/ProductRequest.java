@@ -25,8 +25,8 @@ public class ProductRequest {
     String feature;
     Map<String, Object> information;
     String status;
-    BigDecimal price;
-    BigDecimal compareAtPrice;
+    BigDecimal originPrice;
+    BigDecimal showPrice;
     List<ProductDetailRequest> productDetails;
     List<ProductImageRequest> productImages;
 }

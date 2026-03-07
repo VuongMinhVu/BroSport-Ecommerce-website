@@ -1,20 +1,26 @@
 package com.se2.demo.config;
 
+import com.se2.demo.dto.async.ProductEvent;
+import com.se2.demo.mapper.ProductMapper;
 import com.se2.demo.model.entity.*;
 import com.se2.demo.repository.*;
+import com.se2.demo.utils.constant.Constant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 @Slf4j
 public class DataSeeder {
+        private final ApplicationEventPublisher publisher;
+        private final ProductMapper productMapper;
 
         @Bean
         public CommandLineRunner initDatabase(
@@ -217,13 +223,14 @@ public class DataSeeder {
                                                 .category(randomCategory)
                                                 .gender(randomGender)
                                                 .sport(randomSport)
-                                                .price(price)
-                                                .compareAtPrice(comparePrice)
+                                                .originPrice(price)
+                                                .showPrice(comparePrice)
                                                 .build();
 
                                 Product savedProduct = productRepository.save(product);
 
                                 // Create ProductImages
+                                List<ProductImage> images = new ArrayList<>();
                                 int numImages = random.nextInt(3) + 1; // 1 to 3 images per product
                                 for (int imgIdx = 1; imgIdx <= numImages; imgIdx++) {
                                         ProductImage mainImage = ProductImage.builder()
@@ -235,9 +242,12 @@ public class DataSeeder {
                                                         .sortOrder(imgIdx)
                                                         .build();
                                         productImageRepository.save(mainImage);
+                                        images.add(mainImage);
                                 }
+                                savedProduct.setProductImages(images);
 
                                 // Create ProductDetails (Variants)
+                                List<ProductDetail> details = new ArrayList<>();
                                 int numVariants = random.nextInt(4) + 2; // 2 to 5 variants per product
                                 // Track generated combo to avoid duplicate SKU
                                 Set<String> generatedCombos = new HashSet<>();
@@ -264,14 +274,20 @@ public class DataSeeder {
                                                         .product(savedProduct)
                                                         .color(randomColor)
                                                         .size(randomSize)
-                                                        .stockQuantity(random.nextInt(100) + 10) // 10 to 110 ton kho
-                                                        .weightInGrams((float) (random.nextInt(500) + 200)) // 200g -
-                                                                                                            // 700g
+                                                        .stockQuantity(random.nextInt(100) + 10)
+                                                        .weightInGrams((float) (random.nextInt(500) + 200))
                                                         .sku(sku)
                                                         .build();
 
                                         productDetailRepository.save(detail);
+                                        details.add(detail);
                                 }
+                                savedProduct.setProductDetails(details);
+
+                                // Publish event AFTER images + details are fully loaded in-memory
+                                this.publisher.publishEvent(
+                                                new ProductEvent(this.productMapper.toDocument(savedProduct),
+                                                                Constant.PRODUCT_CREATED_EVENT));
                         }
 
                         log.info(
