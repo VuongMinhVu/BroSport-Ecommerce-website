@@ -48,17 +48,22 @@ public class DataSeeder {
                         List<Brand> brands = new ArrayList<>();
                         if (brandRepository.count() == 0) {
                                 brands = Arrays.asList(
-                                                Brand.builder().name("Nike").logoUrl("nike.png")
+                                                Brand.builder().name("Nike")
+                                                                .logoUrl("https://picsum.photos/seed/nike/400/400")
                                                                 .description("Just do it").build(),
-                                                Brand.builder().name("Adidas").logoUrl("adidas.png")
+                                                Brand.builder().name("Adidas")
+                                                                .logoUrl("https://picsum.photos/seed/adidas/400/400")
                                                                 .description("Impossible is nothing")
                                                                 .build(),
-                                                Brand.builder().name("Puma").logoUrl("puma.png")
+                                                Brand.builder().name("Puma")
+                                                                .logoUrl("https://picsum.photos/seed/puma/400/400")
                                                                 .description("Forever Faster").build(),
-                                                Brand.builder().name("Under Armour").logoUrl("ua.png")
+                                                Brand.builder().name("Under Armour")
+                                                                .logoUrl("https://picsum.photos/seed/ua/400/400")
                                                                 .description("Protect This House")
                                                                 .build(),
-                                                Brand.builder().name("New Balance").logoUrl("nb.png")
+                                                Brand.builder().name("New Balance")
+                                                                .logoUrl("https://picsum.photos/seed/nb/400/400")
                                                                 .description("Fearlessly Independent")
                                                                 .build());
                                 brandRepository.saveAll(brands);
@@ -70,12 +75,13 @@ public class DataSeeder {
                         List<Category> leafCategories = new ArrayList<>();
                         if (categoryRepository.count() == 0) {
                                 Category shoes = Category.builder().name("Giày Thể Thao").slug("giay-the-thao")
-                                                .imageUrl("shoes.jpg")
+                                                .imageUrl("https://picsum.photos/seed/shoes/600/600")
                                                 .build();
                                 Category clothing = Category.builder().name("Quần Áo").slug("quan-ao")
-                                                .imageUrl("clothes.jpg").build();
+                                                .imageUrl("https://picsum.photos/seed/clothes/600/600")
+                                                .build();
                                 Category accessories = Category.builder().name("Phụ Kiện").slug("phu-kien")
-                                                .imageUrl("accessories.jpg")
+                                                .imageUrl("https://picsum.photos/seed/accessories/600/600")
                                                 .build();
                                 categoryRepository.saveAll(Arrays.asList(shoes, clothing, accessories));
 
@@ -157,9 +163,13 @@ public class DataSeeder {
                         if (genderRepository.count() == 0) {
                                 genders = Arrays.asList(
                                                 Gender.builder().name("Nam").description("Sản phẩm dành cho nam")
+                                                                .logoUrl("https://picsum.photos/seed/male/400/400")
                                                                 .build(),
-                                                Gender.builder().name("Nữ").description("Sản phẩm dành cho nữ").build(),
+                                                Gender.builder().name("Nữ").description("Sản phẩm dành cho nữ")
+                                                                .logoUrl("https://picsum.photos/seed/female/400/400")
+                                                                .build(),
                                                 Gender.builder().name("Trẻ em").description("Sản phẩm dành cho trẻ em")
+                                                                .logoUrl("https://picsum.photos/seed/kids/400/400")
                                                                 .build());
                                 genderRepository.saveAll(genders);
                         } else {
@@ -170,12 +180,17 @@ public class DataSeeder {
                         List<Sport> sports = new ArrayList<>();
                         if (sportRepository.count() == 0) {
                                 sports = Arrays.asList(
-                                                Sport.builder().name("Bóng đá").description("Môn thể thao vua").build(),
+                                                Sport.builder().name("Bóng đá").description("Môn thể thao vua")
+                                                                .logoUrl("https://picsum.photos/seed/football/400/400")
+                                                                .build(),
                                                 Sport.builder().name("Chạy bộ").description("Rèn luyện sức khỏe")
+                                                                .logoUrl("https://picsum.photos/seed/running/400/400")
                                                                 .build(),
                                                 Sport.builder().name("Bóng rổ").description("Thể thao đồng đội")
+                                                                .logoUrl("https://picsum.photos/seed/basketball/400/400")
                                                                 .build(),
                                                 Sport.builder().name("Gym & Training").description("Tập luyện thể hình")
+                                                                .logoUrl("https://picsum.photos/seed/gym/400/400")
                                                                 .build());
                                 sportRepository.saveAll(sports);
                         } else {

@@ -5,6 +5,7 @@ import com.se2.demo.dto.response.BrandResponse;
 import com.se2.demo.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +28,13 @@ public class BrandController {
         return ResponseEntity.ok(brandService.getBrandById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<BrandResponse> createBrand(@RequestBody BrandRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BrandResponse> createBrand(@ModelAttribute BrandRequest request) {
         return new ResponseEntity<>(brandService.createBrand(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BrandResponse> updateBrand(@PathVariable Integer id, @RequestBody BrandRequest request) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BrandResponse> updateBrand(@PathVariable Integer id, @ModelAttribute BrandRequest request) {
         return ResponseEntity.ok(brandService.updateBrand(id, request));
     }
 

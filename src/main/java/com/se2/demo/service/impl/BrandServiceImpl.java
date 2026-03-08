@@ -6,6 +6,7 @@ import com.se2.demo.mapper.CommonMapper;
 import com.se2.demo.model.entity.Brand;
 import com.se2.demo.repository.BrandRepository;
 import com.se2.demo.service.BrandService;
+import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.utils.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class BrandServiceImpl implements BrandService {
 
     private final BrandRepository brandRepository;
     private final CommonMapper commonMapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     @Transactional(readOnly = true)
@@ -38,6 +40,12 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public BrandResponse createBrand(BrandRequest request) {
         Brand brand = commonMapper.toEntity(request);
+
+        if (request.getLogoFile() != null && !request.getLogoFile().isEmpty()) {
+            String logoUrl = cloudinaryService.uploadFile(request.getLogoFile(), "brands");
+            brand.setLogoUrl(logoUrl);
+        }
+
         return commonMapper.toResponse(brandRepository.save(brand));
     }
 
@@ -48,8 +56,12 @@ public class BrandServiceImpl implements BrandService {
                 .orElseThrow(() -> new ResourceNotFoundException("Brand not found with id: " + id));
 
         existingBrand.setName(request.getName());
-        existingBrand.setLogoUrl(request.getLogoUrl());
         existingBrand.setDescription(request.getDescription());
+
+        if (request.getLogoFile() != null && !request.getLogoFile().isEmpty()) {
+            String logoUrl = cloudinaryService.uploadFile(request.getLogoFile(), "brands");
+            existingBrand.setLogoUrl(logoUrl);
+        }
 
         return commonMapper.toResponse(brandRepository.save(existingBrand));
     }
