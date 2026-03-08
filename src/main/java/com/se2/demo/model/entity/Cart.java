@@ -23,9 +23,6 @@ public class Cart {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "prodcut_detail_id")
-    private Integer productDetailId;
-
     @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 

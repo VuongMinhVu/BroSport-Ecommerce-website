@@ -23,8 +23,11 @@ public class CartDetail {
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @Column(name = "prodcut_detail_id")
+    @Column(name = "product_detail_id")
     private Integer productDetailId;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @Column(name = "added_at")
     private LocalDateTime addedAt;
