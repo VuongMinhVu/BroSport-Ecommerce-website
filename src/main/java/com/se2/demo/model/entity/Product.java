@@ -43,10 +43,10 @@ public class Product {
     String name;
 
     @Column(nullable = false, precision = 12, scale = 2)
-    BigDecimal price;
+    BigDecimal originPrice;
 
-    @Column(name = "compare_at_price", precision = 12, scale = 2)
-    BigDecimal compareAtPrice;
+    @Column(name = "show_price", precision = 12, scale = 2)
+    BigDecimal showPrice;
 
     @Column(nullable = false, unique = true, length = 150)
     String slug;

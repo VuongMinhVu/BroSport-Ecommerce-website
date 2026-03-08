@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -13,4 +14,5 @@ import lombok.experimental.FieldDefaults;
 public class GenderRequest {
     String name;
     String description;
+    MultipartFile logoFile;
 }
