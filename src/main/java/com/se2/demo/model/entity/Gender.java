@@ -28,4 +28,7 @@ public class Gender {
 
     @OneToMany(mappedBy = "gender")
     List<Product> products;
+
+    @Column(name = "logo_url", length = 255)
+    String logoUrl;
 }

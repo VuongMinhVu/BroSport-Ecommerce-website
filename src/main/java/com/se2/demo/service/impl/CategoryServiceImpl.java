@@ -6,6 +6,7 @@ import com.se2.demo.mapper.CommonMapper;
 import com.se2.demo.model.entity.Category;
 import com.se2.demo.repository.CategoryRepository;
 import com.se2.demo.service.CategoryService;
+import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.utils.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CommonMapper commonMapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     @Transactional(readOnly = true)
@@ -38,6 +40,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryResponse createCategory(CategoryRequest request) {
         Category category = commonMapper.toEntity(request);
+
+        if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(request.getImageFile(), "categories");
+            category.setImageUrl(imageUrl);
+        }
 
         // Handle parent category logic
         if (request.getParentId() != null) {
@@ -59,7 +66,11 @@ public class CategoryServiceImpl implements CategoryService {
 
         existingCategory.setName(request.getName());
         existingCategory.setSlug(request.getSlug());
-        existingCategory.setImageUrl(request.getImageUrl());
+
+        if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(request.getImageFile(), "categories");
+            existingCategory.setImageUrl(imageUrl);
+        }
 
         if (request.getParentId() != null) {
             Category parent = categoryRepository.findById(request.getParentId())

@@ -26,6 +26,9 @@ public class Sport {
     @Column(columnDefinition = "TEXT")
     String description;
 
+    @Column(name = "logo_url", length = 255)
+    String logoUrl;
+
     @OneToMany(mappedBy = "sport")
     List<Product> products;
 }

@@ -1,5 +1,6 @@
 package com.se2.demo.service.impl;
 
+import com.se2.demo.dto.async.ProductEvent;
 import com.se2.demo.dto.request.ProductRequest;
 import com.se2.demo.dto.response.ProductResponse;
 import com.se2.demo.mapper.ProductMapper;
@@ -8,10 +9,12 @@ import com.se2.demo.repository.*;
 import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.service.ProductService;
 import com.se2.demo.utils.ResourceNotFoundException;
+import com.se2.demo.utils.constant.Constant;
 import lombok.RequiredArgsConstructor;
 import com.se2.demo.dto.request.ProductFilterRequest;
 import com.se2.demo.dto.response.PageResponse;
 import com.se2.demo.repository.specification.ProductSpecification;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final SizeRepository sizeRepository;
     private final ProductMapper productMapper;
     private final CloudinaryService cloudinaryService;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     @Transactional(readOnly = true)
@@ -140,9 +144,10 @@ public class ProductServiceImpl implements ProductService {
                         ProductImage img = new ProductImage();
                         img.setProduct(product);
                         img.setVariant(pd);
-//                        if (imgReq.getImage() != null && !imgReq.getImage().isEmpty()) {
-//                            img.setImageUrl(cloudinaryService.uploadFile(imgReq.getImage(), "products/variants"));
-//                        }
+                        // if (imgReq.getImage() != null && !imgReq.getImage().isEmpty()) {
+                        // img.setImageUrl(cloudinaryService.uploadFile(imgReq.getImage(),
+                        // "products/variants"));
+                        // }
                         img.setIsMain(imgReq.getIsMain());
                         img.setSortOrder(imgReq.getSortOrder());
                         return img;
@@ -172,6 +177,8 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product savedProduct = productRepository.save(product);
+        this.publisher.publishEvent(
+                new ProductEvent(this.productMapper.toDocument(savedProduct), Constant.PRODUCT_CREATED_EVENT));
         return productMapper.toResponse(savedProduct);
     }
 
@@ -186,8 +193,8 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setFeature(request.getFeature());
         existingProduct.setInformation(request.getInformation());
         existingProduct.setStatus(request.getStatus());
-        existingProduct.setPrice(request.getPrice());
-        existingProduct.setCompareAtPrice(request.getCompareAtPrice());
+        existingProduct.setOriginPrice(request.getOriginPrice());
+        existingProduct.setShowPrice(request.getShowPrice());
 
         return productMapper.toResponse(productRepository.save(existingProduct));
     }

@@ -27,8 +27,8 @@ public class ProductResponse {
     String feature;
     Map<String, Object> information;
     String status;
-    BigDecimal price;
-    BigDecimal compareAtPrice;
+    BigDecimal originPrice;
+    BigDecimal showPrice;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     List<ProductDetailResponse> productDetails;
