@@ -16,4 +16,6 @@ public class CartDetailRequest {
 
     // ID của sản phẩm cụ thể
     private Integer productDetailId;
+
+    private Integer quantity;
 }

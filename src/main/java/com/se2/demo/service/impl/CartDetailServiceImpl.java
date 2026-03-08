@@ -37,11 +37,15 @@ public class CartDetailServiceImpl implements CartDetailService {
         if (existingItem.isPresent()) {
             // Logic UPDATE
             itemToSave = existingItem.get();
+            //logic +1
+            Integer currentQty = (itemToSave.getQuantity() == null) ? 1 : itemToSave.getQuantity();
+            itemToSave.setQuantity(currentQty + 1);
             itemToSave.setUpdatedAt(LocalDateTime.now());
         } else {
             // Logic CREATE
             itemToSave = cartMapper.toEntity(request);
             itemToSave.setCart(cart);
+            itemToSave.setQuantity(1);
             itemToSave.setAddedAt(LocalDateTime.now());
         }
 

@@ -27,7 +27,7 @@ public class CartDetail {
     private Integer productDetailId;
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private Integer quantity = 1;
 
     @Column(name = "added_at")
     private LocalDateTime addedAt;
