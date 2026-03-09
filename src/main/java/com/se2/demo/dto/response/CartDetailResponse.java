@@ -13,12 +13,18 @@ import java.time.LocalDateTime;
 public class CartDetailResponse {
 
     private Integer id;
-
     private Integer cartId;
-
     private Integer productDetailId;
 
-    private LocalDateTime addedAt;
+    // Detail
+    private String productName;
+    private String imageUrl;
+    private String colorName;
+    private String sizeName;
+    private Double unitPrice;
+    private Integer quantity;
+    private Double totalPrice;
 
+    private LocalDateTime addedAt;
     private LocalDateTime updatedAt;
 }

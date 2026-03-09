@@ -5,8 +5,10 @@ import com.se2.demo.dto.response.CartDetailResponse;
 import com.se2.demo.model.entity.Cart;
 import com.se2.demo.model.entity.CartDetail;
 import com.se2.demo.mapper.CartMapper;
+import com.se2.demo.model.entity.ProductDetail;
 import com.se2.demo.repository.CartDetailRepository;
 import com.se2.demo.repository.CartRepository;
+import com.se2.demo.repository.ProductDetailRepository;
 import com.se2.demo.service.CartDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class CartDetailServiceImpl implements CartDetailService {
     private final CartDetailRepository cartDetailRepository;
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
+    private final ProductDetailRepository productDetailRepository;
 
     @Override
     @Transactional
@@ -42,9 +45,12 @@ public class CartDetailServiceImpl implements CartDetailService {
             itemToSave.setQuantity(currentQty + 1);
             itemToSave.setUpdatedAt(LocalDateTime.now());
         } else {
-            // Logic CREATE
-            itemToSave = cartMapper.toEntity(request);
+            ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailId())
+                    .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại!"));
+
+            itemToSave = new CartDetail();
             itemToSave.setCart(cart);
+            itemToSave.setProductDetail(productDetail);
             itemToSave.setQuantity(1);
             itemToSave.setAddedAt(LocalDateTime.now());
         }

@@ -16,10 +16,13 @@ import java.util.List;
 public class CartResponse {
 
     private Integer id;
-
     private Integer userId;
-
     private List<CartDetailResponse> cartDetails;
+
+    private Double subtotal;
+    private Double shipping;
+    private Double tax;
+    private Double total;
 
     private LocalDateTime updatedAt;
 }
