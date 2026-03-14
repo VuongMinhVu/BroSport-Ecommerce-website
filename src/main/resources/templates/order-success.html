@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Brosport | Order Successful</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f96706",
+                        "accent-success": "#39ff14",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                        "card-dark": "#2d1e15",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 lg:px-40 py-4 bg-background-light dark:bg-background-dark">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-3 text-primary">
+                        <div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+                            <span class="material-symbols-outlined">bolt</span>
+                        </div>
+                        <h2
+                            class="text-slate-900 dark:text-slate-100 text-xl font-extrabold leading-tight tracking-tight uppercase">
+                            Brosport</h2>
+                    </div>
+                    <label class="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+                        <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                            <div class="text-slate-400 flex border-none bg-slate-100 dark:bg-card-dark items-center justify-center pl-4 rounded-l-lg"
+                                data-icon="MagnifyingGlass">
+                                <span class="material-symbols-outlined text-xl">search</span>
+                            </div>
+                            <input
+                                class="form-input flex w-full min-w-0 flex-1 border-none bg-slate-100 dark:bg-card-dark text-slate-900 dark:text-slate-100 focus:ring-0 h-full placeholder:text-slate-400 px-4 rounded-r-lg text-sm"
+                                placeholder="Search gear..." value="" />
+                        </div>
+                    </label>
+                </div>
+                <div class="flex flex-1 justify-end gap-6 items-center">
+                    <nav class="hidden md:flex items-center gap-8">
+                        <a class="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
+                            href="/products">Shop</a>
+                        <a class="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
+                            href="#">Teams</a>
+                        <a class="text-slate-600 dark:text-slate-300 text-sm font-semibold hover:text-primary transition-colors"
+                            href="#">Sale</a>
+                    </nav>
+                    <div class="flex gap-3">
+                        <a href="/cart"
+                            class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-card-dark text-slate-700 dark:text-slate-100 hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined">shopping_cart</span>
+                        </a>
+                        <a href="#"
+                            class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-card-dark text-slate-700 dark:text-slate-100 hover:bg-primary/10 transition-colors">
+                            <span class="material-symbols-outlined">person</span>
+                        </a>
+                    </div>
+                </div>
+            </header>
+            <main class="flex flex-1 flex-col items-center py-12 px-6">
+                <div class="max-w-[800px] w-full flex flex-col items-center text-center">
+                    <div class="mb-8 flex flex-col items-center">
+                        <div class="size-24 rounded-full bg-accent-success/10 flex items-center justify-center mb-6">
+                            <span
+                                class="material-symbols-outlined text-7xl text-accent-success font-bold">check_circle</span>
+                        </div>
+                        <h1
+                            class="text-primary text-5xl font-black leading-tight tracking-tighter uppercase mb-4 italic">
+                            ORDER SUCCESSFUL</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-lg max-w-md">Your performance gear is locked
+                            in. We're getting it ready for the field.</p>
+                    </div>
+                    <div
+                        class="w-full bg-slate-100 dark:bg-card-dark rounded-xl p-8 border border-slate-200 dark:border-primary/10 shadow-2xl mb-10 text-left">
+                        <div
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 dark:border-white/10 pb-6 mb-6 gap-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Order Number
+                                </p>
+                                <p class="text-xl font-mono font-bold text-slate-900 dark:text-slate-100"
+                                    th:text="${orderNumber ?: '#BRS-992834'}">#BRS-992834</p>
+                            </div>
+                            <div class="md:text-right">
+                                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Estimated
+                                    Delivery</p>
+                                <p class="text-xl font-bold text-slate-900 dark:text-slate-100"
+                                    th:text="${estimatedDelivery ?: 'Oct 24, 2023'}">Oct 24, 2023</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">inventory_2</span>
+                                Order Summary
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/5">
+                                    <div class="size-16 rounded bg-cover bg-center shrink-0 bg-slate-800"
+                                        data-alt="Black professional sports jersey on mannequin"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD3kJbonGgdokw3Jdm31eo9wpgKsrADRcg4EHSO4wDJrvWknWSMUXz5VIcmbluLYlWDXuqTjMYzdkFWyU46Gid9fTJs3kpxI9ujBpWx0glJEPt7sNmtMVRtZKiqeW7kVoIIYIrnwzSxllb3BxG2guiHhck4fKaL_FFyKg8xh9LoY6XzH0bdNtq-xUc_L4K6MmKRG_KyMZIPf_neU8SFmKLe9DW8kbs9sdw3RnZnHUuqPXfBCVp8sAfy7wOpLcKULgbJ9KRPCton4Is");'>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-slate-900 dark:text-slate-100">Pro Performance Jersey
+                                        </p>
+                                        <p class="text-sm text-slate-500">Size: L | Color: Midnight Black</p>
+                                    </div>
+                                    <p class="font-bold text-slate-900 dark:text-slate-100">x2</p>
+                                </div>
+                                <div class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/5">
+                                    <div class="size-16 rounded bg-cover bg-center shrink-0 bg-slate-800"
+                                        data-alt="Compression shorts for athletes"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoZhiJJ_pZw1npPjTbOiKVKDGPTscFHzQzJ_jdqRM-jjRPlz4CXuXEuqmj_IeLWN_PTY1AHWGOsLX3ic0YJ1ohd0ADGI4xjXy8qIRoTEGzlFaFU5oWqbbuEv03KeDOrk3dYpw8GLsgBCflKgiWnU9JWYr4PuVzJvMtw9pllw68AKGYD2dz6eJRjPsEPAaUWwtmktwcw7YYPYBxdMDSyhUWnjnNroIVEn-MtVaR_ehhqoUjVyhKMBFgZYhVqQvvSlgZn0xnM8nyf9k");'>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-slate-900 dark:text-slate-100">Compression Shorts</p>
+                                        <p class="text-sm text-slate-500">Size: M | Color: Electric Orange</p>
+                                    </div>
+                                    <p class="font-bold text-slate-900 dark:text-slate-100">x1</p>
+                                </div>
+                            </div>
+                            <div class="pt-6 border-t border-slate-200 dark:border-white/10 space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-500">Subtotal</span>
+                                    <span class="text-slate-900 dark:text-slate-100">$184.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-500">Shipping</span>
+                                    <span class="text-slate-900 dark:text-slate-100">FREE</span>
+                                </div>
+                                <div class="flex justify-between text-xl font-bold pt-2">
+                                    <span class="text-slate-900 dark:text-slate-100">Total</span>
+                                    <span class="text-primary">$184.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                            <button
+                                class="flex-1 max-w-xs h-14 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02]">
+                                <span class="material-symbols-outlined">local_shipping</span>
+                                Track My Order
+                            </button>
+                            <a href="/products"
+                                class="flex-1 max-w-xs h-14 border-2 border-primary text-primary hover:bg-primary/10 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                                <span class="material-symbols-outlined">shopping_bag</span>
+                                Continue Shopping
+                            </a>
+                        </div>
+                        <div class="mt-12 text-slate-500 text-sm flex items-center gap-4">
+                            <span class="flex items-center gap-1"><span
+                                    class="material-symbols-outlined text-sm">verified</span> Verified Secure</span>
+                            <span class="flex items-center gap-1"><span
+                                    class="material-symbols-outlined text-sm">support_agent</span> 24/7 Support</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer
+                class="bg-slate-100 dark:bg-card-dark py-12 px-6 lg:px-40 mt-auto border-t border-slate-200 dark:border-primary/10">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+                    <div class="max-w-xs">
+                        <div class="flex items-center gap-2 text-primary mb-4">
+                            <span class="material-symbols-outlined">bolt</span>
+                            <h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold uppercase tracking-tight">
+                                Brosport</h2>
+                        </div>
+                        <p class="text-sm text-slate-500">Premium athletic apparel designed for those who never stop
+                            pushing the limit.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-12">
+                        <div class="flex flex-col gap-3">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 mb-2">Help</h4>
+                            <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Returns</a>
+                            <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Contact</a>
+                            <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Shipping</a>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 mb-2">Social</h4>
+                            <a class="text-sm text-slate-500 hover:text-primary transition-colors"
+                                href="#">Instagram</a>
+                            <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">TikTok</a>
+                            <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Twitter</a>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="mt-12 pt-8 border-t border-slate-200 dark:border-white/5 text-center text-xs text-slate-600">
+                    © 2023 Brosport Performance Apparel. All rights reserved.
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
