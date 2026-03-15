@@ -111,111 +111,14 @@
                             <h1 class="text-4xl font-black text-white tracking-tight">Your Cart</h1>
                             <p class="text-white/50 mt-1">Review your selected performance gear</p>
                         </div>
-                        <span class="text-primary font-bold"
-                            th:text="${cartItemCount != null ? cartItemCount + ' Items' : '3 Items'}">3 Items</span>
+                        <span id="cart-items-count" class="text-primary font-bold">Loading...</span>
                     </div>
-                    <div class="space-y-4">
-                        <!-- Item 1 -->
-                        <div
-                            class="group flex flex-col sm:flex-row items-center gap-6 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
-                            <div class="size-24 rounded-lg bg-white/10 overflow-hidden flex-shrink-0">
-                                <img alt="Pro-Fit Compression Tee"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    data-alt="Black compression athletic t-shirt for fitness"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-tAgFOSbIsbMUfAWD_IBwubI7rDgnPiDbtjKqn6dTMFuIwgAt2N0BlFGkNLANxRIIy2LMlKirDWMIymOeIT6rgOttIH2_fKzUM8p_hR-i1vkH76o1tK8etC3-KvXqY7DWQwh-YmBjGGojOL8NrcXYy47iYLNOmbsMI8RrUk3wDXqLREHWR__waJuPtLtQSbfZlpZ1FRojHjD11TKgdsvTXgeTWzF689BOmVB7oYc4LdGF13ElbMYcr5lZ6HfEGzSrfEiAImyASs8" />
-                            </div>
-                            <div class="flex-grow">
-                                <h3 class="text-white font-bold text-lg">Pro-Fit Compression Tee</h3>
-                                <div class="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Size:</b> L</span>
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Color:</b> Stealth
-                                        Black</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-                                <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center"><span
-                                            class="material-symbols-outlined text-lg">remove</span></button>
-                                    <span class="w-8 text-center font-bold text-white">1</span>
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center"><span
-                                            class="material-symbols-outlined text-lg">add</span></button>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-white font-bold text-lg">$45.00</p>
-                                    <button
-                                        class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Item 2 -->
-                        <div
-                            class="group flex flex-col sm:flex-row items-center gap-6 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
-                            <div class="size-24 rounded-lg bg-white/10 overflow-hidden flex-shrink-0">
-                                <img alt="Elite Velocity Runners"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    data-alt="Bright orange performance running shoes"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA30Np8R2zUuyy2T8XojC1h3MEOYOcwUfunoBAk8V5Q3fv5-73Ns3V95LLBI5TqZNsT6TkcOyKIjN9Lkda1TEG6UxRgxLzLrmTJM9c-SCdNPzttZsf78g_sbX8qf_oo60xp-SptYHJi3jh76292lvv_zqM9ZkGN-Eld-v6N7HR-90bjs4pszUEjUZdAdVlCvIQ7TGvLpLgTue9h2rsa5TImFJe_sKcZBp2lM47OMWTAtottKIZ_3GbO_k-tBlQsY3xa9VNT6tMsHoc" />
-                            </div>
-                            <div class="flex-grow">
-                                <h3 class="text-white font-bold text-lg">Elite Velocity Runners</h3>
-                                <div class="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Size:</b> 10.5</span>
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Color:</b> Neon
-                                        Orange</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-                                <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center"><span
-                                            class="material-symbols-outlined text-lg">remove</span></button>
-                                    <span class="w-8 text-center font-bold text-white">1</span>
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center"><span
-                                            class="material-symbols-outlined text-lg">add</span></button>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-white font-bold text-lg">$125.00</p>
-                                    <button
-                                        class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Item 3 -->
-                        <div
-                            class="group flex flex-col sm:flex-row items-center gap-6 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
-                            <div class="size-24 rounded-lg bg-white/10 overflow-hidden flex-shrink-0">
-                                <img alt="Ultra-Grip Lifting Straps"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    data-alt="Durable gym weightlifting straps details"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyvIZ765QoBjTS1dhNzRn_JQFCfMsv5Rjotf5pyBemt9TQjEdfWjKlag0Q8_N6-046wzZxdj8CXcE4zVb2GtyHclv3KTIgC5_dWVtp7jgwqAZqCa1OlI8gVf6cmLutGNULrC-m43foJO1XouFyVV-jF8Mivqlh0ijmoSXpdnPVDMRgmVPyhV5gJvfnD3U0oBGGe5i4CX8oViBVQdzxnzgMVMbYdAY2mKszjjiz7umrh41-OONb4rx-562Huvy4_elkpXGWWfMl4Bw" />
-                            </div>
-                            <div class="flex-grow">
-                                <h3 class="text-white font-bold text-lg">Ultra-Grip Lifting Straps</h3>
-                                <div class="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Size:</b> OS</span>
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Color:</b> Carbon
-                                        Gray</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-                                <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center"><span
-                                            class="material-symbols-outlined text-lg">remove</span></button>
-                                    <span class="w-8 text-center font-bold text-white">2</span>
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center"><span
-                                            class="material-symbols-outlined text-lg">add</span></button>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-white font-bold text-lg">$38.00</p>
-                                    <button
-                                        class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
-                                    </button>
-                                </div>
-                            </div>
+                    <div id="cart-items-container" class="space-y-4">
+                        <!-- Items will be loaded here via Fetch API -->
+                        <div class="text-center py-12 bg-white/5 rounded-xl border border-white/5">
+                            <span
+                                class="material-symbols-outlined animate-spin text-4xl text-primary mb-4">progress_activity</span>
+                            <p class="text-slate-400">Loading your cart items...</p>
                         </div>
                     </div>
                     <div
@@ -238,7 +141,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between text-white/70">
                                     <span>Subtotal</span>
-                                    <span class="text-white font-medium">$208.00</span>
+                                    <span id="summary-subtotal" class="text-white font-medium">$0.00</span>
                                 </div>
                                 <div class="flex justify-between text-white/70">
                                     <span>Shipping</span>
@@ -246,8 +149,8 @@
                                         at next step</span>
                                 </div>
                                 <div class="flex justify-between text-white/70 pb-4 border-b border-white/10">
-                                    <span>Tax</span>
-                                    <span class="text-white font-medium">$16.64</span>
+                                    <span>Tax (8%)</span>
+                                    <span id="summary-tax" class="text-white font-medium">$0.00</span>
                                 </div>
                                 <div class="flex justify-between items-end pt-2">
                                     <span class="text-white font-bold text-lg">Total</span>
@@ -255,7 +158,8 @@
                                         <p
                                             class="text-white/50 text-[10px] uppercase font-bold tracking-widest leading-none mb-1">
                                             Estimated Total</p>
-                                        <p class="text-3xl font-black text-white leading-none">$224.64</p>
+                                        <p id="summary-total" class="text-3xl font-black text-white leading-none">$0.00
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="pt-4">
@@ -298,6 +202,126 @@
                 </div>
             </div>
         </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                fetchCartData();
+            });
+
+            function fetchCartData() {
+                // Fetch from the backend API. Assume we fetch all carts and use the first one, or specific ID 1
+                fetch('/api/v1/carts')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to fetch cart');
+                        return response.json();
+                    })
+                    .then(data => {
+                        let cartItems = [];
+                        if (data && data.length > 0) {
+                            // Using the first cart just for demonstration
+                            cartItems = data[0].cartItemResponseList || [];
+                        }
+                        renderCartItems(cartItems);
+                        updateCartSummary(cartItems);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching cart:', error);
+                        document.getElementById('cart-items-container').innerHTML = `
+                            <div class="text-center py-12 bg-white/5 rounded-xl border border-white/5">
+                                <span class="material-symbols-outlined text-4xl text-red-500 mb-4">error</span>
+                                <p class="text-red-400">Failed to load cart items.</p>
+                                <p class="text-slate-500 text-sm mt-2">${error.message}</p>
+                            </div>
+                        `;
+                    });
+            }
+
+            function renderCartItems(items) {
+                const container = document.getElementById('cart-items-container');
+                const countBadge = document.getElementById('cart-items-count');
+
+                countBadge.textContent = `${items.length} Items`;
+                container.innerHTML = '';
+
+                if (items.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12 bg-white/5 rounded-xl border border-white/5">
+                            <span class="material-symbols-outlined text-4xl text-slate-500 mb-4">shopping_basket</span>
+                            <p class="text-slate-400 mb-4">Your cart is completely empty.</p>
+                            <a href="/products" class="inline-block px-6 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-all">Start Shopping</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                items.forEach(item => {
+                    const price = item.productPrice ? item.productPrice.toFixed(2) : '0.00';
+                    const name = item.productName || 'Unknown Product';
+                    const quantity = item.quantity || 1;
+
+                    // Same fallback image logic as product-list
+                    const imageSrc = (item.productImage)
+                        ? `/api/v1/products/images/${item.productImage}`
+                        : `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(name)}`;
+
+                    const html = `
+                        <div class="group flex flex-col sm:flex-row items-center gap-6 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
+                            <div class="size-24 rounded-lg bg-white/10 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                <img alt="${name}"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    src="${imageSrc}" />
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-white font-bold text-lg">${name}</h3>
+                                <div class="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
+                                    <span class="flex items-center gap-1"><b class="text-white/70">Standard Size</b></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
+                                <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
+                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.productId}, -1)"><span class="material-symbols-outlined text-lg">remove</span></button>
+                                    <span class="w-8 text-center font-bold text-white">${quantity}</span>
+                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.productId}, 1)"><span class="material-symbols-outlined text-lg">add</span></button>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-white font-bold text-lg">$${price}</p>
+                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto" onclick="removeItem(${item.productId})">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+            }
+
+            function updateCartSummary(items) {
+                let subtotal = 0;
+                items.forEach(item => {
+                    subtotal += (item.productPrice || 0) * (item.quantity || 1);
+                });
+
+                const taxRate = 0.08; // 8% tax
+                const tax = subtotal * taxRate;
+                const total = subtotal + tax;
+
+                document.getElementById('summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                document.getElementById('summary-tax').textContent = `$${tax.toFixed(2)}`;
+                document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
+            }
+
+            function updateQuantity(productId, change) {
+                // To be integrated with backend update API
+                alert(`Requested to update quantity of product ID ${productId} by ${change}`);
+            }
+
+            function removeItem(productId) {
+                // To be integrated with backend delete API
+                alert(`Requested to remove product ID ${productId} from cart`);
+            }
+        </script>
+
         <!-- Footer Footer -->
         <footer class="mt-20 border-t border-white/10 px-6 lg:px-20 py-12 bg-background-dark/80">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">

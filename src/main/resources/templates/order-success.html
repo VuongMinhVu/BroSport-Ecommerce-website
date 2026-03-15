@@ -102,21 +102,109 @@
                         <p class="text-slate-500 dark:text-slate-400 text-lg max-w-md">Your performance gear is locked
                             in. We're getting it ready for the field.</p>
                     </div>
-                    <div
+                    <div id="order-details-container"
                         class="w-full bg-slate-100 dark:bg-card-dark rounded-xl p-8 border border-slate-200 dark:border-primary/10 shadow-2xl mb-10 text-left">
-                        <div
-                            class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 dark:border-white/10 pb-6 mb-6 gap-4">
+                        <div class="text-center py-12">
+                            <span
+                                class="material-symbols-outlined animate-spin text-4xl text-primary mb-4">progress_activity</span>
+                            <p class="text-slate-500">Loading your order details...</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                        <button
+                            class="flex-1 max-w-xs h-14 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02]">
+                            <span class="material-symbols-outlined">local_shipping</span>
+                            Track My Order
+                        </button>
+                        <a href="/products"
+                            class="flex-1 max-w-xs h-14 border-2 border-primary text-primary hover:bg-primary/10 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                            <span class="material-symbols-outlined">shopping_bag</span>
+                            Continue Shopping
+                        </a>
+                    </div>
+                    <div class="mt-12 text-slate-500 text-sm flex items-center gap-4">
+                        <span class="flex items-center gap-1"><span
+                                class="material-symbols-outlined text-sm">verified</span> Verified Secure</span>
+                        <span class="flex items-center gap-1"><span
+                                class="material-symbols-outlined text-sm">support_agent</span> 24/7 Support</span>
+                    </div>
+                </div>
+            </main>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    fetchOrderData();
+                });
+
+                function fetchOrderData() {
+                    // MOCK API CALL
+                    // Since there is no Order API yet, we simulate a network delay and provide mock data
+                    console.log('Fetching mock order details...');
+
+                    document.getElementById('order-details-container').innerHTML = `
+                        <div class="text-center py-12">
+                            <span class="material-symbols-outlined animate-spin text-4xl text-primary mb-4">progress_activity</span>
+                            <p class="text-slate-500">Retrieving secure order data...</p>
+                        </div>
+                    `;
+
+                    setTimeout(() => {
+                        const mockOrderData = {
+                            orderNumber: '#BRS-' + Math.floor(100000 + Math.random() * 900000),
+                            estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                            subtotal: 184.00,
+                            shipping: 0.00,
+                            total: 184.00,
+                            items: [
+                                {
+                                    name: 'Pro Performance Jersey',
+                                    size: 'L',
+                                    color: 'Midnight Black',
+                                    quantity: 2,
+                                    image: 'https://via.placeholder.com/150/2d1e15/ffffff?text=Jersey'
+                                },
+                                {
+                                    name: 'Compression Shorts',
+                                    size: 'M',
+                                    color: 'Electric Orange',
+                                    quantity: 1,
+                                    image: 'https://via.placeholder.com/150/2d1e15/ffffff?text=Shorts'
+                                }
+                            ]
+                        };
+
+                        renderOrderDetails(mockOrderData);
+                    }, 1500); // 1.5 second delay to simulate API
+                }
+
+                function renderOrderDetails(data) {
+                    const container = document.getElementById('order-details-container');
+
+                    let itemsHtml = '';
+                    data.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/5">
+                                <div class="size-16 rounded bg-cover bg-center shrink-0 bg-slate-800"
+                                    style='background-image: url("${item.image}");'>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-slate-900 dark:text-slate-100">${item.name}</p>
+                                    <p class="text-sm text-slate-500">Size: ${item.size} | Color: ${item.color}</p>
+                                </div>
+                                <p class="font-bold text-slate-900 dark:text-slate-100">x${item.quantity}</p>
+                            </div>
+                        `;
+                    });
+
+                    container.innerHTML = `
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 dark:border-white/10 pb-6 mb-6 gap-4">
                             <div>
-                                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Order Number
-                                </p>
-                                <p class="text-xl font-mono font-bold text-slate-900 dark:text-slate-100"
-                                    th:text="${orderNumber ?: '#BRS-992834'}">#BRS-992834</p>
+                                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Order Number</p>
+                                <p class="text-xl font-mono font-bold text-slate-900 dark:text-slate-100">${data.orderNumber}</p>
                             </div>
                             <div class="md:text-right">
-                                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Estimated
-                                    Delivery</p>
-                                <p class="text-xl font-bold text-slate-900 dark:text-slate-100"
-                                    th:text="${estimatedDelivery ?: 'Oct 24, 2023'}">Oct 24, 2023</p>
+                                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Estimated Delivery</p>
+                                <p class="text-xl font-bold text-slate-900 dark:text-slate-100">${data.estimatedDelivery}</p>
                             </div>
                         </div>
                         <div class="space-y-6">
@@ -125,66 +213,27 @@
                                 Order Summary
                             </h3>
                             <div class="space-y-4">
-                                <div class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/5">
-                                    <div class="size-16 rounded bg-cover bg-center shrink-0 bg-slate-800"
-                                        data-alt="Black professional sports jersey on mannequin"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD3kJbonGgdokw3Jdm31eo9wpgKsrADRcg4EHSO4wDJrvWknWSMUXz5VIcmbluLYlWDXuqTjMYzdkFWyU46Gid9fTJs3kpxI9ujBpWx0glJEPt7sNmtMVRtZKiqeW7kVoIIYIrnwzSxllb3BxG2guiHhck4fKaL_FFyKg8xh9LoY6XzH0bdNtq-xUc_L4K6MmKRG_KyMZIPf_neU8SFmKLe9DW8kbs9sdw3RnZnHUuqPXfBCVp8sAfy7wOpLcKULgbJ9KRPCton4Is");'>
-                                    </div>
-                                    <div class="flex-1">
-                                        <p class="font-bold text-slate-900 dark:text-slate-100">Pro Performance Jersey
-                                        </p>
-                                        <p class="text-sm text-slate-500">Size: L | Color: Midnight Black</p>
-                                    </div>
-                                    <p class="font-bold text-slate-900 dark:text-slate-100">x2</p>
-                                </div>
-                                <div class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/5">
-                                    <div class="size-16 rounded bg-cover bg-center shrink-0 bg-slate-800"
-                                        data-alt="Compression shorts for athletes"
-                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoZhiJJ_pZw1npPjTbOiKVKDGPTscFHzQzJ_jdqRM-jjRPlz4CXuXEuqmj_IeLWN_PTY1AHWGOsLX3ic0YJ1ohd0ADGI4xjXy8qIRoTEGzlFaFU5oWqbbuEv03KeDOrk3dYpw8GLsgBCflKgiWnU9JWYr4PuVzJvMtw9pllw68AKGYD2dz6eJRjPsEPAaUWwtmktwcw7YYPYBxdMDSyhUWnjnNroIVEn-MtVaR_ehhqoUjVyhKMBFgZYhVqQvvSlgZn0xnM8nyf9k");'>
-                                    </div>
-                                    <div class="flex-1">
-                                        <p class="font-bold text-slate-900 dark:text-slate-100">Compression Shorts</p>
-                                        <p class="text-sm text-slate-500">Size: M | Color: Electric Orange</p>
-                                    </div>
-                                    <p class="font-bold text-slate-900 dark:text-slate-100">x1</p>
-                                </div>
+                                ${itemsHtml}
                             </div>
                             <div class="pt-6 border-t border-slate-200 dark:border-white/10 space-y-2">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-slate-500">Subtotal</span>
-                                    <span class="text-slate-900 dark:text-slate-100">$184.00</span>
+                                    <span class="text-slate-900 dark:text-slate-100">$${data.subtotal.toFixed(2)}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-slate-500">Shipping</span>
-                                    <span class="text-slate-900 dark:text-slate-100">FREE</span>
+                                    <span class="text-slate-900 dark:text-slate-100">${data.shipping === 0 ? 'FREE' : '$' + data.shipping.toFixed(2)}</span>
                                 </div>
                                 <div class="flex justify-between text-xl font-bold pt-2">
                                     <span class="text-slate-900 dark:text-slate-100">Total</span>
-                                    <span class="text-primary">$184.00</span>
+                                    <span class="text-primary">$${data.total.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                            <button
-                                class="flex-1 max-w-xs h-14 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02]">
-                                <span class="material-symbols-outlined">local_shipping</span>
-                                Track My Order
-                            </button>
-                            <a href="/products"
-                                class="flex-1 max-w-xs h-14 border-2 border-primary text-primary hover:bg-primary/10 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
-                                <span class="material-symbols-outlined">shopping_bag</span>
-                                Continue Shopping
-                            </a>
-                        </div>
-                        <div class="mt-12 text-slate-500 text-sm flex items-center gap-4">
-                            <span class="flex items-center gap-1"><span
-                                    class="material-symbols-outlined text-sm">verified</span> Verified Secure</span>
-                            <span class="flex items-center gap-1"><span
-                                    class="material-symbols-outlined text-sm">support_agent</span> 24/7 Support</span>
-                        </div>
-                    </div>
-                </div>
-            </main>
+                    `;
+                }
+            </script>
+
             <footer
                 class="bg-slate-100 dark:bg-card-dark py-12 px-6 lg:px-40 mt-auto border-t border-slate-200 dark:border-primary/10">
                 <div class="flex flex-col md:flex-row justify-between items-start gap-8">
