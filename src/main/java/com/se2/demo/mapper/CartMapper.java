@@ -31,10 +31,10 @@ public interface CartMapper {
     @Mapping(target = "cartId", source = "cart.id")
     @Mapping(target = "productDetailId", source = "productDetail.id")
     @Mapping(target = "productName", source = "productDetail.product.name")
-    @Mapping(target = "unitPrice", source = "productDetail.product.price")
+    @Mapping(target = "unitPrice", source = "productDetail.product.showPrice")
     @Mapping(target = "colorName", source = "productDetail.color.colorName")
     @Mapping(target = "sizeName", source = "productDetail.size.sizeDescription")
-    @Mapping(target = "totalPrice", expression = "java(entity.getProductDetail().getProduct().getPrice().doubleValue() * entity.getQuantity())")
+    @Mapping(target = "totalPrice", expression = "java(entity.getProductDetail().getProduct().getShowPrice().doubleValue() * entity.getQuantity())")
     // Logic lấy ảnh: Tìm ảnh isMain hoặc ảnh đầu tiên
     @Mapping(target = "imageUrl", expression = "java(getMainImageUrl(entity.getProductDetail()))")
     CartDetailResponse toResponse(CartDetail entity);
@@ -53,7 +53,7 @@ public interface CartMapper {
     default Double calculateSubtotal(List<CartDetail> details) {
         if (details == null) return 0.0;
         return details.stream()
-                .mapToDouble(d -> d.getProductDetail().getProduct().getPrice().doubleValue() * d.getQuantity())
+                .mapToDouble(d -> d.getProductDetail().getProduct().getShowPrice().doubleValue() * d.getQuantity())
                 .sum();
     }
 }
