@@ -13,8 +13,4 @@ import lombok.experimental.FieldDefaults;
 public class CartRequest {
 
     private Integer userId;
-
-    // ID chi tiết sản phẩm được thêm vào (theo sơ đồ ERD)
-    // Lưu ý: Tên biến khớp với logic xử lý trong Service
-    private Integer productDetailId;
 }

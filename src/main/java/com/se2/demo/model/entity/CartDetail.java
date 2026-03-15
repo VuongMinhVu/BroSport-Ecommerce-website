@@ -23,8 +23,12 @@ public class CartDetail {
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @Column(name = "prodcut_detail_id")
-    private Integer productDetailId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_detail_id", nullable = false)
+    private ProductDetail productDetail;
+
+    @Column(name = "quantity")
+    private Integer quantity = 1;
 
     @Column(name = "added_at")
     private LocalDateTime addedAt;

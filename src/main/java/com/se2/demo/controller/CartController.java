@@ -24,9 +24,9 @@ public class CartController {
     }
 
     // 2. Read One
-    @GetMapping("/{id}")
-    public ResponseEntity<CartResponse> getCartById(@PathVariable Integer id) {
-        return ResponseEntity.ok(cartService.getCartById(id));
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<CartResponse> getCartByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(cartService.getCartByUserId(userId));
     }
 
     // 3. Tạo mới một giỏ hàng (Create)
