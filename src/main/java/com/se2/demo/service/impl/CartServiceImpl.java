@@ -4,7 +4,9 @@ import com.se2.demo.dto.request.CartRequest;
 import com.se2.demo.dto.response.CartResponse;
 import com.se2.demo.model.entity.Cart;
 import com.se2.demo.mapper.CartMapper;
+import com.se2.demo.model.entity.User;
 import com.se2.demo.repository.CartRepository;
+import com.se2.demo.repository.UserRepository;
 import com.se2.demo.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
+    private final UserRepository userRepository;
 
     @Override
     public List<CartResponse> getAllCarts() {
@@ -35,8 +38,10 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartResponse createCart(CartRequest request) {
-        Cart cart = cartMapper.toEntity(request);
-
+        Cart cart = new Cart();
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+        cart.setUser(user);
         Cart savedCart = cartRepository.save(cart);
         return cartMapper.toResponse(savedCart);
     }
@@ -45,12 +50,12 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponse updateCart(Integer id, CartRequest request) {
         Cart cart = cartRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cart not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        cart.setUser(user);
 
-        cart.setUserId(request.getUserId());
-
-        Cart updatedCart = cartRepository.save(cart);
-        return cartMapper.toResponse(updatedCart);
+        return cartMapper.toResponse(cartRepository.save(cart));
     }
 
     @Override

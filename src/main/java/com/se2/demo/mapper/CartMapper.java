@@ -22,6 +22,7 @@ public interface CartMapper {
     List<CartResponse> toCartResponseList(List<Cart> carts);
 
     @Mapping(target = "cartDetails", source = "cartDetails")
+    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "subtotal", expression = "java(calculateSubtotal(entity.getCartDetails()))")
     @Mapping(target = "shipping", constant = "0.0")
     @Mapping(target = "tax", expression = "java(calculateSubtotal(entity.getCartDetails()) * 0.08)")
@@ -35,7 +36,7 @@ public interface CartMapper {
     @Mapping(target = "colorName", source = "productDetail.color.colorName")
     @Mapping(target = "sizeName", source = "productDetail.size.sizeDescription")
     @Mapping(target = "totalPrice", expression = "java(entity.getProductDetail().getProduct().getShowPrice().doubleValue() * entity.getQuantity())")
-    // Logic lấy ảnh: Tìm ảnh isMain hoặc ảnh đầu tiên
+    // Logic tìm ảnh isMain hoặc ảnh đầu tiên
     @Mapping(target = "imageUrl", expression = "java(getMainImageUrl(entity.getProductDetail()))")
     CartDetailResponse toResponse(CartDetail entity);
 
