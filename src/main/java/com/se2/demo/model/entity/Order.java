@@ -10,6 +10,7 @@ import java.util.List; // Import List ở đây
 @Table(name = "orders")
 @Getter @Setter @Builder
 @NoArgsConstructor @AllArgsConstructor
+@Data
 public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

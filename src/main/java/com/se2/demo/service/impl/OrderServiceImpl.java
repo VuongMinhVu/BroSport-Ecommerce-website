@@ -33,19 +33,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String preparePayment(OrderRequest request, HttpServletRequest httpServletRequest) {
-        // Lấy giỏ hàng để tính tiền
         Cart cart = cartRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
-        // Tính subtotal từ giỏ hàng
         double subtotal = cart.getCartDetails().stream()
                 .mapToDouble(d -> d.getProductDetail().getProduct().getShowPrice().doubleValue() * d.getQuantity())
                 .sum();
 
-        // 1.  Tính tổng tiền cuối cùng
         BigDecimal finalAmount = new BigDecimal(subtotal).add(new BigDecimal(30000)); // Ví dụ phí ship 30k
 
-        // logic apply voucher
         BigDecimal discount = BigDecimal.ZERO;
         if (request.getVoucherCode() != null) {
             Voucher voucher = voucherRepository.findByCodeAndIsActiveTrue(request.getVoucherCode())
@@ -56,26 +52,21 @@ public class OrderServiceImpl implements OrderService {
         }
         finalAmount = finalAmount.subtract(discount);
 
-        // 2. Sửa lỗi 'baseUrl': Lấy từ request
         String baseUrl = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" + httpServletRequest.getServerPort();
 
-        // 3. Sửa lỗi 'createOrder' -> đổi thành 'createPaymentUrl' theo Interface mới
         return vnPayService.createPaymentUrl(finalAmount, request.getUserId().toString(), baseUrl);
     }
 
     @Override
     @Transactional
     public OrderResponse processPaymentCallback(HttpServletRequest request) {
-        // 4. Sửa lỗi 'orderReturn' -> đổi thành 'validatePayment' theo Interface mới
         int status = vnPayService.validatePayment(request);
         if (status != 1) throw new RuntimeException("Thanh toán thất bại!");
 
-        // 5. Giải mã userId từ OrderInfo
         Integer userId = Integer.parseInt(request.getParameter("vnp_OrderInfo"));
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng!"));
 
-        // 6. Tạo Order & Items
         Order order = Order.builder()
                 .orderCode(request.getParameter("vnp_TxnRef"))
                 .user(cart.getUser())
@@ -102,12 +93,12 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(items);
         Order savedOrder = orderRepository.save(order);
 
-        // 7. Sửa lỗi 'deleteByUserId' -> dùng phương thức có sẵn delete(cart)
         cartRepository.delete(cart);
 
-        // 8. Sửa lỗi 'sendOrderConfirmation' -> đổi thành 'sendOrderSuccessEmail' theo Interface mới
         emailService.sendOrderSuccessEmail(savedOrder);
 
         return orderMapper.toResponse(savedOrder);
     }
+
+
 }
