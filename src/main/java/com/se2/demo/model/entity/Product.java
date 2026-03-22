@@ -76,6 +76,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     List<ProductImage> productImages;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    List<Rating> ratings;
+
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
