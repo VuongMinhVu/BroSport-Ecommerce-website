@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Brosport</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #050505;
+            --panel: #111214;
+            --border: #24262b;
+            --text: #f5f5f5;
+            --muted: #8f949c;
+            --orange: #ff6a00;
+            --orange-2: #ff8a1d;
+            --white: #ffffff;
+            --radius-lg: 18px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button, input, textarea {
+            font: inherit;
+        }
+
+        .page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #090909 0%, #050505 100%);
+        }
+
+        .topbar {
+            height: 72px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: rgba(8, 8, 8, 0.92);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 34px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+        }
+
+        .logo-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            background: var(--orange);
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .logo-text {
+            font-size: 15px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .main-nav a {
+            font-size: 12px;
+            font-weight: 700;
+            color: #d5d7db;
+        }
+
+        .main-nav a.sale {
+            color: var(--orange-2);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-box {
+            width: 280px;
+            height: 40px;
+            border-radius: 999px;
+            background: #111214;
+            border: 1px solid #1d1f23;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            color: #848a93;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            border: 1px solid #202229;
+            background: transparent;
+            color: #d1d4d9;
+            cursor: pointer;
+        }
+
+        .cart-btn {
+            position: relative;
+        }
+
+        .dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--orange);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 36px 24px 56px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 28px;
+        }
+
+        .sidebar {
+            border-right: 1px solid rgba(255,255,255,0.06);
+            padding-right: 22px;
+        }
+
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .avatar-mini {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #1e1f24;
+            border: 1px solid #30323a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--orange-2);
+            font-weight: 700;
+        }
+
+        .profile-mini h3 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .profile-mini p {
+            font-size: 11px;
+            color: var(--orange-2);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-menu a,
+        .signout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 42px;
+            padding: 0 14px;
+            border-radius: 10px;
+            color: #c1c6cf;
+            font-size: 13px;
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(255, 106, 0, 0.12);
+            border: 1px solid rgba(255, 106, 0, 0.3);
+            color: #ffb06d;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+            margin: 20px 0;
+        }
+
+        .signout {
+            color: #ff6b6d;
+        }
+
+        .page-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 26px;
+        }
+
+        .page-head h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .page-head p {
+            max-width: 520px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .order-stat {
+            min-width: 110px;
+            padding: 16px 18px;
+            background: #0e0f11;
+            border: 1px solid #21232a;
+            border-radius: 14px;
+            text-align: right;
+            box-shadow: var(--shadow);
+        }
+
+        .order-stat .label {
+            display: block;
+            font-size: 10px;
+            color: #7b818a;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .order-stat .value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--orange-2);
+        }
+
+        .profile-card {
+            background: linear-gradient(180deg, #141518 0%, #111214 100%);
+            border: 1px solid #202229;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-top {
+            min-height: 220px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .avatar-wrap {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .avatar-large {
+            width: 94px;
+            height: 94px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, #7f5f46, #e7d4c1);
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            background: #d9dadb;
+            display: block;
+        }
+
+        .edit-avatar-btn {
+            position: absolute;
+            right: -2px;
+            bottom: 4px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--orange);
+            color: white;
+            border: 2px solid #17181b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .profile-top h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .profile-top p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .profile-form {
+            padding: 18px 18px 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: inline-block;
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #7e848e;
+            letter-spacing: 1px;
+        }
+
+        .input-wrap {
+            height: 48px;
+            border: 1px solid #23252b;
+            border-radius: 10px;
+            background: #090909;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            color: #7f8691;
+        }
+
+        .input-wrap input,
+        .input-wrap textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .textarea-wrap {
+            height: auto;
+            min-height: 78px;
+            align-items: flex-start;
+            padding-top: 14px;
+        }
+
+        .textarea-wrap textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            height: 42px;
+            border: none;
+            border-radius: 10px;
+            padding: 0 18px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #c0c4ca;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--orange) 0%, var(--orange-2) 100%);
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .info-card {
+            background: #111214;
+            border: 1px solid #22242a;
+            border-radius: 14px;
+            padding: 18px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-card.highlight {
+            background: linear-gradient(180deg, rgba(255, 106, 0, 0.12), rgba(255, 106, 0, 0.04));
+            border-color: rgba(255, 106, 0, 0.22);
+        }
+
+        .info-icon {
+            color: var(--orange-2);
+            margin-top: 2px;
+        }
+
+        .info-card h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .info-card p {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 36px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 42px 24px 24px;
+        }
+
+        .footer-top {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.6fr 1fr 1fr 1fr;
+            gap: 36px;
+        }
+
+        .footer-logo {
+            margin-bottom: 18px;
+        }
+
+        .footer-brand p {
+            max-width: 320px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 18px;
+        }
+
+        .socials {
+            display: flex;
+            gap: 16px;
+        }
+
+        .socials a {
+            color: #b7bcc5;
+            font-size: 14px;
+        }
+
+        .footer-col h5 {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            color: #d6dae0;
+            margin-bottom: 16px;
+        }
+
+        .footer-col a {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 26px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom p,
+        .footer-links a {
+            color: #6e7580;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 22px;
+        }
+
+        @media (max-width: 1100px) {
+            .main-nav {
+                display: none;
+            }
+
+            .content-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                padding-right: 0;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .content-wrap {
+                padding: 20px 16px 40px;
+            }
+
+            .page-head {
+                flex-direction: column;
+            }
+
+            .page-head h1 {
+                font-size: 28px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <div th:replace="~{fragments/header :: site-header}"></div>
+
+    <main class="content-wrap">
+        <aside class="sidebar">
+            <div class="profile-mini">
+                <div class="avatar-mini">A</div>
+                <div>
+                    <h3>Alex Johnson</h3>
+                    <p>Pro Member</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a th:href="@{/account/profile/edit}" class="active">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <span>My Orders</span>
+                </a>
+                <a href="#">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Change Password</span>
+                </a>
+                <a href="#">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Order History</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="#" class="signout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <section class="main-content">
+            <div class="page-head">
+                <div>
+                    <h1>Edit Profile</h1>
+                    <p>
+                        Update your personal information and delivery preferences
+                        to get the most out of your Pro membership.
+                    </p>
+                </div>
+
+                <div class="order-stat">
+                    <span class="label">TOTAL ORDERS</span>
+                    <span class="value">124</span>
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <div class="profile-top">
+                    <div class="avatar-wrap">
+                        <div class="avatar-large">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" alt="Avatar">
+                        </div>
+                        <label class="edit-avatar-btn">
+                            <i class="fa-solid fa-pen"></i>
+                        </label>
+                    </div>
+
+                    <h2>Alex Johnson</h2>
+                    <p>Pro Member since 2022</p>
+                </div>
+
+                <form class="profile-form" th:action="@{/account/profile}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullName">FULL NAME</label>
+                            <div class="input-wrap">
+                                <i class="fa-regular fa-user"></i>
+                                <input id="fullName" name="fullName" type="text" value="Alex Johnson">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phoneNumber">PHONE NUMBER</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-phone"></i>
+                                <input id="phoneNumber" name="phoneNumber" type="text" value="+1 (555) 000-0000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shippingAddress">SHIPPING ADDRESS</label>
+                        <div class="input-wrap textarea-wrap">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <textarea id="shippingAddress" name="shippingAddress" rows="3">123 Performance Way, Silicon Valley, CA 94025</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card highlight">
+                    <div class="info-icon"><i class="fa-regular fa-circle-check"></i></div>
+                    <div>
+                        <h4>Email Verified</h4>
+                        <p>Your account is secured with 2FA</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon"><i class="fa-regular fa-credit-card"></i></div>
+                    <div>
+                        <h4>Default Payment</h4>
+                        <p>Visa ending in ****4242</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon"><i class="fa-regular fa-bell"></i></div>
+                    <div>
+                        <h4>Notifications</h4>
+                        <p>Order tracking alerts are ON</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: site-footer}"></div>
+</div>
+</body>
+</html>

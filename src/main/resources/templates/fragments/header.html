@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="site-header" class="topbar">
+    <div class="topbar-left">
+        <a href="#" class="logo">
+            <span class="logo-badge"><i class="fa-solid fa-bolt"></i></span>
+            <span class="logo-text">BROSPORT</span>
+        </a>
+
+        <nav class="main-nav">
+            <a href="#">NEW ARRIVALS</a>
+            <a href="#">MEN</a>
+            <a href="#">WOMEN</a>
+            <a href="#">KIDS</a>
+            <a href="#">ACCESSORIES</a>
+            <a href="#">BRANDS</a>
+            <a href="#">SPORTS</a>
+            <a href="#" class="sale">SALES</a>
+        </nav>
+    </div>
+
+    <div class="topbar-right">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search elite gear...">
+        </div>
+
+        <button class="icon-btn" type="button">
+            <i class="fa-regular fa-user"></i>
+        </button>
+
+        <button class="icon-btn cart-btn" type="button">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="dot">3</span>
+        </button>
+    </div>
+</header>
+</body>
+</html>
