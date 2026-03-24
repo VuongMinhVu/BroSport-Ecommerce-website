@@ -1,449 +1,451 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" class="dark" lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Brosport Product Listing Page</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- Google Fonts: Lexend -->
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap"
-        rel="stylesheet" />
-    <!-- Material Symbols Outlined -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#f48c25",
-                        "background-light": "#f8f7f5",
-                        "background-dark": "#120d08", // Darkened version of original theme for better contrast
-                        "charcoal": "#1e1e1e",
-                        "surface": "#221910"
-                    },
-                    fontFamily: {
-                        "display": ["Lexend", "sans-serif"]
-                    },
-                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
-                },
-            },
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Lexend', sans-serif;
-        }
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Brosport Product Listing Page</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Google Fonts: Lexend -->
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Material Symbols Outlined -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#f48c25",
+            "background-light": "#f8f7f5",
+            "background-dark": "#120d08", // Darkened version of original theme for better contrast
+            charcoal: "#1e1e1e",
+            surface: "#221910",
+          },
+          fontFamily: {
+            display: ["Lexend", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: "Lexend", sans-serif;
+    }
 
-        .product-card:hover .quick-view {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .product-card:hover .quick-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-        .quick-view {
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-        }
-    </style>
+    .quick-view {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+  </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
-    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-        <!-- Top Navigation Bar -->
-        <header
-            class="sticky top-0 z-50 w-full border-b border-white/10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 lg:px-20 py-4">
-            <div class="flex items-center justify-between max-w-[1440px] mx-auto gap-8">
-                <!-- Logo -->
-                <div class="flex items-center gap-3 text-primary">
-                    <div class="size-8 bg-primary text-background-dark flex items-center justify-center rounded">
-                        <span class="material-symbols-outlined font-bold">bolt</span>
-                    </div>
-                    <h2
-                        class="text-slate-900 dark:text-white text-2xl font-extrabold leading-tight tracking-tight uppercase">
-                        Brosport</h2>
-                </div>
-                <!-- Search -->
-                <div class="hidden md:flex flex-1 max-w-md">
-                    <label class="relative w-full">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                            <span class="material-symbols-outlined">search</span>
-                        </span>
-                        <input
-                            class="w-full bg-slate-100 dark:bg-surface border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary placeholder:text-slate-500 text-white"
-                            placeholder="Search sneakers, apparel, gear..." type="text" />
-                    </label>
-                </div>
-                <!-- Navigation Links -->
-                <nav class="hidden lg:flex items-center gap-8">
-                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Footwear</a>
-                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Outerwear</a>
-                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Accessories</a>
-                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Compression</a>
-                </nav>
-                <!-- Actions -->
-                <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-slate-700 dark:text-slate-200 hover:text-primary">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                        <span
-                            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">3</span>
-                    </button>
-                    <button class="p-2 text-slate-700 dark:text-slate-200 hover:text-primary">
-                        <span class="material-symbols-outlined">person</span>
-                    </button>
-                    <div class="size-10 rounded-full border-2 border-primary overflow-hidden">
-                        <img class="w-full h-full object-cover" data-alt="User profile avatar smiling"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_6gOLTS4cwt8vNollbdBcyiyHRFChCsTwuAEyTVv0_qp3Ha9z5eLlYvQlktWSOX6o6Z54EnIjjP5HpE_Z7QwU7HMFrCnXmBlCIAKzRgWrCJVNQqk7Zhp-WB-9ckKVk1RqzC14aIAZ3tsLMZwU_HWGeJiSHO12vuKpbwqKbv0S0C03lvw-r5fFUrL0k-bONxO26QeouAIa7U7J-g_bLpctRZGla3u4d3abLfab6oPaTRwB3VJjnn6F9fpTLq83C9XmSFZabVoSL2A" />
-                    </div>
-                </div>
+  <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
+        <a class="flex items-center gap-2 group flex-shrink-0" href="/">
+          <div
+            class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
+            <span class="material-symbols-outlined font-bold">bolt</span>
+          </div>
+          <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">Brosport</h1>
+        </a>
+
+        <nav class="hidden xl:flex items-center gap-8 h-full">
+          <a class="nav-link" href="#">New Arrivals</a>
+          <a class="nav-link" href="#">Men</a>
+          <a class="nav-link" href="#">Women</a>
+          <a class="nav-link" href="#">Accessories</a>
+          <a class="nav-link" href="#">Brands</a>
+          <a class="nav-link" href="#">Sports</a>
+          <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
+            href="#">Sales</a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+          <div class="relative hidden lg:block group">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
+            <input
+              class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
+              placeholder="Search elite gear..." type="text" />
+          </div>
+
+          <div class="flex items-center gap-2">
+            <a href="/profile"
+              class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all">
+              <div class="h-full w-full bg-cover bg-center"
+                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
+                th:if="${user != null and user.avatarUrl != null}">
+              </div>
+              <span th:unless="${user != null and user.avatarUrl != null}"
+                class="material-symbols-outlined text-2xl">person</span>
+            </a>
+
+            <a href="/cart"
+              class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors">
+              <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+              <span
+                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
+                th:text="${cartItems != null ? #lists.size(cartItems) : 0}">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-8 px-6 lg:px-20 py-8">
+      <!-- Sidebar Filters -->
+      <aside class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-8">
+        <div>
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">filter_list</span>
+            Filters
+          </h3>
+          <!-- Category Section -->
+          <div class="mb-8">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
+              Category
+            </h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input checked="" class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Running Shoes</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Training</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Basketball</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Apparel</span>
+              </label>
             </div>
-        </header>
-        <!-- Main Content Area -->
-        <main class="flex-1 w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-8 px-6 lg:px-20 py-8">
-            <!-- Sidebar Filters -->
-            <aside class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-8">
-                <div>
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">filter_list</span>
-                        Filters
-                    </h3>
-                    <!-- Category Section -->
-                    <div class="mb-8">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Category</h4>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input checked=""
-                                    class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Running Shoes</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Training</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Basketball</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Apparel</span>
-                            </label>
-                        </div>
-                    </div>
-                    <!-- Brand Section -->
-                    <div class="mb-8">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Brand</h4>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Nike</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input checked=""
-                                    class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Brosport Elite</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Adidas</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="text-sm group-hover:text-primary transition-colors">Under Armour</span>
-                            </label>
-                        </div>
-                    </div>
-                    <!-- Price Range -->
-                    <div class="mb-8">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Price Range</h4>
-                        <div class="px-2">
-                            <input
-                                class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
-                                max="500" min="0" type="range" value="250" />
-                            <div class="flex justify-between mt-3 text-xs font-medium text-slate-400">
-                                <span>$0</span>
-                                <span>$500+</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                        class="w-full py-3 rounded-lg bg-primary text-background-dark font-bold text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-                        Apply Filters
-                    </button>
-                    <button
-                        class="w-full py-3 mt-2 rounded-lg bg-surface text-white font-bold text-sm uppercase tracking-widest border border-white/5 hover:bg-white/5 transition-all">
-                        Reset
-                    </button>
-                </div>
-            </aside>
-            <!-- Product Display Area -->
-            <div class="flex-1">
-                <!-- Header Controls -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <div>
-                        <h1 class="text-3xl lg:text-4xl font-black tracking-tight text-white uppercase"
-                            th:text="${pageTitle ?: 'Performance Gear'}">Performance Gear</h1>
-                        <p class="text-slate-400 mt-1"
-                            th:text="${pageSubtitle ?: 'Showing 1,240 results for high-performance athlete gear'}">
-                            Showing 1,240 results for high-performance athlete gear</p>
-                    </div>
-                    <div class="flex items-center gap-3 self-end md:self-auto">
-                        <div class="flex bg-surface rounded-lg p-1 border border-white/5">
-                            <button class="p-1.5 bg-primary/20 text-primary rounded shadow-sm">
-                                <span class="material-symbols-outlined text-[20px]">grid_view</span>
-                            </button>
-                            <button class="p-1.5 text-slate-500 hover:text-white transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">view_list</span>
-                            </button>
-                        </div>
-                        <div class="relative group">
-                            <button
-                                class="flex items-center gap-2 bg-surface px-4 py-2 rounded-lg border border-white/5 hover:border-primary/50 transition-all">
-                                <span class="text-sm font-bold">Sort by: Featured</span>
-                                <span class="material-symbols-outlined text-[18px]">expand_more</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Grid -->
-                <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <!-- Products will be loaded here via Fetch API -->
-                    <div class="col-span-full text-center py-12">
-                        <span
-                            class="material-symbols-outlined animate-spin text-4xl text-primary mb-4">progress_activity</span>
-                        <p class="text-slate-400">Loading products...</p>
-                    </div>
-                </div>
-                <!-- Pagination -->
-                <div id="pagination-container" class="mt-16 flex items-center justify-center gap-4 hidden">
-                    <!-- Pagination will be loaded here -->
-                </div>
+          </div>
+          <!-- Brand Section -->
+          <div class="mb-8">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
+              Brand
+            </h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Nike</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input checked="" class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Brosport Elite</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Adidas</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <span class="text-sm group-hover:text-primary transition-colors">Under Armour</span>
+              </label>
             </div>
-        </main>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                fetchProducts(0);
-            });
-
-            function fetchProducts(page) {
-                // Determine API endpoint based on search parameters
-                let url = `/api/v1/products?page=${page}&size=6`;
-
-                const productListContainer = document.getElementById('product-list');
-                const paginationContainer = document.getElementById('pagination-container');
-
-                productListContainer.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <span class="material-symbols-outlined animate-spin text-4xl text-primary mb-4">progress_activity</span>
-                        <p class="text-slate-400">Loading products...</p>
-                    </div>
-                `;
-
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Failed to fetch products');
-                        return response.json();
-                    })
-                    .then(data => {
-                        renderProducts(data.data, productListContainer);
-                        renderPagination(data, paginationContainer);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching products:', error);
-                        productListContainer.innerHTML = `
-                            <div class="col-span-full text-center py-12">
-                                <span class="material-symbols-outlined text-4xl text-red-500 mb-4">error</span>
-                                <p class="text-red-400">Failed to load products. Please try again later.</p>
-                                <p class="text-slate-500 text-sm mt-2">${error.message}</p>
-                            </div>
-                        `;
-                    });
-            }
-
-            function renderProducts(products, container) {
-                container.innerHTML = '';
-
-                if (!products || products.length === 0) {
-                    container.innerHTML = `
-                        <div class="col-span-full text-center py-12">
-                            <span class="material-symbols-outlined text-4xl text-slate-500 mb-4">inventory_2</span>
-                            <p class="text-slate-400">No products found matching your criteria.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                products.forEach(product => {
-                    const price = product.price ? `$${product.price.toFixed(2)}` : 'N/A';
-                    const brand = product.brandName || 'Brand';
-                    const rating = '4.5'; // Default rating as placeholder if not available in API
-                    const imageSrc = product.images && product.images.length > 0
-                        ? `/api/v1/products/images/${product.images[0]}` // Assuming this is how images are served, adjust if needed
-                        : 'https://via.placeholder.com/400x500?text=No+Image'; // Fallback image
-
-                    // In case we don't have images endpoint ready we use a placeholder that looks fine
-                    const finalImageSrc = (product.images && product.images.length > 0)
-                        ? `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`
-                        : 'https://via.placeholder.com/400x500/2a2118/ffffff?text=Product';
-
-                    const cardHtml = `
-                        <div class="product-card group relative bg-surface rounded-xl overflow-hidden flex flex-col border border-white/5 hover:border-primary/40 transition-all duration-300">
-                            <div class="aspect-[4/5] overflow-hidden relative bg-[#2a2118] flex items-center justify-center">
-                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                    alt="${product.name}"
-                                    src="${finalImageSrc}" />
-                                <div class="quick-view absolute inset-x-0 bottom-4 px-4">
-                                    <button class="w-full bg-primary text-background-dark font-black py-2.5 rounded shadow-xl flex items-center justify-center gap-2 text-sm uppercase">
-                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                        Quick View
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-5 flex flex-col flex-1">
-                                <div class="flex justify-between items-start mb-1">
-                                    <span class="text-xs font-bold text-primary uppercase tracking-widest">${brand}</span>
-                                    <div class="flex items-center text-primary">
-                                        <span class="material-symbols-outlined text-[14px] fill-current">star</span>
-                                        <span class="text-[11px] font-bold text-white ml-1">${rating}</span>
-                                    </div>
-                                </div>
-                                <h3 class="text-lg font-bold text-white leading-tight mb-2 group-hover:text-primary transition-colors">
-                                    ${product.name}
-                                </h3>
-                                <div class="mt-auto flex items-center justify-between">
-                                    <span class="text-xl font-extrabold text-white">${price}</span>
-                                    <button class="size-10 flex items-center justify-center rounded-lg bg-white/5 hover:bg-primary hover:text-background-dark transition-all"
-                                            onclick="addToCart(${product.id})">
-                                        <span class="material-symbols-outlined">add_shopping_cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', cardHtml);
-                });
-            }
-
-            function renderPagination(pageData, container) {
-                container.innerHTML = '';
-                if (pageData.totalPages <= 1) {
-                    container.classList.add('hidden');
-                    return;
-                }
-
-                container.classList.remove('hidden');
-
-                const currentPage = pageData.currentPage;
-                const totalPages = pageData.totalPages;
-
-                // Previous button
-                if (currentPage > 0) {
-                    container.insertAdjacentHTML('beforeend', `
-                        <button onclick="fetchProducts(${currentPage - 1})" class="size-10 flex items-center justify-center rounded-lg bg-surface border border-white/5 hover:border-primary transition-all text-slate-400 hover:text-white">
-                            <span class="material-symbols-outlined">chevron_left</span>
-                        </button>
-                    `);
-                }
-
-                // Page numbers (simplified)
-                for (let i = 0; i < totalPages; i++) {
-                    if (i === currentPage) {
-                        container.insertAdjacentHTML('beforeend', `
-                            <button class="size-10 flex items-center justify-center rounded-lg bg-primary text-background-dark font-black">${i + 1}</button>
-                        `);
-                    } else if (i === 0 || i === totalPages - 1 || Math.abs(i - currentPage) <= 1) {
-                        container.insertAdjacentHTML('beforeend', `
-                            <button onclick="fetchProducts(${i})" class="size-10 flex items-center justify-center rounded-lg bg-surface border border-white/5 hover:border-primary transition-all font-bold">${i + 1}</button>
-                        `);
-                    } else if (Math.abs(i - currentPage) === 2) {
-                        container.insertAdjacentHTML('beforeend', `<span class="text-slate-500">...</span>`);
-                    }
-                }
-
-                // Next button
-                if (currentPage < totalPages - 1) {
-                    container.insertAdjacentHTML('beforeend', `
-                        <button onclick="fetchProducts(${currentPage + 1})" class="size-10 flex items-center justify-center rounded-lg bg-surface border border-white/5 hover:border-primary transition-all text-slate-400 hover:text-white">
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
-                    `);
-                }
-            }
-
-            function addToCart(productId) {
-                // This would be connected to the actual cart API
-                alert(`Added product ${productId} to cart!`);
-            }
-        </script>
-        <!-- Newsletter / Footer Bottom -->
-        <footer class="mt-auto border-t border-white/10 bg-surface/50 px-6 lg:px-20 py-12">
-            <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-                <div class="md:col-span-1">
-                    <div class="flex items-center gap-3 text-primary mb-6">
-                        <div class="size-6 bg-primary text-background-dark flex items-center justify-center rounded">
-                            <span class="material-symbols-outlined font-bold text-[16px]">bolt</span>
-                        </div>
-                        <h2 class="text-white text-xl font-extrabold uppercase tracking-tight">Brosport</h2>
-                    </div>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-6">Elevating performance for athletes who dare
-                        to be great. Premium gear for the next generation of champions.</p>
-                    <div class="flex gap-4">
-                        <a class="text-slate-400 hover:text-primary" href="#"><span
-                                class="material-symbols-outlined">public</span></a>
-                        <a class="text-slate-400 hover:text-primary" href="#"><span
-                                class="material-symbols-outlined">chat</span></a>
-                        <a class="text-slate-400 hover:text-primary" href="#"><span
-                                class="material-symbols-outlined">share</span></a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">Shop</h4>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li><a class="hover:text-primary transition-colors" href="#">New Arrivals</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Bestsellers</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Sale</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Gear Guide</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">Support</h4>
-                    <ul class="space-y-2 text-sm text-slate-400">
-                        <li><a class="hover:text-primary transition-colors" href="#">Order Tracking</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Returns &amp; Exchanges</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Shipping Policy</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">FAQs</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">Join the Elite</h4>
-                    <p class="text-slate-400 text-sm mb-4">Subscribe for exclusive drops and athlete insights.</p>
-                    <form class="flex gap-2">
-                        <input
-                            class="flex-1 bg-background-dark border-none rounded-lg text-xs p-3 focus:ring-1 focus:ring-primary"
-                            placeholder="Your email" type="email" />
-                        <button
-                            class="bg-primary text-background-dark px-4 rounded-lg font-bold text-xs uppercase tracking-tighter">Join</button>
-                    </form>
-                </div>
+          </div>
+          <!-- Price Range -->
+          <div class="mb-8">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
+              Price Range
+            </h4>
+            <div class="px-2">
+              <input class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                max="500" min="0" type="range" value="250" />
+              <div class="flex justify-between mt-3 text-xs font-medium text-slate-400">
+                <span>$0</span>
+                <span>$500+</span>
+              </div>
             </div>
-            <div class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-white/5 text-center text-xs text-slate-500">
-                © 2024 Brosport Performance. All Rights Reserved. Designed for the Elite.
+          </div>
+          <button
+            class="w-full py-3 rounded-lg bg-primary text-background-dark font-bold text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            Apply Filters
+          </button>
+          <button
+            class="w-full py-3 mt-2 rounded-lg bg-surface text-white font-bold text-sm uppercase tracking-widest border border-white/5 hover:bg-white/5 transition-all">
+            Reset
+          </button>
+        </div>
+      </aside>
+      <!-- Product Display Area -->
+      <div class="flex-1">
+        <!-- Header Controls -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 class="text-3xl lg:text-4xl font-black tracking-tight text-white uppercase"
+              th:text="${pageTitle ?: 'Performance Gear'}">
+              Performance Gear
+            </h1>
+            <p class="text-slate-400 mt-1"
+              th:text="${pageSubtitle ?: 'Showing 1,240 results for high-performance athlete gear'}">
+              Showing 1,240 results for high-performance athlete gear
+            </p>
+          </div>
+
+          <div class="flex bg-surface rounded-lg p-1 border border-white/5">
+            <button id="btn-grid-view" class="p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors">
+              <span class="material-symbols-outlined text-[20px]">grid_view</span>
+            </button>
+            <button id="btn-list-view" class="p-1.5 text-slate-500 hover:text-white transition-colors rounded">
+              <span class="material-symbols-outlined text-[20px]">view_list</span>
+            </button>
+          </div>
+
+        </div>
+        <!-- Product Grid -->
+        <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div th:each="product : ${products}"
+            class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col">
+            <div
+              class="img-wrapper aspect-square bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
+              <img
+                th:src="${product.productImages != null and !product.productImages.isEmpty() ? product.productImages[0].imageUrl : 'https://via.placeholder.com/400x500/2a2118/ffffff?text=' + product.name}"
+                th:alt="${product.name}"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div
+                class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button
+                  class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors">
+                  Quick View
+                </button>
+              </div>
             </div>
-        </footer>
-    </div>
+            <div class="details-wrapper p-4 flex-1 flex flex-col justify-center">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-bold text-white text-lg leading-tight" th:text="${product.name}">
+                    Product Name
+                  </h3>
+                  <p class="text-slate-400 text-sm" th:text="${product.brand ?: 'Brand'}">
+                    Brand
+                  </p>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
+                  <span class="text-slate-400 text-sm">4.5</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-auto pt-4">
+                <span class="text-2xl font-black text-primary"
+                  th:text="'$' + ${#numbers.formatDecimal(product.showPrice, 1, 2)}">$99.99</span>
+                <button class="bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                  <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div th:if="${#lists.isEmpty(products)}" class="col-span-full text-center py-12">
+            <span class="material-symbols-outlined text-4xl text-slate-500 mb-4">inventory_2</span>
+            <p class="text-slate-400">
+              No products found matching your criteria.
+            </p>
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div th:if="${totalPages != null and totalPages > 1}" class="mt-16 flex items-center justify-center gap-2">
+
+          <a th:href="@{/products(page=${currentPage - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+            th:classappend="${currentPage == 0} ? 'pointer-events-none opacity-50' : ''"
+            class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors">
+            <span class="material-symbols-outlined text-sm">chevron_left</span>
+          </a>
+
+          <th:block th:with="
+    start=${currentPage - 2 < 0 ? 0 : (currentPage + 2 >= totalPages ? totalPages - 5 : currentPage - 2)},
+    end=${currentPage + 2 >= totalPages ? totalPages - 1 : (currentPage - 2 < 0 ? 4 : currentPage + 2)}">
+
+            <th:block th:with="
+      finalStart=${start < 0 ? 0 : start}, 
+      finalEnd=${end >= totalPages ? totalPages - 1 : end}">
+
+              <div th:if="${finalStart > 0}" class="flex gap-2">
+                <a th:href="@{/products(page=0, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm">1</a>
+                <span th:if="${finalStart > 1}"
+                  class="flex h-10 w-10 items-center justify-center text-slate-500 font-bold">...</span>
+              </div>
+
+              <th:block th:each="i : ${#numbers.sequence(finalStart, finalEnd)}">
+                <a th:href="@{/products(page=${i}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+                  th:text="${i + 1}"
+                  th:classappend="${i == currentPage} ? 'bg-primary text-background-dark border-primary' : 'bg-surface text-slate-400 border-white/10 hover:border-primary/50 text-slate-300'"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg border transition-colors font-bold text-sm">
+                </a>
+              </th:block>
+
+              <div th:if="${finalEnd < totalPages - 1}" class="flex gap-2">
+                <span th:if="${finalEnd < totalPages - 2}"
+                  class="flex h-10 w-10 items-center justify-center text-slate-500 font-bold">...</span>
+                <a th:href="@{/products(page=${totalPages - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+                  th:text="${totalPages}"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm"></a>
+              </div>
+            </th:block>
+          </th:block>
+
+          <a th:href="@{/products(page=${currentPage + 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+            th:classappend="${currentPage >= totalPages - 1} ? 'pointer-events-none opacity-50' : ''"
+            class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors">
+            <span class="material-symbols-outlined text-sm">chevron_right</span>
+          </a>
+        </div>
+      </div>
+    </main>
+    <!-- Newsletter / Footer Bottom -->
+    <footer class="mt-auto border-t border-white/10 bg-surface/50 px-6 lg:px-20 py-12">
+      <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-3 text-primary mb-6">
+            <div class="size-6 bg-primary text-background-dark flex items-center justify-center rounded">
+              <span class="material-symbols-outlined font-bold text-[16px]">bolt</span>
+            </div>
+            <h2 class="text-white text-xl font-extrabold uppercase tracking-tight">
+              Brosport
+            </h2>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Elevating performance for athletes who dare to be great. Premium
+            gear for the next generation of champions.
+          </p>
+          <div class="flex gap-4">
+            <a class="text-slate-400 hover:text-primary" href="#"><span
+                class="material-symbols-outlined">public</span></a>
+            <a class="text-slate-400 hover:text-primary" href="#"><span
+                class="material-symbols-outlined">chat</span></a>
+            <a class="text-slate-400 hover:text-primary" href="#"><span
+                class="material-symbols-outlined">share</span></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">
+            Shop
+          </h4>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">New Arrivals</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Bestsellers</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Sale</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Gear Guide</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">
+            Support
+          </h4>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Order Tracking</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Returns &amp; Exchanges</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Shipping Policy</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">FAQs</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4 uppercase tracking-widest text-xs">
+            Join the Elite
+          </h4>
+          <p class="text-slate-400 text-sm mb-4">
+            Subscribe for exclusive drops and athlete insights.
+          </p>
+          <form class="flex gap-2">
+            <input class="flex-1 bg-background-dark border-none rounded-lg text-xs p-3 focus:ring-1 focus:ring-primary"
+              placeholder="Your email" type="email" />
+            <button
+              class="bg-primary text-background-dark px-4 rounded-lg font-bold text-xs uppercase tracking-tighter">
+              Join
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-white/5 text-center text-xs text-slate-500">
+        © 2024 Brosport Performance. All Rights Reserved. Designed for the
+        Elite.
+      </div>
+    </footer>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const gridBtn = document.getElementById('btn-grid-view');
+      const listBtn = document.getElementById('btn-list-view');
+      const container = document.getElementById('product-container');
+
+      if (gridBtn && listBtn && container) {
+        gridBtn.addEventListener('click', () => {
+          gridBtn.className = 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors';
+          listBtn.className = 'p-1.5 text-slate-500 hover:text-white transition-colors rounded';
+          container.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+
+          document.querySelectorAll('.product-card').forEach(card => {
+            card.className = "product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col";
+          });
+          document.querySelectorAll('.product-card .img-wrapper').forEach(wrapper => {
+            wrapper.className = "img-wrapper aspect-square bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full";
+          });
+          document.querySelectorAll('.product-card .details-wrapper').forEach(details => {
+            details.className = "details-wrapper p-4 flex-1 flex flex-col justify-center";
+          });
+        });
+
+        listBtn.addEventListener('click', () => {
+          listBtn.className = 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors';
+          gridBtn.className = 'p-1.5 text-slate-500 hover:text-white transition-colors rounded';
+          container.className = 'grid grid-cols-1 gap-6';
+
+          document.querySelectorAll('.product-card').forEach(card => {
+            card.className = "product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col md:flex-row md:items-center";
+          });
+          document.querySelectorAll('.product-card .img-wrapper').forEach(wrapper => {
+            wrapper.className = "img-wrapper relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5 bg-gradient-to-br from-slate-800 to-slate-900";
+          });
+          document.querySelectorAll('.product-card .details-wrapper').forEach(details => {
+            details.className = "details-wrapper p-4 md:p-6 flex-1 flex flex-col justify-center";
+          });
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -1,8 +1,11 @@
 package com.se2.demo.controller;
 
+import com.se2.demo.dto.request.ProductFilterRequest;
+import com.se2.demo.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -10,9 +13,30 @@ import java.util.List;
 @Controller
 public class WebController {
 
+    private final ProductService productService;
+
+    public WebController(ProductService productService) {
+        this.productService = productService;
+    }
+
     @GetMapping("/products")
-    public String showProductList(Model model) {
-        // You can add attributes to the model here if needed
+    public String showProductList(@ModelAttribute ProductFilterRequest filter, Model model) {
+        if (filter.getPage() == null || filter.getPage() < 0) {
+            filter.setPage(0);
+        }
+        if (filter.getSize() == null || filter.getSize() <= 0) {
+            filter.setSize(12); // Show 12 products per page
+        }
+        var products = productService.getAllProducts(filter);
+        
+        model.addAttribute("products", products.getContent());
+        model.addAttribute("currentPage", products.getPageNo());
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("totalItems", products.getTotalElements());
+        model.addAttribute("filter", filter);
+        
+        model.addAttribute("pageTitle", "Performance Gear");
+        model.addAttribute("pageSubtitle", "Showing " + products.getTotalElements() + " results for high-performance athlete gear");
         return "product-list";
     }
 
