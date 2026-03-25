@@ -56,14 +56,20 @@
                     </a>
 
                     <nav class="hidden xl:flex items-center gap-8 h-full">
-                        <a class="nav-link" href="#">New Arrivals</a>
-                        <a class="nav-link" href="#">Men</a>
-                        <a class="nav-link" href="#">Women</a>
-                        <a class="nav-link" href="#">Accessories</a>
-                        <a class="nav-link" href="#">Brands</a>
-                        <a class="nav-link" href="#">Sports</a>
+                        <a class="nav-link" th:href="@{/products}">New Arrivals</a>
+                        <a class="nav-link" th:href="@{/products/men}"
+                            th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
+                        <a class="nav-link" th:href="@{/products/women}"
+                            th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
+                        <a class="nav-link" th:href="@{/products/accessories}"
+                            th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
+                        <a class="nav-link" th:href="@{/products/brands}"
+                            th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
+                        <a class="nav-link" th:href="@{/products/sports}"
+                            th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
                         <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                            href="#">Sales</a>
+                            th:href="@{/products/sales}"
+                            th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
                     </nav>
 
                     <div class="flex items-center gap-4">

@@ -21,19 +21,24 @@
 
             <nav class="hidden xl:flex items-center gap-8 h-full">
                 <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
-                    href="#">New Arrivals</a>
+                    th:href="@{/products}">New Arrivals</a>
                 <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
-                    href="#">Men</a>
+                    th:href="@{/products/men}" th:classappend="${categorySlug == 'men' ? 'border-primary' : ''}">Men</a>
                 <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
-                    href="#">Women</a>
+                    th:href="@{/products/women}"
+                    th:classappend="${categorySlug == 'women' ? 'border-primary' : ''}">Women</a>
                 <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
-                    href="#">Accessories</a>
+                    th:href="@{/products/accessories}"
+                    th:classappend="${categorySlug == 'accessories' ? 'border-primary' : ''}">Accessories</a>
                 <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
-                    href="#">Brands</a>
+                    th:href="@{/products/brands}"
+                    th:classappend="${categorySlug == 'brands' ? 'border-primary' : ''}">Brands</a>
                 <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
-                    href="#">Sports</a>
+                    th:href="@{/products/sports}"
+                    th:classappend="${categorySlug == 'sports' ? 'border-primary' : ''}">Sports</a>
                 <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                    href="#">Sales</a>
+                    th:href="@{/products/sales}"
+                    th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
             </nav>
 
             <div class="flex items-center gap-4">
