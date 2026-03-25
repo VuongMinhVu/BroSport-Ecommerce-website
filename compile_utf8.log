@@ -1,0 +1,43 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------------< com.se2:demo >----------------------------
+[INFO] Building brosport 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ demo ---
+[INFO] Deleting C:\Users\ADMIN\Desktop\BroSport-Ecommerce-website\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 6 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ demo ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 99 source files with javac [debug parameters release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/ADMIN/Desktop/BroSport-Ecommerce-website/src/main/java/com/se2/demo/controller/WebController.java:[33,51] cannot find symbol
+  symbol:   method getNumber()
+  location: variable products of type com.se2.demo.dto.response.PageResponse<com.se2.demo.dto.response.ProductResponse>
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.142 s
+[INFO] Finished at: 2026-03-25T01:45:49+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.0:compile (default-compile) on project demo: Compilation failure
+[ERROR] /C:/Users/ADMIN/Desktop/BroSport-Ecommerce-website/src/main/java/com/se2/demo/controller/WebController.java:[33,51] cannot find symbol
+[ERROR]   symbol:   method getNumber()
+[ERROR]   location: variable products of type com.se2.demo.dto.response.PageResponse<com.se2.demo.dto.response.ProductResponse>
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

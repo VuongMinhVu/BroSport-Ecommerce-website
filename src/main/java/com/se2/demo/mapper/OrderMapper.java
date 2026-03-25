@@ -1,5 +1,7 @@
 package com.se2.demo.mapper;
 
+import com.se2.demo.dto.response.OrderDetailResponse;
+import com.se2.demo.dto.response.OrderHistoryResponse;
 import com.se2.demo.dto.response.OrderItemResponse;
 import com.se2.demo.dto.response.OrderResponse;
 import com.se2.demo.model.entity.Order;
@@ -26,10 +28,31 @@ public interface OrderMapper {
 
     @Mapping(target = "productName", source = "productDetail.product.name")
     @Mapping(target = "price", source = "price")
-    // Fix variantInfo: "Size: L | Color: Midnight Black"
     @Mapping(target = "variantInfo", expression = "java(\"Size: \" + entity.getProductDetail().getSize().getSizeDescription() + \" | Color: \" + entity.getProductDetail().getColor().getColorName())")
     @Mapping(target = "imageUrl", expression = "java(getMainImageUrl(entity.getProductDetail()))")
     OrderItemResponse toItemResponse(OrderItem entity);
+
+    @Mapping(target = "orderId", source = "id")
+    @Mapping(target = "orderNumber", source = "orderCode")
+    @Mapping(target = "total", source = "totalPrice")
+    @Mapping(target = "status", source = "orderStatus")
+    @Mapping(target = "itemCount", expression = "java(order.getOrderItems() != null ? order.getOrderItems().size() : 0)")
+    @Mapping(target = "date", expression = "java(order.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"MMM dd, yyyy\", java.util.Locale.ENGLISH)))")
+    OrderHistoryResponse toHistoryResponse(Order order);
+
+    List<OrderHistoryResponse> toHistoryResponseList(List<Order> orders);
+
+    // Thêm vào OrderMapper.java
+    @Mapping(target = "orderNumber", source = "orderCode")
+    @Mapping(target = "createdAt", expression = "java(order.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"MMMM dd, yyyy\", java.util.Locale.ENGLISH)))")
+    @Mapping(target = "recipientName", source = "fullName")
+    @Mapping(target = "shippingAddress", source = "shippingAddressFull")
+    @Mapping(target = "shippingMethod", constant = "Express Courier (2-3 Days)") // Giá trị mẫu
+    @Mapping(target = "subtotal", expression = "java(calculateSubtotal(order.getOrderItems()))")
+    @Mapping(target = "shippingFee", source = "shippingFee")
+    @Mapping(target = "tax", constant = "0") // Tạm để là 0 như Figma
+    @Mapping(target = "items", source = "orderItems")
+    OrderDetailResponse toDetailResponse(Order order);
 
     default BigDecimal calculateSubtotal(List<OrderItem> items) {
         if (items == null) return BigDecimal.ZERO;

@@ -28,6 +28,8 @@ public class Order {
     private String fullName;
     private String shippingAddressFull;
     private LocalDateTime createdAt;
+    private String paymentStatus;
+    private String orderStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
