@@ -9,6 +9,64 @@
 </head>
 
 <body>
+    <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
+        <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
+            <a class="flex items-center gap-2 group flex-shrink-0" href="/">
+                <div
+                    class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
+                    <span class="material-symbols-outlined font-bold">bolt</span>
+                </div>
+                <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">Brosport</h1>
+            </a>
+
+            <nav class="hidden xl:flex items-center gap-8 h-full">
+                <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
+                    href="#">New Arrivals</a>
+                <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
+                    href="#">Men</a>
+                <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
+                    href="#">Women</a>
+                <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
+                    href="#">Accessories</a>
+                <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
+                    href="#">Brands</a>
+                <a class="nav-link border-b-2 border-transparent hover:border-primary text-white font-medium"
+                    href="#">Sports</a>
+                <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
+                    href="#">Sales</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <div class="relative hidden lg:block group">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
+                    <input
+                        class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all border border-slate-700"
+                        placeholder="Search elite gear..." type="text" />
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a href="/profile"
+                        class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all text-white">
+                        <div class="h-full w-full bg-cover bg-center"
+                            th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
+                            th:if="${user != null and user.avatarUrl != null}">
+                        </div>
+                        <span th:unless="${user != null and user.avatarUrl != null}"
+                            class="material-symbols-outlined text-2xl">person</span>
+                    </a>
+
+                    <button
+                        class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors">
+                        <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                        <span
+                            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
+                            th:text="${cartItems != null ? #lists.size(cartItems) : 0}">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="container mt-5">
         <h1 class="text-primary">Test Hệ Thống BroSport</h1>
         <hr>
