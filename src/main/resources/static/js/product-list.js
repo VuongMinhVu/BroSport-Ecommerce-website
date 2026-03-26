@@ -1,0 +1,421 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // Utility: Debounce
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // --- State & URL Manager ---
+    class StateManager {
+        constructor() {
+            this.filters = {
+                keyword: '',
+                categoryId: null,
+                brandId: null,
+                minPrice: null,
+                maxPrice: null,
+                page: 0,
+                size: 10
+            };
+            this.initFromUrl();
+            this.syncUI();
+        }
+
+        initFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('keyword')) this.filters.keyword = params.get('keyword');
+            if (params.has('categoryId')) this.filters.categoryId = params.get('categoryId');
+            if (params.has('brandId')) this.filters.brandId = params.get('brandId');
+            if (params.has('minPrice')) this.filters.minPrice = params.get('minPrice');
+            if (params.has('maxPrice')) this.filters.maxPrice = params.get('maxPrice');
+            if (params.has('page')) this.filters.page = parseInt(params.get('page')) || 0;
+        }
+
+        updateUrl() {
+            const params = new URLSearchParams();
+            if (this.filters.keyword) params.set('keyword', this.filters.keyword);
+            if (this.filters.categoryId) params.set('categoryId', this.filters.categoryId);
+            if (this.filters.brandId) params.set('brandId', this.filters.brandId);
+            if (this.filters.minPrice) params.set('minPrice', this.filters.minPrice);
+            if (this.filters.maxPrice && this.filters.maxPrice < 500) params.set('maxPrice', this.filters.maxPrice);
+            if (this.filters.page > 0) params.set('page', this.filters.page);
+
+            const path = window.location.pathname;
+            const newUrl = `${path}${params.toString() ? '?' + params.toString() : ''}`;
+            window.history.pushState(this.filters, '', newUrl);
+        }
+
+        // update from UI elements
+        syncUI() {
+            if (this.filters.keyword) {
+                const input = document.getElementById('searchInput');
+                if (input) input.value = this.filters.keyword;
+            }
+            if (this.filters.maxPrice) {
+                const range = document.getElementById('priceRange');
+                if (range) range.value = this.filters.maxPrice;
+            }
+            if (this.filters.categoryId) {
+                document.querySelectorAll('.category-filter').forEach(cb => {
+                    cb.checked = (cb.value === this.filters.categoryId);
+                });
+            }
+            if (this.filters.brandId) {
+                document.querySelectorAll('.brand-filter').forEach(cb => {
+                    cb.checked = (cb.value === this.filters.brandId);
+                });
+            }
+        }
+    }
+
+    // --- API Service ---
+    class ProductService {
+        constructor() {
+            this.abortController = null;
+        }
+
+        async fetchProducts(filters) {
+            if (this.abortController) {
+                this.abortController.abort();
+            }
+            this.abortController = new AbortController();
+
+            try {
+                const params = new URLSearchParams();
+                if (filters.keyword) params.append('keyword', filters.keyword);
+                if (filters.categoryId) params.append('categoryId', filters.categoryId);
+                if (filters.brandId) params.append('brandId', filters.brandId);
+                if (filters.minPrice) params.append('minPrice', filters.minPrice);
+                if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
+                params.append('page', filters.page);
+                params.append('size', filters.size);
+
+                const response = await fetch(`/api/v1/products?${params.toString()}`, {
+                    signal: this.abortController.signal,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Fetch aborted');
+                    return null; // Ignore aborted requests
+                }
+                throw error;
+            }
+        }
+    }
+
+    // --- UI Component ---
+    class ProductUI {
+        constructor() {
+            this.container = document.getElementById('product-container');
+            this.paginationContainer = document.getElementById('pagination-container');
+        }
+
+        get isListView() {
+            return document.getElementById('btn-list-view')?.classList.contains('text-primary');
+        }
+
+        renderLoading() {
+            const isList = this.isListView;
+            const skeletons = Array(6).fill('').map(() => `
+        <div class="product-card animate-pulse relative bg-surface rounded-xl overflow-hidden border border-white/5 flex flex-col ${isList ? 'md:flex-row md:items-center' : ''}">
+          <div class="img-wrapper relative overflow-hidden shrink-0 w-full ${isList ? 'md:w-64 md:h-64 border-b md:border-b-0 md:border-r border-white/5' : 'aspect-square bg-slate-800'}"></div>
+          <div class="p-4 flex-1 flex flex-col justify-center space-y-3 ${isList ? 'md:p-6' : ''}">
+             <div class="h-6 bg-slate-700 rounded w-3/4"></div>
+             <div class="h-4 bg-slate-700 rounded w-1/2"></div>
+             <div class="h-8 bg-slate-700 rounded w-1/4 mt-auto"></div>
+          </div>
+        </div>
+      `).join('');
+            // Use grid layout depending on list view state
+            this.container.className = isList ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+            this.container.innerHTML = skeletons;
+        }
+
+        renderError(error) {
+            this.container.className = 'grid grid-cols-1';
+            this.container.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <span class="material-symbols-outlined text-4xl text-red-500 mb-4">error</span>
+            <p class="text-slate-400">Failed to load products. Please try again.</p>
+          </div>
+       `;
+        }
+
+        renderEmpty() {
+            this.container.className = 'grid grid-cols-1';
+            this.container.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <span class="material-symbols-outlined text-4xl text-slate-500 mb-4">inventory_2</span>
+            <p class="text-slate-400">No products found matching your criteria.</p>
+            <button id="clearFiltersBtn" class="mt-4 text-primary hover:underline">Clear all filters</button>
+          </div>
+       `;
+        }
+
+        renderProducts(products) {
+            if (!products || products.length === 0) {
+                this.renderEmpty();
+                return;
+            }
+
+            const isList = this.isListView;
+            this.container.className = isList ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+
+            this.container.innerHTML = products.map(product => {
+                const imageUrl = (product.productImages && product.productImages.length > 0)
+                    ? product.productImages[0].imageUrl
+                    : `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`;
+
+                return `
+          <div class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? 'md:flex-row md:items-center' : ''}">
+            <div class="img-wrapper ${isList ? 'relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5' : 'aspect-square'} bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
+              <img src="${imageUrl}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors">
+                  Quick View
+                </button>
+              </div>
+            </div>
+            <div class="details-wrapper p-4 ${isList ? 'md:p-6' : ''} flex-1 flex flex-col justify-center">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-bold text-white text-lg leading-tight">${product.name}</h3>
+                  <p class="text-slate-400 text-sm">${product.brand || 'Brand'}</p>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
+                  <span class="text-slate-400 text-sm">4.5</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-auto pt-4">
+                <span class="text-2xl font-black text-primary">$${Number(product.showPrice).toFixed(2)}</span>
+                <button class="bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                  <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+            }).join('');
+        }
+
+        renderPagination(pageData) {
+            // If we don't have container initialized, we need to create it inside an adjacent parent.
+            // Easiest is to search dynamically.
+            let container = document.getElementById('pagination-container');
+            if (!container) {
+                const main = document.querySelector('main .flex-1');
+                if (main) {
+                    container = document.createElement('div');
+                    container.id = 'pagination-container';
+                    main.appendChild(container);
+                } else {
+                    return;
+                }
+            }
+
+            const { pageNo, totalPages } = pageData;
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `<div class="flex items-center justify-center gap-2 mt-16">`;
+
+            // Prev button
+            html += `
+        <button data-page="${pageNo - 1}" class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors ${pageNo === 0 ? 'pointer-events-none opacity-50' : ''}">
+          <span class="material-symbols-outlined text-sm">chevron_left</span>
+        </button>
+      `;
+
+            // Page numbers (simplified calculation)
+            let start = Math.max(0, pageNo - 2);
+            let end = Math.min(totalPages - 1, pageNo + 2);
+
+            if (pageNo - 2 < 0 && totalPages > 4) end = 4;
+            if (pageNo + 2 >= totalPages && totalPages > 4) start = totalPages - 5;
+
+            if (start > 0) {
+                html += `
+          <button data-page="0" class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm">1</button>
+          ${start > 1 ? '<span class="flex h-10 w-10 items-center justify-center text-slate-500 font-bold">...</span>' : ''}
+        `;
+            }
+
+            for (let i = start; i <= end; i++) {
+                html += `
+          <button data-page="${i}" class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border transition-colors font-bold text-sm ${i === pageNo ? 'bg-primary text-background-dark border-primary' : 'bg-surface text-slate-400 border-white/10 hover:border-primary/50 text-slate-300'}">
+            ${i + 1}
+          </button>
+        `;
+            }
+
+            if (end < totalPages - 1) {
+                html += `
+          ${end < totalPages - 2 ? '<span class="flex h-10 w-10 items-center justify-center text-slate-500 font-bold">...</span>' : ''}
+          <button data-page="${totalPages - 1}" class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm">${totalPages}</button>
+        `;
+            }
+
+            // Next button
+            html += `
+        <button data-page="${pageNo + 1}" class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors ${pageNo >= totalPages - 1 ? 'pointer-events-none opacity-50' : ''}">
+          <span class="material-symbols-outlined text-sm">chevron_right</span>
+        </button>
+      `;
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+    }
+
+    // --- Main Application ---
+    const state = new StateManager();
+    const api = new ProductService();
+    const ui = new ProductUI();
+
+    // Keep track if it's the first load
+    let isInitialLoad = true;
+
+    const loadProducts = async () => {
+        // If it's initial load and there are no specific filters in URL, we could optionally skip fetch,
+        // because Thymeleaf already rendered them. But we must update if URL has filters different than server.
+        if (!isInitialLoad) {
+            ui.renderLoading();
+        }
+
+        state.updateUrl();
+
+        try {
+            const data = await api.fetchProducts(state.filters);
+            if (data) { // null if aborted
+                ui.renderProducts(data.content);
+                ui.renderPagination(data);
+            }
+        } catch (error) {
+            console.error('Failed to load products:', error);
+            ui.renderError(error);
+        } finally {
+            isInitialLoad = false;
+        }
+    };
+
+    // If there are url query params, fetch immediately to sync state. 
+    // Otherwise, leave the SSR HTML as is until Interaction.
+    if (window.location.search) {
+        loadProducts();
+    }
+
+    // Event Listeners Setup
+    const searchInput = document.getElementById('searchInput');
+    const priceRange = document.getElementById('priceRange');
+    const categoryCheckboxes = document.querySelectorAll('.category-filter');
+    const brandCheckboxes = document.querySelectorAll('.brand-filter');
+
+    // Helper for single select checkbox group
+    const handleCheckboxGroup = (checkboxes, filterKey) => {
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    // Uncheck others (single select style)
+                    checkboxes.forEach(other => { if (other !== cb) other.checked = false; });
+                    state.filters[filterKey] = e.target.value;
+                } else {
+                    state.filters[filterKey] = null;
+                }
+                state.filters.page = 0; // reset to first page
+                loadProducts();
+            });
+        });
+    };
+
+    handleCheckboxGroup(categoryCheckboxes, 'categoryId');
+    handleCheckboxGroup(brandCheckboxes, 'brandId');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce((e) => {
+            state.filters.keyword = e.target.value;
+            state.filters.page = 0;
+            loadProducts();
+        }, 400));
+    }
+
+    if (priceRange) {
+        const priceDisplay = document.getElementById('priceDisplay'); // Lấy element
+
+        // Sự kiện 'input' chạy liên tục khi kéo (không bị debounce để UI mượt)
+        priceRange.addEventListener('input', (e) => {
+            if (priceDisplay) priceDisplay.textContent = `$${e.target.value}`;
+        });
+
+        // Gọi API thì vẫn giữ debounce
+        priceRange.addEventListener('input', debounce((e) => {
+            state.filters.maxPrice = e.target.value;
+            state.filters.page = 0;
+            loadProducts();
+        }, 300));
+    }
+
+    // Delegation for pagination clicks and clear button
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pagination-btn');
+        if (btn) {
+            e.preventDefault();
+            const page = parseInt(btn.getAttribute('data-page'));
+            if (!isNaN(page)) {
+                state.filters.page = page;
+                isInitialLoad = false; // ensure loader shows
+                loadProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        const clearBtn = e.target.closest('#clearFiltersBtn');
+        if (clearBtn) {
+            state.filters = { keyword: '', categoryId: null, brandId: null, minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.updateUrl();
+            state.syncUI();
+            isInitialLoad = false;
+            loadProducts();
+        }
+    });
+
+    const resetBtn = document.getElementById('resetFiltersBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            state.filters = { keyword: '', categoryId: null, brandId: null, minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.updateUrl();
+            state.syncUI();
+            isInitialLoad = false;
+            loadProducts();
+        });
+    }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (event) => {
+        if (event.state) {
+            state.filters = event.state;
+        } else {
+            state.filters = { keyword: '', categoryId: null, brandId: null, minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.initFromUrl();
+        }
+        state.syncUI();
+        isInitialLoad = false; // back/forw is not initial load
+        loadProducts();
+    });
+});
