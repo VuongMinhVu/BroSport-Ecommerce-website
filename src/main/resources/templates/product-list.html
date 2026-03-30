@@ -71,7 +71,7 @@
         </a>
 
         <nav class="hidden xl:flex items-center gap-8 h-full">
-          <a class="nav-link" th:href="@{/products}">New Arrivals</a>
+          <a class="nav-link" th:href="@{/products/new-arrivals}">New Arrivals</a>
           <a class="nav-link" th:href="@{/products/men}"
             th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
           <a class="nav-link" th:href="@{/products/women}"
@@ -275,8 +275,10 @@
               </div>
               <div class="flex items-center justify-between mt-auto pt-4">
                 <span class="text-2xl font-black text-primary"
-                  th:text="'$' + ${#numbers.formatDecimal(product.showPrice, 1, 2)}">$99.99</span>
-                <button class="bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                  th:text="${#numbers.formatDecimal(product.showPrice, 0, 'COMMA', 0, 'POINT')} + '$'">99$</span>
+                <button
+                  th:data-detail-id="${product.productDetails != null and !product.productDetails.isEmpty() ? product.productDetails[0].id : ''}"
+                  class="btn-add-to-cart bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
                   <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                 </button>
               </div>
@@ -429,6 +431,18 @@
         Elite.
       </div>
     </footer>
+    <!-- Add to Cart Toast Notification -->
+    <div id="toast-success"
+      class="fixed inset-0 flex items-center justify-center z-[100] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
+      <div
+        class="bg-black/80 text-white rounded-lg flex flex-col items-center justify-center py-6 px-8 min-w-[240px] shadow-2xl backdrop-blur-sm">
+        <div
+          class="bg-emerald-500 rounded-full w-14 h-14 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
+          <span class="material-symbols-outlined text-white text-3xl font-bold">check</span>
+        </div>
+        <span class="text-lg font-medium tracking-wide">Sản phẩm đã được thêm vào Giỏ hàng</span>
+      </div>
+    </div>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {

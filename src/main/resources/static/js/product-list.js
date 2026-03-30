@@ -12,6 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // Utility: Show Success Toast
+    function showSuccessToast() {
+        const toast = document.getElementById('toast-success');
+        if (!toast) return;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.remove('opacity-0'), 10);
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+            setTimeout(() => toast.classList.add('hidden'), 300);
+        }, 2000);
+    }
+
     // --- State & URL Manager ---
     class StateManager {
         constructor() {
@@ -201,8 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
               <div class="flex items-center justify-between mt-auto pt-4">
-                <span class="text-2xl font-black text-primary">$${Number(product.showPrice).toFixed(2)}</span>
-                <button class="bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                <span class="text-2xl font-black text-primary">${new Intl.NumberFormat('en-US').format(Math.round(product.showPrice))}$</span>
+                <button data-detail-id="${(product.productDetails && product.productDetails.length > 0) ? product.productDetails[0].id : ''}" class="btn-add-to-cart bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
                   <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                 </button>
               </div>
@@ -392,6 +404,49 @@ document.addEventListener('DOMContentLoaded', () => {
             state.syncUI();
             isInitialLoad = false;
             loadProducts();
+        }
+
+        // Add to cart delegation
+        const addToCartBtn = e.target.closest('.btn-add-to-cart');
+        if (addToCartBtn) {
+            e.preventDefault();
+            const detailId = addToCartBtn.getAttribute('data-detail-id');
+            if (!detailId) {
+                alert('This product is currently unavailable.');
+                return;
+            }
+
+            // Hardcode userId = 1 for testing purposes
+            const userId = 1;
+
+            fetch('/api/v1/carts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    productDetailId: parseInt(detailId)
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showSuccessToast();
+                        // Update cart count in header
+                        const cartCountElement = document.querySelector('a[href="/cart"] span.absolute');
+                        if (cartCountElement) {
+                            const currentCount = parseInt(cartCountElement.textContent) || 0;
+                            cartCountElement.textContent = currentCount + 1;
+                        }
+                    } else {
+                        alert('Failed to add item to cart. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding to cart:', error);
+                    alert('An error occurred. Please try again later.');
+                });
         }
     });
 

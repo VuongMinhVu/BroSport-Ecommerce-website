@@ -240,8 +240,7 @@
           .then((data) => {
             let cartItems = [];
             if (data && data.length > 0) {
-              // Using the first cart just for demonstration
-              cartItems = data[0].cartItemResponseList || [];
+              cartItems = data;
             }
             renderCartItems(cartItems);
             updateCartSummary(cartItems);
@@ -278,14 +277,14 @@
 
         items.forEach((item) => {
           const price = item.productPrice
-            ? item.productPrice.toFixed(2)
-            : "0.00";
+            ? new Intl.NumberFormat('en-US').format(Math.round(item.productPrice)) + "$"
+            : "0$";
           const name = item.productName || "Unknown Product";
           const quantity = item.quantity || 1;
 
           // Same fallback image logic as product-list
           const imageSrc = item.productImage
-            ? `/api/v1/products/images/${item.productImage}`
+            ? item.productImage
             : `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(name)}`;
 
           const html = `
@@ -298,18 +297,23 @@
                             <div class="flex-grow">
                                 <h3 class="text-white font-bold text-lg">${name}</h3>
                                 <div class="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Standard Size</b></span>
+                                    <span class="flex items-center gap-1"><b class="text-white/70">
+                                      ${item.size ? 'Size: ' + item.size : ''} 
+                                      ${item.size && item.color ? '| ' : ''} 
+                                      ${item.color ? 'Color: ' + item.color : ''}
+                                      ${!item.size && !item.color ? 'Standard Size' : ''}
+                                    </b></span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
                                 <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.productId}, -1)"><span class="material-symbols-outlined text-lg">remove</span></button>
+                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.id}, -1)"><span class="material-symbols-outlined text-lg">remove</span></button>
                                     <span class="w-8 text-center font-bold text-white">${quantity}</span>
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.productId}, 1)"><span class="material-symbols-outlined text-lg">add</span></button>
+                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.id}, 1)"><span class="material-symbols-outlined text-lg">add</span></button>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-white font-bold text-lg">$${price}</p>
-                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto" onclick="removeItem(${item.productId})">
+                                    <p class="text-white font-bold text-lg">${price}</p>
+                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto" onclick="removeItem(${item.id})">
                                         <span class="material-symbols-outlined text-sm">delete</span>
                                     </button>
                                 </div>
@@ -330,12 +334,9 @@
         const tax = subtotal * taxRate;
         const total = subtotal + tax;
 
-        document.getElementById("summary-subtotal").textContent =
-          `$${subtotal.toFixed(2)}`;
-        document.getElementById("summary-tax").textContent =
-          `$${tax.toFixed(2)}`;
-        document.getElementById("summary-total").textContent =
-          `$${total.toFixed(2)}`;
+        document.getElementById("summary-subtotal").textContent = `${new Intl.NumberFormat('en-US').format(Math.round(subtotal))}$`;
+        document.getElementById("summary-tax").textContent = `${new Intl.NumberFormat('en-US').format(Math.round(tax))}$`;
+        document.getElementById("summary-total").textContent = `${new Intl.NumberFormat('en-US').format(Math.round(total))}$`;
       }
 
       function updateQuantity(productId, change) {
