@@ -89,7 +89,7 @@ public class WebController {
     }
 
     // Điều hướng đến trang Chi tiết đơn hàng (Sử dụng ID động)
-    @GetMapping("/orders-detail/{id}")
+    @GetMapping("/order-detail/{id}")
     public String productDetailPage(Long id) {
         return "productDetail";
     }
