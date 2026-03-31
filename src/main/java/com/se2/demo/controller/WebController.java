@@ -81,4 +81,27 @@ public class WebController {
     public String showOrderSuccess() {
         return "order-success";
     }
+
+    // Điều hướng đến trang Lịch sử đơn hàng
+    @GetMapping("/order-history")
+    public String orderHistoryPage() {
+        return "orderHistory";
+    }
+
+    // Điều hướng đến trang Chi tiết đơn hàng (Sử dụng ID động)
+    @GetMapping("/orders-detail/{id}")
+    public String productDetailPage(Long id) {
+        return "productDetail";
+    }
+
+    // Điều hướng đến trang Theo dõi đơn hàng
+    @GetMapping("/order-tracking")
+    public String orderTrackingPage() {
+        return "orderTracking";
+    }
+
+    @GetMapping("/search-result")
+    public String searchResultPage() {
+        return "search-result"; // Trả về file search-result.html
+    }
 }

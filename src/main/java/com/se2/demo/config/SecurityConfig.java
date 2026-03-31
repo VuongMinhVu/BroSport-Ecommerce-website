@@ -33,26 +33,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable()) // Tạm thời disable để dễ làm FE
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/register","account/profile/edit",
-                                "/login",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/favicon.ico"
+                                "/", "/home", "/login", "/register",
+                                "/css/**", "/js/**", "/images/**", "/favicon.ico",
+                                "/products/**", "/cart", "/checkout/**",
+                                "/order-history", "/order-detail/**", "/order-tracking", "/search-result" // Đã sửa khớp với Controller
                         ).permitAll()
-                        .requestMatchers("/", "/home", "/products/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login/tesst")    // fake thoi làm login xem lại chỗ này nhé
-                        .loginProcessingUrl("/login/tesst")  // fake thoi làm login xem lại chỗ này nhé
+                        .loginPage("/login") // Sửa lại thành /login chuẩn
+                        .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/account/profile/edit", true)
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
@@ -60,11 +58,6 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
-                )
-                .rememberMe(rm -> rm
-                        .rememberMeParameter("rememberMe")
-                        .key("brosport-remember-me-key")
-                        .tokenValiditySeconds(7 * 24 * 60 * 60)
                 );
 
         return http.build();
