@@ -277,8 +277,8 @@
 
         items.forEach((item) => {
           const price = item.productPrice
-            ? new Intl.NumberFormat('en-US').format(Math.round(item.productPrice)) + "$"
-            : "0$";
+            ? item.productPrice.toFixed(2)
+            : "0.00";
           const name = item.productName || "Unknown Product";
           const quantity = item.quantity || 1;
 
@@ -334,9 +334,12 @@
         const tax = subtotal * taxRate;
         const total = subtotal + tax;
 
-        document.getElementById("summary-subtotal").textContent = `${new Intl.NumberFormat('en-US').format(Math.round(subtotal))}$`;
-        document.getElementById("summary-tax").textContent = `${new Intl.NumberFormat('en-US').format(Math.round(tax))}$`;
-        document.getElementById("summary-total").textContent = `${new Intl.NumberFormat('en-US').format(Math.round(total))}$`;
+        document.getElementById("summary-subtotal").textContent =
+          `$${subtotal.toFixed(2)}`;
+        document.getElementById("summary-tax").textContent =
+          `$${tax.toFixed(2)}`;
+        document.getElementById("summary-total").textContent =
+          `$${total.toFixed(2)}`;
       }
 
       function updateQuantity(productId, change) {
