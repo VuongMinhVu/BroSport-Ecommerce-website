@@ -6,16 +6,8 @@ import java.util.List;
 
 public interface CartService {
     List<CartResponse> getAllCarts();
-
-    CartResponse getCartById(Integer id);
-
+    CartResponse getCartByUserId(Integer userId);
     CartResponse createCart(CartRequest request);
-
     CartResponse updateCart(Integer id, CartRequest request);
-
     void deleteCart(Integer id);
-
-    void updateQuantity(Integer cartId, Integer quantity);
-
-    void deleteCartItemCompletely(Integer cartId);
 }

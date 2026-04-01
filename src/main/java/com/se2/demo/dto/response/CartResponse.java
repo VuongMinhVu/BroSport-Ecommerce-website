@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -15,10 +16,13 @@ import java.time.LocalDateTime;
 public class CartResponse {
 
     private Integer id;
-
     private Integer userId;
+    private List<CartDetailResponse> cartDetails;
 
-    private Integer productDetailId;
+    private Double subtotal;
+    private Double shipping;
+    private Double tax;
+    private Double total;
 
     private LocalDateTime updatedAt;
 
