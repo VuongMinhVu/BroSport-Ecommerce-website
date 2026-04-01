@@ -37,14 +37,15 @@ public class CartController {
 
     // 4. Cập nhật thông tin giỏ hàng (Update)
     @PutMapping("/{id}")
-    public ResponseEntity<CartResponse> updateCart(@PathVariable Integer id, @RequestBody CartRequest request) {
-        return ResponseEntity.ok(cartService.updateCart(id, request));
+    public ResponseEntity<Void> updateCartItemQuantity(@PathVariable Integer id, @RequestParam Integer quantity) {
+        cartService.updateQuantity(id, quantity);
+        return ResponseEntity.ok().build();
     }
 
     // 5. Xóa giỏ hàng (Delete)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCart(@PathVariable Integer id) {
-        cartService.deleteCart(id);
+    public ResponseEntity<Void> deleteCartItemCompletely(@PathVariable Integer id) {
+        cartService.deleteCartItemCompletely(id);
         return ResponseEntity.noContent().build();
     }
 }

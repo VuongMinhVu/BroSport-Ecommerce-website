@@ -306,14 +306,18 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-                                <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.id}, -1)"><span class="material-symbols-outlined text-lg">remove</span></button>
-                                    <span class="w-8 text-center font-bold text-white">${quantity}</span>
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.id}, 1)"><span class="material-symbols-outlined text-lg">add</span></button>
+                                <div class="flex items-center bg-[#1a110b] rounded-lg border border-white/10 p-1">
+                                    <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/10 rounded-md transition-colors" onclick="updateQty(${item.id}, -1)">
+                                        <span class="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <input type="number" id="qty-${item.id}" value="${quantity}" readonly class="w-12 h-8 bg-transparent text-center text-white font-medium border-none focus:ring-0 p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/10 rounded-md transition-colors" onclick="updateQty(${item.id}, 1)">
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                    </button>
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-white font-bold text-lg">${price}</p>
-                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto" onclick="removeItem(${item.id})">
+                                <div class="text-right flex flex-col items-end gap-2">
+                                    <p class="text-white font-bold text-lg">$${price}</p>
+                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center justify-center p-2 rounded-lg hover:bg-red-500/10" onclick="deleteItem(${item.id})">
                                         <span class="material-symbols-outlined text-sm">delete</span>
                                     </button>
                                 </div>
@@ -342,16 +346,34 @@
           `$${total.toFixed(2)}`;
       }
 
-      function updateQuantity(productId, change) {
-        // To be integrated with backend update API
-        alert(
-          `Requested to update quantity of product ID ${productId} by ${change}`,
-        );
+
+
+      function updateQty(id, delta) {
+        const input = document.getElementById('qty-' + id);
+        const newQty = parseInt(input.value) + delta;
+
+        if (newQty < 1) return; // Không cho giảm xuống 0
+
+        fetch(`/api/v1/carts/details/${id}?quantity=${newQty}`, {
+          method: 'PUT'
+        })
+          .then(res => {
+            if (res.ok) location.reload(); // Tải lại trang để cập nhật giá tiền
+            else alert("Lỗi cập nhật số lượng");
+          });
       }
 
-      function removeItem(productId) {
-        // To be integrated with backend delete API
-        alert(`Requested to remove product ID ${productId} from cart`);
+      // Hàm xử lý xóa sản phẩm
+      function deleteItem(id) {
+        if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
+
+        fetch(`/api/v1/carts/details/${id}`, {
+          method: 'DELETE'
+        })
+          .then(res => {
+            if (res.ok) location.reload();
+            else alert("Lỗi khi xóa sản phẩm");
+          });
       }
     </script>
 
@@ -370,6 +392,7 @@
       </div>
     </footer>
   </div>
+
 </body>
 
 </html>

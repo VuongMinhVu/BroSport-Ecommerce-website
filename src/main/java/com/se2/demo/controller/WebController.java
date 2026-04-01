@@ -22,8 +22,8 @@ public class WebController {
 
     @GetMapping({"/products", "/products/{categorySlug}"})
     public String showProductList(
-            @PathVariable(required = false) String categorySlug,
-            @ModelAttribute ProductFilterRequest filter, 
+            @PathVariable(name = "categorySlug", required = false) String categorySlug,
+            @ModelAttribute ProductFilterRequest filter,
             Model model) {
         
         if (categorySlug != null) {
@@ -109,6 +109,10 @@ public class WebController {
         return "redirect:/order-success";
     }
 
+    @GetMapping("/homepage")
+    public String Homepage(){
+        return "homepage";
+    }
     @GetMapping("/order-success")
     public String showOrderSuccess() {
         return "order-success";

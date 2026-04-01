@@ -85,6 +85,48 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public void updateQuantity(Integer cartId, Integer quantity) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found with id: " + cartId));
+
+        Integer userId = cart.getUserId();
+        Integer productDetailId = cart.getProductDetailId();
+
+        List<Cart> existingCarts = cartRepository.findByUserIdAndProductDetailId(userId, productDetailId);
+        int currentQty = existingCarts.size();
+
+        if (quantity > currentQty) {
+            int diff = quantity - currentQty;
+            for (int i = 0; i < diff; i++) {
+                Cart newCart = new Cart();
+                newCart.setUserId(userId);
+                newCart.setProductDetailId(productDetailId);
+                newCart.setUpdatedAt(LocalDateTime.now());
+                cartRepository.save(newCart);
+            }
+        } else if (quantity < currentQty && quantity > 0) {
+            int diff = currentQty - quantity;
+            for (int i = 0; i < diff; i++) {
+                cartRepository.delete(existingCarts.get(i));
+            }
+        } else if (quantity <= 0) {
+            cartRepository.deleteAll(existingCarts);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteCartItemCompletely(Integer cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found with id: " + cartId));
+
+        List<Cart> existingCarts = cartRepository.findByUserIdAndProductDetailId(cart.getUserId(),
+                cart.getProductDetailId());
+        cartRepository.deleteAll(existingCarts);
+    }
+
     private CartResponse mapToResponse(Cart cart) {
         CartResponse response = new CartResponse();
         response.setId(cart.getId());
