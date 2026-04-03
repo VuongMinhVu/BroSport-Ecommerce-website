@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title th:text="${pageTitle}">Brosport | High-Performance Gear</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f96706",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#0a0a0a",
+                        "surface-dark": "#161616",
+                        "border-dark": "#262626"
+                    },
+                    fontFamily: { "display": ["Lexend", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body { font-family: 'Lexend', sans-serif; background-color: #0a0a0a; }
+        .compare-bar-blur { backdrop-filter: blur(2px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .product-card-shadow { transition: all 0.3s ease; }
+        .product-card-shadow:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            transform: translateY(-4px);
+        }
+        .filter-section-title { @apply text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center justify-between; }
+        .filter-option { @apply flex items-center gap-3 text-sm text-slate-300 hover:text-white transition-colors cursor-pointer py-1.5; }
+    </style>
+</head>
+<body class="text-slate-100 antialiased font-display selection:bg-primary/30">
+<div class="relative min-h-screen flex flex-col">
+
+    <div th:replace="~{fragments/header :: site-header}"></div>
+
+    <main class="flex-grow px-6 lg:px-12 py-10 pb-48">
+        <div class="max-w-[1600px] mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <nav class="flex gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">
+                        <a class="hover:text-primary transition-colors" th:href="@{/}">Home</a>
+                        <span>/</span>
+                        <span class="text-slate-300">Products</span>
+                    </nav>
+                    <h2 class="text-5xl font-extrabold tracking-tight" th:text="${pageTitle}">Vibrant Performance</h2>
+                    <p class="text-slate-400 mt-2" th:text="${pageSubtitle}"></p>
+                </div>
+            </div>
+
+            <div class="flex gap-10">
+                <aside class="hidden lg:block w-64 flex-shrink-0">
+                    <form th:action="@{/products}" method="get" th:object="${filter}" class="space-y-8 sticky top-32">
+                        <div>
+                            <h4 class="filter-section-title">Search</h4>
+                            <input type="text" th:field="*{keyword}" placeholder="Search..."
+                                   class="w-full bg-surface-dark border-border-dark rounded-lg text-sm text-white focus:ring-primary"/>
+                        </div>
+
+                        <button type="submit" class="w-full py-2 bg-primary text-white font-bold rounded-lg uppercase text-xs">Apply Filters</button>
+                    </form>
+                </aside>
+
+                <div class="flex-grow">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-16">
+
+                        <div th:each="product : ${products}" class="group product-card-shadow cursor-pointer">
+                            <div class="relative aspect-[4/5] rounded-2xl bg-surface-dark overflow-hidden border border-white/5">
+                                <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                     th:style="'background-image: url(' + ${product.productImages[0].imageUrl} + ')'"
+                                     th:if="${not #lists.isEmpty(product.productImages)}"></div>
+
+                                <div class="absolute top-4 left-4" th:if="${product.status == 'NEW'}">
+                                    <span class="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">New Arrival</span>
+                                </div>
+
+                                <button class="absolute bottom-4 right-4 p-3 bg-white/10 backdrop-blur-md rounded-xl text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined">add_shopping_cart</span>
+                                </button>
+                            </div>
+
+                            <div class="mt-5 space-y-4">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-bold text-lg text-white" th:text="${product.name}">Product Name</h3>
+                                        <span class="font-bold text-primary" th:text="${#numbers.formatCurrency(product.showPrice)}">$0.00</span>
+                                    </div>
+                                    <p class="text-slate-400 text-sm" th:text="${product.brand}">Brand</p>
+                                </div>
+                                <a th:href="@{'/products/' + ${product.slug}}"
+                                   class="block w-full py-2.5 border-2 border-primary text-center text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-primary/5 transition-all">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-20 flex justify-center gap-2" th:if="${totalPages > 1}">
+                        <a th:each="pageIdx : ${#numbers.sequence(0, totalPages - 1)}"
+                           th:href="@{/products(page=${pageIdx}, size=${filter.size})}"
+                           th:text="${pageIdx + 1}"
+                           th:class="${currentPage == pageIdx} ? 'px-4 py-2 bg-primary text-white rounded-lg font-bold' : 'px-4 py-2 bg-surface-dark text-slate-400 rounded-lg hover:bg-white/5'">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: site-footer}"></div>
+</div>
+</body>
+</html>

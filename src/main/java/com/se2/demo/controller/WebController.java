@@ -77,8 +77,14 @@ public class WebController {
         return "redirect:/order-success";
     }
 
+    @GetMapping("/")
+    public String showHomePage(Model model) {
+        return "pages/homepage";
+    }
+
     @GetMapping("/order-success")
     public String showOrderSuccess() {
         return "order-success";
     }
+
 }
