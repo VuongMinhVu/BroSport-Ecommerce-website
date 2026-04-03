@@ -37,7 +37,7 @@ public class DataSeeder {
                 return args -> {
                         log.info("Checking database for seed data...");
 
-                        if (productRepository.count() >= 100) {
+                        if (productRepository.count() >= 30) {
                                 log.info("Database already seeded with enough products.");
                                 return;
                         }
@@ -183,7 +183,7 @@ public class DataSeeder {
                                                 Sport.builder().name("Bóng đá").description("Môn thể thao vua")
                                                                 .logoUrl("https://picsum.photos/seed/football/400/400")
                                                                 .build(),
-                                                Sport.builder().name("Chạy bộ").description("Rèn luyện sức khỏe")
+                                        Sport.builder().name("Chạy bộ").description("Rèn luyện sức khỏe")
                                                                 .logoUrl("https://picsum.photos/seed/running/400/400")
                                                                 .build(),
                                                 Sport.builder().name("Bóng rổ").description("Thể thao đồng đội")
@@ -191,7 +191,14 @@ public class DataSeeder {
                                                                 .build(),
                                                 Sport.builder().name("Gym & Training").description("Tập luyện thể hình")
                                                                 .logoUrl("https://picsum.photos/seed/gym/400/400")
-                                                                .build());
+                                                                .build(),
+                                                Sport.builder().name("Tennis").description("Môn thể thao quý tộc")
+                                                                .logoUrl("https://picsum.photos/seed/tennis/400/400")
+                                                                .build(),
+                                                Sport.builder().name("Cầu lông").description("Môn thể thao phổ biến tại Việt Nam")
+                                                                .logoUrl("https://picsum.photos/seed/badminton/400/400")
+                                                                .build()
+                                );
                                 sportRepository.saveAll(sports);
                         } else {
                                 sports = sportRepository.findAll();
@@ -201,7 +208,7 @@ public class DataSeeder {
                         log.info("Seeding 100 Products with variations...");
                         Random random = new Random();
 
-                        for (int i = 1; i <= 100; i++) {
+                        for (int i = 1; i <= 30; i++) {
                                 Brand randomBrand = brands.get(random.nextInt(brands.size()));
                                 Category randomCategory = leafCategories.get(random.nextInt(leafCategories.size()));
 

@@ -13,5 +13,6 @@ import lombok.experimental.FieldDefaults;
 public class SportResponse {
     Integer id;
     String name;
+    String logoUrl;
     String description;
 }
