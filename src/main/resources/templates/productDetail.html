@@ -1,148 +1,148 @@
 <!doctype html>
 
 <html class="dark" lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Apex Pro Runner v2 | Brosport</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
     />
     <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              colors: {
-                primary: "#f48c25",
-                "background-light": "#f8f7f5",
-                "background-dark": "#121212",
-              },
-              fontFamily: {
-                display: ["Lexend", "sans-serif"],
-              },
-              borderRadius: {
-                DEFAULT: "0.25rem",
-                lg: "0.5rem",
-                xl: "0.75rem",
-                full: "9999px",
-              },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#f48c25",
+              "background-light": "#f8f7f5",
+              "background-dark": "#121212",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
             },
           },
-        };
+        },
+      };
     </script>
     <style>
-        body {
-          font-family: "Lexend", sans-serif;
-        }
-        .material-symbols-outlined {
-          font-variation-settings:
-            "FILL" 0,
-            "wght" 400,
-            "GRAD" 0,
-            "opsz" 24;
-        }
-        .review-bar-fill {
-          transition: width 0.5s ease-in-out;
-        }
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .review-bar-fill {
+        transition: width 0.5s ease-in-out;
+      }
     </style>
-</head>
-<body
-        class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300"
->
-<!-- Header / Nav -->
-<header
-        class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
->
-    <div
-            class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300"
+  >
+    <!-- Header / Nav -->
+    <header
+      class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
     >
+      <div
+        class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
+      >
         <a class="flex items-center gap-2 group flex-shrink-0" href="/">
-            <div
-                    class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
-            >
-                <span class="material-symbols-outlined font-bold">bolt</span>
-            </div>
-            <h1
-                    class="text-2xl font-black tracking-tighter uppercase italic text-white"
-            >
-                Brosport
-            </h1>
+          <div
+            class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
+          >
+            <span class="material-symbols-outlined font-bold">bolt</span>
+          </div>
+          <h1
+            class="text-2xl font-black tracking-tighter uppercase italic text-white"
+          >
+            Brosport
+          </h1>
         </a>
 
         <nav class="hidden xl:flex items-center gap-8 h-full">
-            <a class="nav-link" href="#">New Arrivals</a>
-            <a class="nav-link" href="#">Men</a>
-            <a class="nav-link" href="#">Women</a>
-            <a class="nav-link" href="#">Accessories</a>
-            <a class="nav-link" href="#">Brands</a>
-            <a class="nav-link" href="#">Sports</a>
-            <a
-                    class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                    href="#"
+          <a class="nav-link" href="#">New Arrivals</a>
+          <a class="nav-link" href="#">Men</a>
+          <a class="nav-link" href="#">Women</a>
+          <a class="nav-link" href="#">Accessories</a>
+          <a class="nav-link" href="#">Brands</a>
+          <a class="nav-link" href="#">Sports</a>
+          <a
+            class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
+            href="#"
             >Sales</a
-            >
+          >
         </nav>
 
         <div class="flex items-center gap-4">
-            <div class="relative hidden lg:block group">
+          <div class="relative hidden lg:block group">
             <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
-            >search</span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
+              >search</span
             >
-                <input
-                        class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-                        placeholder="Search elite gear..."
-                        type="text"
-                />
-            </div>
+            <input
+              class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
+              placeholder="Search elite gear..."
+              type="text"
+            />
+          </div>
 
-            <div class="flex items-center gap-2">
-                <a
-                        href="/profile"
-                        class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all"
-                >
-                    <div
-                            class="h-full w-full bg-cover bg-center"
-                            th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                            th:if="${user != null and user.avatarUrl != null}"
-                    ></div>
-                    <span
-                            th:unless="${user != null and user.avatarUrl != null}"
-                            class="material-symbols-outlined text-2xl"
-                    >person</span
-                    >
-                </a>
-
-                <a
-                        href="/cart"
-                        class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
-                >
-              <span class="material-symbols-outlined text-2xl"
-              >shopping_cart</span
+          <div class="flex items-center gap-2">
+            <a
+              href="/profile"
+              class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all"
+            >
+              <div
+                class="h-full w-full bg-cover bg-center"
+                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
+                th:if="${user != null and user.avatarUrl != null}"
+              ></div>
+              <span
+                th:unless="${user != null and user.avatarUrl != null}"
+                class="material-symbols-outlined text-2xl"
+                >person</span
               >
-                    <span
-                            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg cart-badge"
-                    >0</span
-                    >
-                </a>
-            </div>
+            </a>
+
+            <a
+              href="/cart"
+              class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl"
+                >shopping_cart</span
+              >
+              <span
+                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg cart-badge"
+                >0</span
+              >
+            </a>
+          </div>
         </div>
-    </div>
-</header>
-<main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Breadcrumbs -->
-    <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
+      </div>
+    </header>
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
         <a class="hover:text-primary" href="#">Home</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
         <a class="hover:text-primary" href="#">Footwear</a>
@@ -150,858 +150,878 @@
         <a class="hover:text-primary" href="#">Running</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
         <span class="text-white font-medium">Apex Pro Runner v2</span>
-    </nav>
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      </nav>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <!-- Left: Image Gallery -->
         <div class="lg:col-span-7 flex flex-col gap-4">
-            <div
-                    class="aspect-square bg-white/5 rounded-xl overflow-hidden group relative"
-            >
-                <div class="absolute top-4 left-4 z-10">
+          <div
+            class="aspect-square bg-white/5 rounded-xl overflow-hidden group relative"
+          >
+            <div class="absolute top-4 left-4 z-10">
               <span
-                      class="bg-primary text-white text-[10px] font-black uppercase px-2 py-1 rounded"
-              >New Release</span
+                class="bg-primary text-white text-[10px] font-black uppercase px-2 py-1 rounded"
+                >New Release</span
               >
-                </div>
-                <img
-                        alt="Apex Pro Runner v2 side profile"
-                        class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110 main-product-img"
-                        data-alt="Side profile of a sleek neon orange running shoe"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ez9QKZffUhQx22qts4itMZXF4MGpHE0tmTK6nzpp2gYa4YKhqivMRyKhxRWxWZgpc0RKp4Ck3MabXzxpG9Ew2pLcp_IPCyKYEXWuCEdnwg3cghdqctfollIrEQSMG9kmZD4HcYFdJiHAydWbstHGQ1OyA6zXDnKJijPqpalwxLLP-VDd_coCRtj9Xrx8PBEEQ9OYY4yK_4Yyn8polxO948cJSWhWCyaycAoOdecfLGPX4ox-Kq_n8lTCa39V-gGRgL1Wa2HzXVQ"
-                />
             </div>
-            <div class="grid grid-cols-4 gap-4">
-                <div
-                        class="aspect-square rounded-lg border-2 border-primary bg-white/5 overflow-hidden cursor-pointer gallery-thumbnail"
-                >
-                    <img
-                            alt="Apex Pro thumbnail 1"
-                            class="w-full h-full object-cover"
-                            data-alt="Close up of running shoe sole"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiV94R7XNf7A4UtBlq5_NUbwo6L0el5aSR0dLhFTp0G5RKhFP3ZWUs5e4rw2AQYzJWuiMqsExR1FMzkw5MZDi88Eg8R-kGQ_w2ObUEO9hIp77ZzoPX5cjkOV6aeRduyXgyjVcM9qFFsUfml6llilD9dbrlw-T70AJT3bsZ56Q81AD6Y9XLKnwwOKP0r7UOZ1zIlrCIdONvAxGH7d083ZnksVvTHpAGvy29ltWClOpL40hUpZRi4IILZ4iPW57UUXGStbuXaQni8Vk"
-                    />
-                </div>
-                <div
-                        class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors gallery-thumbnail"
-                >
-                    <img
-                            alt="Apex Pro thumbnail 2"
-                            class="w-full h-full object-cover"
-                            data-alt="Top down view of athletic sneakers"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBawBYwSNLlH7hDXlZqxmu3dqMa8BuvCUBJDtnUA6scnVhMuJ0USYXTtUuMUsdfNlrHnzwuBwoTY7_5Yi3LzfnSvNzeQCLdUd77e-RqpMPiWxPc63bZ00Bd_5R601zijgHF08MNeJJyp-Yhyyf6Cjq0jdk33YUWjXIcBm6E0KRZn5Yj2bU8FHpXs2qVZzhwdML6ooBBxFFJMjLBeomG2gYVKlKDG5mDmOrMvb_NMnLnoRrYZVdkzRLugRFSnjwetRUl7dKiFAcM0Gg"
-                    />
-                </div>
-                <div
-                        class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors gallery-thumbnail"
-                >
-                    <img
-                            alt="Apex Pro thumbnail 3"
-                            class="w-full h-full object-cover"
-                            data-alt="Rear view showing heel support of a white sneaker"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhsh8Ue2ERmrECiACJuIuv6vbG1c4FgjeMWaIS_DGMFiEdwkWLNLcc3WRu0gSln87ZMt16Zdq_hRVWb54z0NOamM5C8nMFO9bXdPjubuN8Ul98PWzCEKpoKowmwfDQE351pC8BNvNXcwUt_adV099cbSOMeDtxjFHaMkPHpLQEULf6Zx_QSYiyTigYhbrN-2p_Ef7Azk9RSUNb1p90E0PjI0_foexLFOVlgzIh6Bpj8TffXiHvA48zCDWyzKEUgKYXl5FVUMFOLfI"
-                    />
-                </div>
-                <div
-                        class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors relative gallery-thumbnail"
-                >
-                    <img
-                            alt="Apex Pro thumbnail 4"
-                            class="w-full h-full object-cover opacity-50"
-                            data-alt="Runner wearing bright athletic shoes in motion"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl1ZpiCaoldDPRMdQvFnYbd9lNi9C34fttzclRnr3J_D-a3WzgASkaXy7K4JwpQXBozOMm75XX3x7VkucAFgXbQsLIImbHAtlviS9a6o20bsqpUv81UvuSwZWJW8qS4Tw4xTes3NnFVFBeWg-8_S5snGk1v_0y5lWFX93KXZDA9xJGLncx29aB_yQcYd4DFHQ0Tu5ohTS21meM4KxqcwiSgEnNPk0LehZBEXbo0ZtYhCAdHi2lxfsfOzXl_is_3aIr1RGtoIMCxLU"
-                    />
-                    <div
-                            class="absolute inset-0 flex items-center justify-center font-bold text-sm"
-                    >
-                        +2 More
-                    </div>
-                </div>
+            <img
+              th:if="${not #lists.isEmpty(product.productImages)}"
+              th:src="${product.productImages[0].imageUrl}"
+              class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110 main-product-img"
+              th:alt="${product.name}"
+            />
+
+            <img
+              th:unless="${not #lists.isEmpty(product.productImages)}"
+              src="https://via.placeholder.com/800?text=No+Image"
+              class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110 main-product-img"
+              alt="No Image Available"
+            />
+          </div>
+          <div class="grid grid-cols-4 gap-4">
+            <div
+              class="aspect-square rounded-lg border-2 border-primary bg-white/5 overflow-hidden cursor-pointer gallery-thumbnail"
+            >
+              <img
+                alt="Apex Pro thumbnail 1"
+                class="w-full h-full object-cover"
+                data-alt="Close up of running shoe sole"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiV94R7XNf7A4UtBlq5_NUbwo6L0el5aSR0dLhFTp0G5RKhFP3ZWUs5e4rw2AQYzJWuiMqsExR1FMzkw5MZDi88Eg8R-kGQ_w2ObUEO9hIp77ZzoPX5cjkOV6aeRduyXgyjVcM9qFFsUfml6llilD9dbrlw-T70AJT3bsZ56Q81AD6Y9XLKnwwOKP0r7UOZ1zIlrCIdONvAxGH7d083ZnksVvTHpAGvy29ltWClOpL40hUpZRi4IILZ4iPW57UUXGStbuXaQni8Vk"
+              />
             </div>
+            <div
+              class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors gallery-thumbnail"
+            >
+              <img
+                alt="Apex Pro thumbnail 2"
+                class="w-full h-full object-cover"
+                data-alt="Top down view of athletic sneakers"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBawBYwSNLlH7hDXlZqxmu3dqMa8BuvCUBJDtnUA6scnVhMuJ0USYXTtUuMUsdfNlrHnzwuBwoTY7_5Yi3LzfnSvNzeQCLdUd77e-RqpMPiWxPc63bZ00Bd_5R601zijgHF08MNeJJyp-Yhyyf6Cjq0jdk33YUWjXIcBm6E0KRZn5Yj2bU8FHpXs2qVZzhwdML6ooBBxFFJMjLBeomG2gYVKlKDG5mDmOrMvb_NMnLnoRrYZVdkzRLugRFSnjwetRUl7dKiFAcM0Gg"
+              />
+            </div>
+            <div
+              class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors gallery-thumbnail"
+            >
+              <img
+                alt="Apex Pro thumbnail 3"
+                class="w-full h-full object-cover"
+                data-alt="Rear view showing heel support of a white sneaker"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhsh8Ue2ERmrECiACJuIuv6vbG1c4FgjeMWaIS_DGMFiEdwkWLNLcc3WRu0gSln87ZMt16Zdq_hRVWb54z0NOamM5C8nMFO9bXdPjubuN8Ul98PWzCEKpoKowmwfDQE351pC8BNvNXcwUt_adV099cbSOMeDtxjFHaMkPHpLQEULf6Zx_QSYiyTigYhbrN-2p_Ef7Azk9RSUNb1p90E0PjI0_foexLFOVlgzIh6Bpj8TffXiHvA48zCDWyzKEUgKYXl5FVUMFOLfI"
+              />
+            </div>
+            <div
+              class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors relative gallery-thumbnail"
+            >
+              <img
+                alt="Apex Pro thumbnail 4"
+                class="w-full h-full object-cover opacity-50"
+                data-alt="Runner wearing bright athletic shoes in motion"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl1ZpiCaoldDPRMdQvFnYbd9lNi9C34fttzclRnr3J_D-a3WzgASkaXy7K4JwpQXBozOMm75XX3x7VkucAFgXbQsLIImbHAtlviS9a6o20bsqpUv81UvuSwZWJW8qS4Tw4xTes3NnFVFBeWg-8_S5snGk1v_0y5lWFX93KXZDA9xJGLncx29aB_yQcYd4DFHQ0Tu5ohTS21meM4KxqcwiSgEnNPk0LehZBEXbo0ZtYhCAdHi2lxfsfOzXl_is_3aIr1RGtoIMCxLU"
+              />
+              <div
+                class="absolute inset-0 flex items-center justify-center font-bold text-sm"
+              >
+                +2 More
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Right: Product Actions -->
         <div class="lg:col-span-5 flex flex-col gap-8 sticky top-28 h-fit">
-            <div>
-                <div class="flex items-center justify-between mb-2">
+          <div>
+            <div class="flex items-center justify-between mb-2">
               <span
-                      class="text-primary font-bold tracking-widest uppercase text-xs"
-              >Elite Performance</span
+                class="text-primary font-bold tracking-widest uppercase text-xs"
+                >Elite Performance</span
               >
-                    <div class="flex items-center gap-1 text-primary">
+              <div class="flex items-center gap-1 text-primary">
                 <span class="material-symbols-outlined text-sm fill-1"
-                >star</span
+                  >star</span
                 >
-                        <span class="material-symbols-outlined text-sm fill-1"
-                        >star</span
-                        >
-                        <span class="material-symbols-outlined text-sm fill-1"
-                        >star</span
-                        >
-                        <span class="material-symbols-outlined text-sm fill-1"
-                        >star</span
-                        >
-                        <span class="material-symbols-outlined text-sm">star_half</span>
-                        <span class="text-white text-xs font-medium ml-1"
-                        >4.8 (124)</span
-                        >
-                    </div>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-4 leading-none">
-                    APEX PRO RUNNER V2
-                </h2>
-                <p class="text-slate-400 text-lg leading-relaxed">
-                    Engineered for speed. Our most responsive carbon-plate technology
-                    yet, featuring the all-new AeroStream™ mesh for maximum
-                    breathability.
-                </p>
-            </div>
-            <div class="flex items-baseline gap-3">
-                <span class="text-3xl font-black text-white">$159.99</span>
-                <span class="text-slate-500 line-through text-lg font-medium"
-                >$199.99</span
+                <span class="material-symbols-outlined text-sm fill-1"
+                  >star</span
                 >
-                <span
-                        class="bg-green-500/10 text-green-500 text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider"
-                >Save 20%</span
+                <span class="material-symbols-outlined text-sm fill-1"
+                  >star</span
                 >
-            </div>
-            <!-- Color Selection -->
-            <div class="space-y-4">
-                <p class="text-sm font-bold uppercase tracking-wider">
-                    Color:
-                    <span class="text-slate-400 font-normal color-name"
-                    >Neon Flame</span
-                    >
-                </p>
-                <div class="flex gap-3">
-                    <button
-                            class="size-12 rounded-full border-2 border-primary p-0.5 bg-background-dark color-btn"
-                    >
-                        <div class="w-full h-full rounded-full bg-primary"></div>
-                    </button>
-                    <button
-                            class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn"
-                    >
-                        <div class="w-full h-full rounded-full bg-slate-800"></div>
-                    </button>
-                    <button
-                            class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn"
-                    >
-                        <div class="w-full h-full rounded-full bg-white"></div>
-                    </button>
-                </div>
-            </div>
-            <!-- Size Selection -->
-            <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <p class="text-sm font-bold uppercase tracking-wider">
-                        Select Size
-                    </p>
-                    <button
-                            class="text-xs text-primary font-semibold underline underline-offset-4 hover:text-white transition-colors"
-                    >
-                        Size Guide
-                    </button>
-                </div>
-                <div class="grid grid-cols-4 gap-2">
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-                    >
-                        US 7
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-                    >
-                        US 8
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border-2 border-primary rounded-lg text-primary bg-primary/10 size-btn"
-                    >
-                        US 9
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-                    >
-                        US 10
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-                    >
-                        US 11
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-                    >
-                        US 12
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg opacity-30 cursor-not-allowed line-through size-btn"
-                    >
-                        US 13
-                    </button>
-                    <button
-                            class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-                    >
-                        US 14
-                    </button>
-                </div>
-            </div>
-            <!-- CTA -->
-            <div class="flex flex-col gap-3 pt-4">
-                <button
-                        class="w-full py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 add-to-cart-btn"
+                <span class="material-symbols-outlined text-sm fill-1"
+                  >star</span
                 >
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                    Add to Cart
-                </button>
-                <div class="flex gap-3">
-                    <button
-                            class="flex-1 py-4 border border-white/10 rounded-xl font-bold text-sm uppercase flex items-center justify-center gap-2 hover:bg-white/5 transition-colors compare-btn"
-                    >
+                <span class="material-symbols-outlined text-sm">star_half</span>
+                <span class="text-white text-xs font-medium ml-1"
+                  >4.8 (124)</span
+                >
+              </div>
+            </div>
+            <h2
+              class="text-4xl md:text-5xl font-black mb-4 leading-none"
+              th:text="${product.name}"
+            >
+              Tên sản phẩm
+            </h2>
+            <p
+              class="text-slate-400 text-lg leading-relaxed"
+              th:text="${product.description != null ? product.description : 'Sản phẩm này hiện chưa có mô tả chi tiết.'}"
+            ></p>
+          </div>
+          <div class="flex items-baseline gap-3">
+            <span
+              class="text-3xl font-black text-white"
+              th:if="${product.showPrice != null}"
+              th:text="${#numbers.formatDecimal(product.showPrice, 0, 'COMMA', 0, 'POINT') + 'đ'}"
+              >0đ</span
+            >
+
+            <span
+              class="text-3xl font-black text-white"
+              th:unless="${product.showPrice != null}"
+              >Liên hệ</span
+            >
+
+            <span
+              class="text-slate-500 line-through text-lg font-medium"
+              th:if="${product.originPrice != null and product.showPrice != null and product.originPrice > product.showPrice}"
+              th:text="${#numbers.formatDecimal(product.originPrice, 0, 'COMMA', 0, 'POINT') + 'đ'}"
+              >0đ</span
+            >
+          </div>
+          <!-- Color Selection -->
+          <div class="space-y-4">
+            <p class="text-sm font-bold uppercase tracking-wider">
+              Color:
+              <span class="text-slate-400 font-normal color-name"
+                >Neon Flame</span
+              >
+            </p>
+            <div class="flex gap-3">
+              <button
+                class="size-12 rounded-full border-2 border-primary p-0.5 bg-background-dark color-btn"
+              >
+                <div class="w-full h-full rounded-full bg-primary"></div>
+              </button>
+              <button
+                class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn"
+              >
+                <div class="w-full h-full rounded-full bg-slate-800"></div>
+              </button>
+              <button
+                class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn"
+              >
+                <div class="w-full h-full rounded-full bg-white"></div>
+              </button>
+            </div>
+          </div>
+          <!-- Size Selection -->
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <p class="text-sm font-bold uppercase tracking-wider">
+                Select Size
+              </p>
+              <button
+                class="text-xs text-primary font-semibold underline underline-offset-4 hover:text-white transition-colors"
+              >
+                Size Guide
+              </button>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
+              >
+                US 7
+              </button>
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
+              >
+                US 8
+              </button>
+              <button
+                class="py-3 text-sm font-bold border-2 border-primary rounded-lg text-primary bg-primary/10 size-btn"
+              >
+                US 9
+              </button>
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
+              >
+                US 10
+              </button>
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
+              >
+                US 11
+              </button>
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
+              >
+                US 12
+              </button>
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg opacity-30 cursor-not-allowed line-through size-btn"
+              >
+                US 13
+              </button>
+              <button
+                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
+              >
+                US 14
+              </button>
+            </div>
+          </div>
+          <!-- CTA -->
+          <div class="flex flex-col gap-3 pt-4">
+            <button
+              class="w-full py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 add-to-cart-btn"
+            >
+              <span class="material-symbols-outlined">shopping_bag</span>
+              Add to Cart
+            </button>
+            <div class="flex gap-3">
+              <button
+                class="flex-1 py-4 border border-white/10 rounded-xl font-bold text-sm uppercase flex items-center justify-center gap-2 hover:bg-white/5 transition-colors compare-btn"
+              >
                 <span class="material-symbols-outlined text-xl"
-                >compare_arrows</span
+                  >compare_arrows</span
                 >
-                        Compare
-                    </button>
-                    <button
-                            class="p-4 border border-white/10 rounded-xl hover:bg-white/5 transition-colors wishlist-btn"
-                    >
-                        <span class="material-symbols-outlined">favorite</span>
-                    </button>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 py-6 border-t border-white/10">
-                <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary"
-              >local_shipping</span
+                Compare
+              </button>
+              <button
+                class="p-4 border border-white/10 rounded-xl hover:bg-white/5 transition-colors wishlist-btn"
               >
-                    <span class="text-xs text-slate-400">Free Express Delivery</span>
-                </div>
-                <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary"
-              >verified</span
-              >
-                    <span class="text-xs text-slate-400"
-                    >2 Year Performance Warranty</span
-                    >
-                </div>
+                <span class="material-symbols-outlined">favorite</span>
+              </button>
             </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 py-6 border-t border-white/10">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary"
+                >local_shipping</span
+              >
+              <span class="text-xs text-slate-400">Free Express Delivery</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary"
+                >verified</span
+              >
+              <span class="text-xs text-slate-400"
+                >2 Year Performance Warranty</span
+              >
+            </div>
+          </div>
         </div>
-    </div>
-    <!-- Product Specs Tabs (Simulated) -->
-    <div class="mt-20 border-t border-white/10 pt-12">
+      </div>
+      <!-- Product Specs Tabs (Simulated) -->
+      <div class="mt-20 border-t border-white/10 pt-12">
         <h3 class="text-2xl font-black mb-8">PRODUCT FEATURES</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+          <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
             <span class="material-symbols-outlined text-primary text-4xl mb-4"
-            >cyclone</span
+              >cyclone</span
             >
-                <h4 class="text-lg font-bold mb-2 uppercase italic">
-                    AeroStream™ Mesh
-                </h4>
-                <p class="text-sm text-slate-400">
-                    Engineered micro-perforations allow for maximal heat dissipation
-                    during high-intensity sessions.
-                </p>
-            </div>
-            <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+            <h4 class="text-lg font-bold mb-2 uppercase italic">
+              AeroStream™ Mesh
+            </h4>
+            <p class="text-sm text-slate-400">
+              Engineered micro-perforations allow for maximal heat dissipation
+              during high-intensity sessions.
+            </p>
+          </div>
+          <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
             <span class="material-symbols-outlined text-primary text-4xl mb-4"
-            >hexagon</span
+              >hexagon</span
             >
-                <h4 class="text-lg font-bold mb-2 uppercase italic">
-                    Carbon Catalyst
-                </h4>
-                <p class="text-sm text-slate-400">
-                    Full-length carbon plate integrated into the midsole provides
-                    explosive energy return with every stride.
-                </p>
-            </div>
-            <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+            <h4 class="text-lg font-bold mb-2 uppercase italic">
+              Carbon Catalyst
+            </h4>
+            <p class="text-sm text-slate-400">
+              Full-length carbon plate integrated into the midsole provides
+              explosive energy return with every stride.
+            </p>
+          </div>
+          <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
             <span class="material-symbols-outlined text-primary text-4xl mb-4"
-            >fitbit</span
+              >fitbit</span
             >
-                <h4 class="text-lg font-bold mb-2 uppercase italic">
-                    GripLock Outsole
-                </h4>
-                <p class="text-sm text-slate-400">
-                    Dual-density rubber compound provides superior traction on both
-                    dry and wet urban surfaces.
-                </p>
-            </div>
+            <h4 class="text-lg font-bold mb-2 uppercase italic">
+              GripLock Outsole
+            </h4>
+            <p class="text-sm text-slate-400">
+              Dual-density rubber compound provides superior traction on both
+              dry and wet urban surfaces.
+            </p>
+          </div>
         </div>
-    </div>
-    <!-- Reviews Section -->
-    <section class="mt-24 border-t border-white/10 pt-20 pb-20">
+      </div>
+      <!-- Reviews Section -->
+      <section class="mt-24 border-t border-white/10 pt-20 pb-20">
         <div class="flex flex-col md:flex-row gap-16">
-            <!-- Rating Breakdown -->
-            <div class="md:w-1/3 space-y-8">
-                <div>
-                    <h3 class="text-3xl font-black mb-2">REVIEWS</h3>
-                    <p class="text-slate-400 text-sm">
-                        Based on 124 verified purchases
-                    </p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="text-6xl font-black text-white">4.8</div>
-                    <div class="space-y-1">
-                        <div class="flex text-primary">
-                            <span class="material-symbols-outlined fill-1">star</span>
-                            <span class="material-symbols-outlined fill-1">star</span>
-                            <span class="material-symbols-outlined fill-1">star</span>
-                            <span class="material-symbols-outlined fill-1">star</span>
-                            <span class="material-symbols-outlined fill-1">star</span>
-                        </div>
-                        <p
-                                class="text-xs font-bold text-slate-400 uppercase tracking-widest"
-                        >
-                            Recommended by 98%
-                        </p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <!-- 5 Star -->
-                    <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                        <span class="text-xs font-bold text-slate-400">5</span>
-                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                    class="h-full bg-primary rounded-full"
-                                    style="width: 85%"
-                            ></div>
-                        </div>
-                        <span class="text-xs text-right font-medium">85%</span>
-                    </div>
-                    <!-- 4 Star -->
-                    <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                        <span class="text-xs font-bold text-slate-400">4</span>
-                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                    class="h-full bg-primary rounded-full"
-                                    style="width: 10%"
-                            ></div>
-                        </div>
-                        <span class="text-xs text-right font-medium">10%</span>
-                    </div>
-                    <!-- 3 Star -->
-                    <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                        <span class="text-xs font-bold text-slate-400">3</span>
-                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                    class="h-full bg-primary rounded-full"
-                                    style="width: 3%"
-                            ></div>
-                        </div>
-                        <span class="text-xs text-right font-medium">3%</span>
-                    </div>
-                    <!-- 2 Star -->
-                    <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                        <span class="text-xs font-bold text-slate-400">2</span>
-                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                    class="h-full bg-primary rounded-full"
-                                    style="width: 1%"
-                            ></div>
-                        </div>
-                        <span class="text-xs text-right font-medium">1%</span>
-                    </div>
-                    <!-- 1 Star -->
-                    <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                        <span class="text-xs font-bold text-slate-400">1</span>
-                        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div
-                                    class="h-full bg-primary rounded-full"
-                                    style="width: 1%"
-                            ></div>
-                        </div>
-                        <span class="text-xs text-right font-medium">1%</span>
-                    </div>
-                </div>
-                <button
-                        class="w-full py-4 border border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-colors"
-                >
-                    Write a Review
-                </button>
+          <!-- Rating Breakdown -->
+          <div class="md:w-1/3 space-y-8">
+            <div>
+              <h3 class="text-3xl font-black mb-2">REVIEWS</h3>
+              <p class="text-slate-400 text-sm">
+                Based on 124 verified purchases
+              </p>
             </div>
-            <!-- Review Feed -->
-            <div class="md:w-2/3 space-y-12 reviews-container">
-                <div
-                        class="flex items-center justify-between pb-6 border-b border-white/10"
-                >
-                    <div class="flex gap-4">
-                        <button
-                                class="text-sm font-bold text-white border-b-2 border-primary pb-1 review-sort-btn"
-                        >
-                            Most Relevant
-                        </button>
-                        <button
-                                class="text-sm font-bold text-slate-500 hover:text-white pb-1 review-sort-btn"
-                        >
-                            Newest
-                        </button>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm font-medium">
-                        <span class="text-slate-400">Filter:</span>
-                        <select
-                                class="bg-transparent border-none focus:ring-0 text-sm py-0 rating-filter"
-                        >
-                            <option>All Ratings</option>
-                            <option>5 Stars</option>
-                            <option>4 Stars</option>
-                        </select>
-                    </div>
+            <div class="flex items-center gap-4">
+              <div class="text-6xl font-black text-white">4.8</div>
+              <div class="space-y-1">
+                <div class="flex text-primary">
+                  <span class="material-symbols-outlined fill-1">star</span>
+                  <span class="material-symbols-outlined fill-1">star</span>
+                  <span class="material-symbols-outlined fill-1">star</span>
+                  <span class="material-symbols-outlined fill-1">star</span>
+                  <span class="material-symbols-outlined fill-1">star</span>
                 </div>
-                <!-- Review 1 -->
-                <div
-                        class="space-y-4 review-item"
-                        data-date="2 days ago"
-                        data-timestamp="2"
+                <p
+                  class="text-xs font-bold text-slate-400 uppercase tracking-widest"
                 >
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div
-                                    class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic"
-                            >
-                                JD
-                            </div>
-                            <div>
-                                <h5 class="font-bold text-sm">Jordan D.</h5>
-                                <div class="flex items-center gap-2">
-                                    <div class="flex text-primary text-[10px]">
+                  Recommended by 98%
+                </p>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <!-- 5 Star -->
+              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
+                <span class="text-xs font-bold text-slate-400">5</span>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-primary rounded-full"
+                    style="width: 85%"
+                  ></div>
+                </div>
+                <span class="text-xs text-right font-medium">85%</span>
+              </div>
+              <!-- 4 Star -->
+              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
+                <span class="text-xs font-bold text-slate-400">4</span>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-primary rounded-full"
+                    style="width: 10%"
+                  ></div>
+                </div>
+                <span class="text-xs text-right font-medium">10%</span>
+              </div>
+              <!-- 3 Star -->
+              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
+                <span class="text-xs font-bold text-slate-400">3</span>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-primary rounded-full"
+                    style="width: 3%"
+                  ></div>
+                </div>
+                <span class="text-xs text-right font-medium">3%</span>
+              </div>
+              <!-- 2 Star -->
+              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
+                <span class="text-xs font-bold text-slate-400">2</span>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-primary rounded-full"
+                    style="width: 1%"
+                  ></div>
+                </div>
+                <span class="text-xs text-right font-medium">1%</span>
+              </div>
+              <!-- 1 Star -->
+              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
+                <span class="text-xs font-bold text-slate-400">1</span>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-primary rounded-full"
+                    style="width: 1%"
+                  ></div>
+                </div>
+                <span class="text-xs text-right font-medium">1%</span>
+              </div>
+            </div>
+            <button
+              class="w-full py-4 border border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-colors"
+            >
+              Write a Review
+            </button>
+          </div>
+          <!-- Review Feed -->
+          <div class="md:w-2/3 space-y-12 reviews-container">
+            <div
+              class="flex items-center justify-between pb-6 border-b border-white/10"
+            >
+              <div class="flex gap-4">
+                <button
+                  class="text-sm font-bold text-white border-b-2 border-primary pb-1 review-sort-btn"
+                >
+                  Most Relevant
+                </button>
+                <button
+                  class="text-sm font-bold text-slate-500 hover:text-white pb-1 review-sort-btn"
+                >
+                  Newest
+                </button>
+              </div>
+              <div class="flex items-center gap-2 text-sm font-medium">
+                <span class="text-slate-400">Filter:</span>
+                <select
+                  class="bg-transparent border-none focus:ring-0 text-sm py-0 rating-filter"
+                >
+                  <option>All Ratings</option>
+                  <option>5 Stars</option>
+                  <option>4 Stars</option>
+                </select>
+              </div>
+            </div>
+            <!-- Review 1 -->
+            <div
+              class="space-y-4 review-item"
+              data-date="2 days ago"
+              data-timestamp="2"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic"
+                  >
+                    JD
+                  </div>
+                  <div>
+                    <h5 class="font-bold text-sm">Jordan D.</h5>
+                    <div class="flex items-center gap-2">
+                      <div class="flex text-primary text-[10px]">
                         <span class="material-symbols-outlined text-xs fill-1"
-                        >star</span
+                          >star</span
                         >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                    </div>
-                                    <span
-                                            class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1"
-                                    >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                      </div>
+                      <span
+                        class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1"
+                      >
                         <span class="material-symbols-outlined text-[10px]"
-                        >check_circle</span
+                          >check_circle</span
                         >
                         Verified Buyer
                       </span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="text-xs text-slate-500">2 days ago</span>
                     </div>
-                    <p class="font-bold text-lg italic">"Insane energy return!"</p>
-                    <p class="text-slate-400 leading-relaxed">
-                        I've been running in these for a week now and the carbon plate
-                        is a game changer. My splits have dropped by nearly 10 seconds
-                        per mile. They are stiff at first but break in beautifully.
-                        10/10 would recommend for marathon prep.
-                    </p>
-                    <div class="flex items-center gap-4 pt-2">
-                        <button
-                                class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-helpful-btn"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >thumb_up</span
-                  >
-                            Helpful (<span class="helpful-count">24</span>)
-                        </button>
-                        <button
-                                class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-reply-btn"
-                        >
-                            <span class="material-symbols-outlined text-sm">reply</span>
-                            Reply
-                        </button>
-                    </div>
+                  </div>
                 </div>
-                <!-- Review 2 -->
-                <div
-                        class="space-y-4 review-item"
-                        data-date="1 week ago"
-                        data-timestamp="7"
+                <span class="text-xs text-slate-500">2 days ago</span>
+              </div>
+              <p class="font-bold text-lg italic">"Insane energy return!"</p>
+              <p class="text-slate-400 leading-relaxed">
+                I've been running in these for a week now and the carbon plate
+                is a game changer. My splits have dropped by nearly 10 seconds
+                per mile. They are stiff at first but break in beautifully.
+                10/10 would recommend for marathon prep.
+              </p>
+              <div class="flex items-center gap-4 pt-2">
+                <button
+                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-helpful-btn"
                 >
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div
-                                    class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic"
-                            >
-                                SK
-                            </div>
-                            <div>
-                                <h5 class="font-bold text-sm">Sarah K.</h5>
-                                <div class="flex items-center gap-2">
-                                    <div class="flex text-primary text-[10px]">
+                  <span class="material-symbols-outlined text-sm"
+                    >thumb_up</span
+                  >
+                  Helpful (<span class="helpful-count">24</span>)
+                </button>
+                <button
+                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-reply-btn"
+                >
+                  <span class="material-symbols-outlined text-sm">reply</span>
+                  Reply
+                </button>
+              </div>
+            </div>
+            <!-- Review 2 -->
+            <div
+              class="space-y-4 review-item"
+              data-date="1 week ago"
+              data-timestamp="7"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic"
+                  >
+                    SK
+                  </div>
+                  <div>
+                    <h5 class="font-bold text-sm">Sarah K.</h5>
+                    <div class="flex items-center gap-2">
+                      <div class="flex text-primary text-[10px]">
                         <span class="material-symbols-outlined text-xs fill-1"
-                        >star</span
+                          >star</span
                         >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                        <span class="material-symbols-outlined text-xs fill-1"
-                                        >star</span
-                                        >
-                                        <span class="material-symbols-outlined text-xs"
-                                        >star</span
-                                        >
-                                    </div>
-                                    <span
-                                            class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1"
-                                    >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                        <span class="material-symbols-outlined text-xs fill-1"
+                          >star</span
+                        >
+                        <span class="material-symbols-outlined text-xs"
+                          >star</span
+                        >
+                      </div>
+                      <span
+                        class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1"
+                      >
                         <span class="material-symbols-outlined text-[10px]"
-                        >check_circle</span
+                          >check_circle</span
                         >
                         Verified Buyer
                       </span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="text-xs text-slate-500">1 week ago</span>
                     </div>
-                    <p class="font-bold text-lg italic">"Breathable but narrow."</p>
-                    <p class="text-slate-400 leading-relaxed">
-                        The AeroStream mesh is legitimately cool—my feet don't overheat
-                        even in Florida humidity. Just a heads up, the toe box is a bit
-                        narrower than v1. If you have wide feet, maybe size up a half
-                        notch.
-                    </p>
-                    <div class="flex items-center gap-4 pt-2">
-                        <button
-                                class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-helpful-btn"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >thumb_up</span
-                  >
-                            Helpful (<span class="helpful-count">12</span>)
-                        </button>
-                        <button
-                                class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-reply-btn"
-                        >
-                            <span class="material-symbols-outlined text-sm">reply</span>
-                            Reply
-                        </button>
-                    </div>
+                  </div>
                 </div>
+                <span class="text-xs text-slate-500">1 week ago</span>
+              </div>
+              <p class="font-bold text-lg italic">"Breathable but narrow."</p>
+              <p class="text-slate-400 leading-relaxed">
+                The AeroStream mesh is legitimately cool—my feet don't overheat
+                even in Florida humidity. Just a heads up, the toe box is a bit
+                narrower than v1. If you have wide feet, maybe size up a half
+                notch.
+              </p>
+              <div class="flex items-center gap-4 pt-2">
                 <button
-                        class="w-full py-4 text-sm font-bold text-slate-400 hover:text-white uppercase tracking-widest load-more-btn"
+                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-helpful-btn"
                 >
-                    Load More Reviews
+                  <span class="material-symbols-outlined text-sm"
+                    >thumb_up</span
+                  >
+                  Helpful (<span class="helpful-count">12</span>)
                 </button>
+                <button
+                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-reply-btn"
+                >
+                  <span class="material-symbols-outlined text-sm">reply</span>
+                  Reply
+                </button>
+              </div>
             </div>
+            <button
+              class="w-full py-4 text-sm font-bold text-slate-400 hover:text-white uppercase tracking-widest load-more-btn"
+            >
+              Load More Reviews
+            </button>
+          </div>
         </div>
-    </section>
-</main>
-<!-- Footer -->
-<footer class="bg-black/40 border-t border-white/10 py-20">
-    <div
-            class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12"
-    >
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-black/40 border-t border-white/10 py-20">
+      <div
+        class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12"
+      >
         <div class="space-y-6">
-            <div class="flex items-center gap-3">
-                <div
-                        class="size-8 bg-primary rounded flex items-center justify-center text-white"
-                >
-                    <span class="material-symbols-outlined">bolt</span>
-                </div>
-                <h1 class="text-2xl font-black tracking-tighter uppercase italic">
-                    Brosport
-                </h1>
+          <div class="flex items-center gap-3">
+            <div
+              class="size-8 bg-primary rounded flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined">bolt</span>
             </div>
-            <p class="text-sm text-slate-500 leading-relaxed">
-                Premium performance gear for the modern athlete. Push your limits
-                with science-backed engineering.
-            </p>
-            <div class="flex gap-4">
-                <a
-                        class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-                        href="#"
-                ><span class="material-symbols-outlined text-sm"
+            <h1 class="text-2xl font-black tracking-tighter uppercase italic">
+              Brosport
+            </h1>
+          </div>
+          <p class="text-sm text-slate-500 leading-relaxed">
+            Premium performance gear for the modern athlete. Push your limits
+            with science-backed engineering.
+          </p>
+          <div class="flex gap-4">
+            <a
+              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"
+              ><span class="material-symbols-outlined text-sm"
                 >social_leaderboard</span
-                ></a
-                >
-                <a
-                        class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-                        href="#"
-                ><span class="material-symbols-outlined text-sm"
+              ></a
+            >
+            <a
+              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"
+              ><span class="material-symbols-outlined text-sm"
                 >alternate_email</span
-                ></a
-                >
-            </div>
+              ></a
+            >
+          </div>
         </div>
         <div class="space-y-6">
-            <h6 class="font-black uppercase italic tracking-widest text-sm">
-                Shop
-            </h6>
-            <ul class="space-y-4 text-sm text-slate-400">
-                <li><a class="hover:text-primary" href="#">New Arrivals</a></li>
-                <li><a class="hover:text-primary" href="#">Running Shoes</a></li>
-                <li><a class="hover:text-primary" href="#">Performance Tops</a></li>
-                <li><a class="hover:text-primary" href="#">Training Gear</a></li>
-            </ul>
+          <h6 class="font-black uppercase italic tracking-widest text-sm">
+            Shop
+          </h6>
+          <ul class="space-y-4 text-sm text-slate-400">
+            <li><a class="hover:text-primary" href="#">New Arrivals</a></li>
+            <li><a class="hover:text-primary" href="#">Running Shoes</a></li>
+            <li><a class="hover:text-primary" href="#">Performance Tops</a></li>
+            <li><a class="hover:text-primary" href="#">Training Gear</a></li>
+          </ul>
         </div>
         <div class="space-y-6">
-            <h6 class="font-black uppercase italic tracking-widest text-sm">
-                Support
-            </h6>
-            <ul class="space-y-4 text-sm text-slate-400">
-                <li><a class="hover:text-primary" href="#">Order Tracking</a></li>
-                <li>
-                    <a class="hover:text-primary" href="#">Returns &amp; Exchanges</a>
-                </li>
-                <li><a class="hover:text-primary" href="#">Sizing Guide</a></li>
-                <li><a class="hover:text-primary" href="#">Contact Us</a></li>
-            </ul>
+          <h6 class="font-black uppercase italic tracking-widest text-sm">
+            Support
+          </h6>
+          <ul class="space-y-4 text-sm text-slate-400">
+            <li><a class="hover:text-primary" href="#">Order Tracking</a></li>
+            <li>
+              <a class="hover:text-primary" href="#">Returns &amp; Exchanges</a>
+            </li>
+            <li><a class="hover:text-primary" href="#">Sizing Guide</a></li>
+            <li><a class="hover:text-primary" href="#">Contact Us</a></li>
+          </ul>
         </div>
         <div class="space-y-6">
-            <h6 class="font-black uppercase italic tracking-widest text-sm">
-                Newsletter
-            </h6>
-            <p class="text-sm text-slate-500">
-                Get elite access to new drops and training tips.
-            </p>
-            <div class="flex border-b border-white/20 pb-2">
-                <input
-                        class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-600"
-                        placeholder="Email Address"
-                        type="email"
-                />
-                <button class="text-primary font-bold uppercase text-xs">
-                    Join
-                </button>
-            </div>
+          <h6 class="font-black uppercase italic tracking-widest text-sm">
+            Newsletter
+          </h6>
+          <p class="text-sm text-slate-500">
+            Get elite access to new drops and training tips.
+          </p>
+          <div class="flex border-b border-white/20 pb-2">
+            <input
+              class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-600"
+              placeholder="Email Address"
+              type="email"
+            />
+            <button class="text-primary font-bold uppercase text-xs">
+              Join
+            </button>
+          </div>
         </div>
-    </div>
-    <div
-            class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4"
-    >
+      </div>
+      <div
+        class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4"
+      >
         <p class="text-[10px] text-slate-600 uppercase tracking-widest">
-            © 2023 Brosport International. All Rights Reserved.
+          © 2023 Brosport International. All Rights Reserved.
         </p>
         <div
-                class="flex gap-6 text-[10px] text-slate-600 uppercase tracking-widest"
+          class="flex gap-6 text-[10px] text-slate-600 uppercase tracking-widest"
         >
-            <a class="hover:text-slate-400" href="#">Privacy Policy</a>
-            <a class="hover:text-slate-400" href="#">Terms of Service</a>
-            <a class="hover:text-slate-400" href="#">Cookie Settings</a>
+          <a class="hover:text-slate-400" href="#">Privacy Policy</a>
+          <a class="hover:text-slate-400" href="#">Terms of Service</a>
+          <a class="hover:text-slate-400" href="#">Cookie Settings</a>
         </div>
-    </div>
-</footer>
-<script>
-    // Product state
-    const productState = {
-      selectedColor: "Neon Flame",
-      selectedSize: "US 9",
-      inWishlist: false,
-      cartCount: 0,
-      colors: [
-        { name: "Neon Flame", class: "bg-primary" },
-        { name: "Midnight Black", class: "bg-slate-800" },
-        { name: "Pearl White", class: "bg-white" },
-      ],
-    };
+      </div>
+    </footer>
+    <script>
+      // Product state
+      const productState = {
+        selectedColor: "Neon Flame",
+        selectedSize: "US 9",
+        inWishlist: false,
+        cartCount: 0,
+        colors: [
+          { name: "Neon Flame", class: "bg-primary" },
+          { name: "Midnight Black", class: "bg-slate-800" },
+          { name: "Pearl White", class: "bg-white" },
+        ],
+      };
 
-    // Color Selection
-    document.querySelectorAll(".color-btn").forEach((btn, idx) => {
-      btn.addEventListener("click", function () {
-        document.querySelectorAll(".color-btn").forEach((b) => {
-          b.classList.remove("border-2", "border-primary");
-          b.classList.add("border");
+      // Color Selection
+      document.querySelectorAll(".color-btn").forEach((btn, idx) => {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".color-btn").forEach((b) => {
+            b.classList.remove("border-2", "border-primary");
+            b.classList.add("border");
+          });
+          this.classList.remove("border");
+          this.classList.add("border-2", "border-primary");
+          productState.selectedColor = productState.colors[idx].name;
+          document.querySelector(".color-name").textContent =
+            productState.selectedColor;
         });
-        this.classList.remove("border");
-        this.classList.add("border-2", "border-primary");
-        productState.selectedColor = productState.colors[idx].name;
-        document.querySelector(".color-name").textContent =
-          productState.selectedColor;
       });
-    });
 
-    // Size Selection
-    document.querySelectorAll(".size-btn").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        if (this.classList.contains("opacity-30")) return;
-        document.querySelectorAll(".size-btn").forEach((b) => {
-          if (!b.classList.contains("opacity-30")) {
+      // Size Selection
+      document.querySelectorAll(".size-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          if (this.classList.contains("opacity-30")) return;
+          document.querySelectorAll(".size-btn").forEach((b) => {
+            if (!b.classList.contains("opacity-30")) {
+              b.classList.remove(
+                "border-2",
+                "border-primary",
+                "text-primary",
+                "bg-primary/10",
+              );
+              b.classList.add("border", "border-white/10");
+            }
+          });
+          this.classList.remove("border", "border-white/10");
+          this.classList.add(
+            "border-2",
+            "border-primary",
+            "text-primary",
+            "bg-primary/10",
+          );
+          productState.selectedSize = this.textContent.trim();
+        });
+      });
+
+      // Add to Cart
+      document
+        .querySelector(".add-to-cart-btn")
+        .addEventListener("click", function () {
+          productState.cartCount++;
+          showNotification(
+            `Added "${productState.selectedColor}" in ${productState.selectedSize} to cart!`,
+          );
+          updateCartBadge();
+        });
+
+      // Wishlist
+      document
+        .querySelector(".wishlist-btn")
+        .addEventListener("click", function () {
+          productState.inWishlist = !productState.inWishlist;
+          this.style.color = productState.inWishlist ? "#f48c25" : "#ffffff";
+          this.classList.toggle("fill-1");
+          showNotification(
+            productState.inWishlist
+              ? "Added to Wishlist"
+              : "Removed from Wishlist",
+          );
+        });
+
+      // Compare
+      document
+        .querySelector(".compare-btn")
+        .addEventListener("click", function () {
+          showNotification("Added to Compare. View comparison →");
+        });
+
+      // Review Sorting
+      const reviewButtons = document.querySelectorAll(".review-sort-btn");
+      let currentSortType = "relevant";
+
+      reviewButtons.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          reviewButtons.forEach((b) => {
             b.classList.remove(
-              "border-2",
+              "text-white",
+              "border-b-2",
               "border-primary",
-              "text-primary",
-              "bg-primary/10",
+              "pb-1",
             );
-            b.classList.add("border", "border-white/10");
-          }
-        });
-        this.classList.remove("border", "border-white/10");
-        this.classList.add(
-          "border-2",
-          "border-primary",
-          "text-primary",
-          "bg-primary/10",
-        );
-        productState.selectedSize = this.textContent.trim();
-      });
-    });
-
-    // Add to Cart
-    document
-      .querySelector(".add-to-cart-btn")
-      .addEventListener("click", function () {
-        productState.cartCount++;
-        showNotification(
-          `Added "${productState.selectedColor}" in ${productState.selectedSize} to cart!`,
-        );
-        updateCartBadge();
-      });
-
-    // Wishlist
-    document
-      .querySelector(".wishlist-btn")
-      .addEventListener("click", function () {
-        productState.inWishlist = !productState.inWishlist;
-        this.style.color = productState.inWishlist ? "#f48c25" : "#ffffff";
-        this.classList.toggle("fill-1");
-        showNotification(
-          productState.inWishlist
-            ? "Added to Wishlist"
-            : "Removed from Wishlist",
-        );
-      });
-
-    // Compare
-    document
-      .querySelector(".compare-btn")
-      .addEventListener("click", function () {
-        showNotification("Added to Compare. View comparison →");
-      });
-
-    // Review Sorting
-    const reviewButtons = document.querySelectorAll(".review-sort-btn");
-    let currentSortType = "relevant";
-
-    reviewButtons.forEach((btn) => {
-      btn.addEventListener("click", function () {
-        reviewButtons.forEach((b) => {
-          b.classList.remove(
+            b.classList.add("text-slate-500", "hover:text-white");
+          });
+          this.classList.remove("text-slate-500", "hover:text-white");
+          this.classList.add(
             "text-white",
             "border-b-2",
             "border-primary",
             "pb-1",
           );
-          b.classList.add("text-slate-500", "hover:text-white");
-        });
-        this.classList.remove("text-slate-500", "hover:text-white");
-        this.classList.add(
-          "text-white",
-          "border-b-2",
-          "border-primary",
-          "pb-1",
-        );
 
-        const sortType = this.textContent.trim().toLowerCase();
-        currentSortType =
-          sortType === "most relevant" ? "relevant" : "newest";
-        sortReviews(currentSortType);
-        showNotification(`Sorting by: ${this.textContent.trim()}`);
+          const sortType = this.textContent.trim().toLowerCase();
+          currentSortType =
+            sortType === "most relevant" ? "relevant" : "newest";
+          sortReviews(currentSortType);
+          showNotification(`Sorting by: ${this.textContent.trim()}`);
+        });
       });
-    });
 
-    function sortReviews(type) {
-      const container = document.querySelector(".reviews-container");
-      const reviews = Array.from(document.querySelectorAll(".review-item"));
+      function sortReviews(type) {
+        const container = document.querySelector(".reviews-container");
+        const reviews = Array.from(document.querySelectorAll(".review-item"));
 
-      if (type === "newest") {
-        reviews.sort((a, b) => {
-          const timestampA = parseInt(a.getAttribute("data-timestamp"));
-          const timestampB = parseInt(b.getAttribute("data-timestamp"));
-          return timestampA - timestampB;
-        });
-      } else {
-        reviews.sort((a, b) => {
-          const timestampA = parseInt(a.getAttribute("data-timestamp"));
-          const timestampB = parseInt(b.getAttribute("data-timestamp"));
-          return timestampB - timestampA;
+        if (type === "newest") {
+          reviews.sort((a, b) => {
+            const timestampA = parseInt(a.getAttribute("data-timestamp"));
+            const timestampB = parseInt(b.getAttribute("data-timestamp"));
+            return timestampA - timestampB;
+          });
+        } else {
+          reviews.sort((a, b) => {
+            const timestampA = parseInt(a.getAttribute("data-timestamp"));
+            const timestampB = parseInt(b.getAttribute("data-timestamp"));
+            return timestampB - timestampA;
+          });
+        }
+
+        // Di chuyển lại các reviews
+        reviews.forEach((review) => {
+          container.appendChild(review);
         });
       }
 
-      // Di chuyển lại các reviews
-      reviews.forEach((review) => {
-        container.appendChild(review);
-      });
-    }
-
-    // Rating Filter
-    document
-      .querySelector(".rating-filter")
-      .addEventListener("change", function () {
-        console.log("Filtering by:", this.value);
-        showNotification(`Filtering reviews by: ${this.value}`);
-      });
-
-    // Helpful button
-    document.querySelectorAll(".review-helpful-btn").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        let count = parseInt(
-          this.querySelector(".helpful-count").textContent,
-        );
-        count++;
-        this.querySelector(".helpful-count").textContent = count;
-        this.style.color = "#f48c25";
-        this.disabled = true;
-        showNotification("Thank you for your feedback!");
-      });
-    });
-
-    // Reply button
-    document.querySelectorAll(".review-reply-btn").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        showNotification("Reply form would open here");
-      });
-    });
-
-    // Gallery thumbnail click
-    document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
-      thumb.addEventListener("click", function () {
-        if (idx === 3) return; // Skip "+2 More"
-        document.querySelectorAll(".gallery-thumbnail").forEach((t) => {
-          t.classList.remove("border-2", "border-primary");
-          t.classList.add("border");
+      // Rating Filter
+      document
+        .querySelector(".rating-filter")
+        .addEventListener("change", function () {
+          console.log("Filtering by:", this.value);
+          showNotification(`Filtering reviews by: ${this.value}`);
         });
-        this.classList.remove("border");
-        this.classList.add("border-2", "border-primary");
-        const mainImg = document.querySelector(".main-product-img");
-        mainImg.src = this.querySelector("img").src;
-        mainImg.style.transform = "scale(1)";
+
+      // Helpful button
+      document.querySelectorAll(".review-helpful-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          let count = parseInt(
+            this.querySelector(".helpful-count").textContent,
+          );
+          count++;
+          this.querySelector(".helpful-count").textContent = count;
+          this.style.color = "#f48c25";
+          this.disabled = true;
+          showNotification("Thank you for your feedback!");
+        });
       });
-    });
 
-    // Notification system
-    function showNotification(message) {
-      const existing = document.querySelector(".notification");
-      if (existing) existing.remove();
+      // Reply button
+      document.querySelectorAll(".review-reply-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          showNotification("Reply form would open here");
+        });
+      });
 
-      const notification = document.createElement("div");
-      notification.className =
-        "notification fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg font-bold animate-slideIn z-50";
-      notification.textContent = message;
-      document.body.appendChild(notification);
+      // Gallery thumbnail click
+      document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
+        thumb.addEventListener("click", function () {
+          if (idx === 3) return; // Skip "+2 More"
+          document.querySelectorAll(".gallery-thumbnail").forEach((t) => {
+            t.classList.remove("border-2", "border-primary");
+            t.classList.add("border");
+          });
+          this.classList.remove("border");
+          this.classList.add("border-2", "border-primary");
+          const mainImg = document.querySelector(".main-product-img");
+          mainImg.src = this.querySelector("img").src;
+          mainImg.style.transform = "scale(1)";
+        });
+      });
 
-      setTimeout(() => notification.remove(), 3000);
-    }
+      // Notification system
+      function showNotification(message) {
+        const existing = document.querySelector(".notification");
+        if (existing) existing.remove();
 
-    // Update cart badge
-    function updateCartBadge() {
-      document.querySelector(".cart-badge").textContent =
-        productState.cartCount;
-    }
+        const notification = document.createElement("div");
+        notification.className =
+          "notification fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg font-bold animate-slideIn z-50";
+        notification.textContent = message;
+        document.body.appendChild(notification);
 
-    // Add animation
-    const style = document.createElement("style");
-    style.textContent = `
+        setTimeout(() => notification.remove(), 3000);
+      }
+
+      // Update cart badge
+      function updateCartBadge() {
+        document.querySelector(".cart-badge").textContent =
+          productState.cartCount;
+      }
+
+      // Add animation
+      const style = document.createElement("style");
+      style.textContent = `
       @keyframes slideIn {
         from {
           transform: translateX(400px);
@@ -1016,7 +1036,7 @@
         animation: slideIn 0.3s ease-out;
       }
     `;
-    document.head.appendChild(style);
-</script>
-</body>
+      document.head.appendChild(style);
+    </script>
+  </body>
 </html>

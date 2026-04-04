@@ -33,20 +33,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Tạm thời disable để dễ làm FE
+                .csrf(csrf -> csrf.disable()) // Tạm thời disable CSRF
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/", "/home", "/login", "/register",
-                                "/css/**", "/js/**", "/images/**", "/favicon.ico",
-                                "/products/**", "/cart", "/checkout/**",
-                                "/order-history", "/order-detail/**", "/order-tracking", "/search-result" // Đã sửa khớp với Controller
-                        ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // Cho phép tất cả request
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Sửa lại thành /login chuẩn
+                        .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
@@ -62,4 +55,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

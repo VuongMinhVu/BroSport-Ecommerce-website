@@ -1,1085 +1,1065 @@
 <!doctype html>
 
 <html class="dark" lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Brosport Search &amp; Results</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
     />
     <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              colors: {
-                primary: "#f96706",
-                "background-light": "#f8f7f5",
-                "background-dark": "#121212",
-                "surface-dark": "#1e1e1e",
-                "border-dark": "#2d2d2d",
-              },
-              fontFamily: {
-                display: ["Lexend", "sans-serif"],
-              },
-              borderRadius: {
-                DEFAULT: "0.25rem",
-                lg: "0.5rem",
-                xl: "0.75rem",
-                full: "9999px",
-              },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#f96706",
+              "background-light": "#f8f7f5",
+              "background-dark": "#121212",
+              "surface-dark": "#1e1e1e",
+              "border-dark": "#2d2d2d",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
             },
           },
-        };
+        },
+      };
     </script>
     <style>
-        body {
-          font-family: "Lexend", sans-serif;
-        }
-        .material-symbols-outlined {
-          font-variation-settings:
-            "FILL" 0,
-            "wght" 400,
-            "GRAD" 0,
-            "opsz" 24;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
     </style>
-</head>
-<body
-        class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
->
-<!-- Top Navigation Bar -->
-<header
-        class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
->
-    <div
-            class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <!-- Top Navigation Bar -->
+    <header
+      class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
     >
+      <div
+        class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
+      >
         <a class="flex items-center gap-2 group flex-shrink-0" href="/">
-            <div
-                    class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
-            >
-                <span class="material-symbols-outlined font-bold">bolt</span>
-            </div>
-            <h1
-                    class="text-2xl font-black tracking-tighter uppercase italic text-white"
-            >
-                Brosport
-            </h1>
+          <div
+            class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
+          >
+            <span class="material-symbols-outlined font-bold">bolt</span>
+          </div>
+          <h1
+            class="text-2xl font-black tracking-tighter uppercase italic text-white"
+          >
+            Brosport
+          </h1>
         </a>
 
         <nav class="hidden xl:flex items-center gap-8 h-full">
-            <a class="nav-link" href="#">New Arrivals</a>
-            <a class="nav-link" href="#">Men</a>
-            <a class="nav-link" href="#">Women</a>
-            <a class="nav-link" href="#">Accessories</a>
-            <a class="nav-link" href="#">Brands</a>
-            <a class="nav-link" href="#">Sports</a>
-            <a
-                    class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                    href="#"
+          <a class="nav-link" href="#">New Arrivals</a>
+          <a class="nav-link" href="#">Men</a>
+          <a class="nav-link" href="#">Women</a>
+          <a class="nav-link" href="#">Accessories</a>
+          <a class="nav-link" href="#">Brands</a>
+          <a class="nav-link" href="#">Sports</a>
+          <a
+            class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
+            href="#"
             >Sales</a
-            >
+          >
         </nav>
 
         <div class="flex items-center gap-4">
-            <div class="relative hidden lg:block group">
+          <div class="relative hidden lg:block group">
             <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
-            >search</span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
+              >search</span
             >
-                <input
-                        id="searchInput"
-                        class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-                        placeholder="Search elite gear..."
-                        type="text"
-                        autocomplete="off"
-                />
-                <!-- Search Dropdown Results -->
-                <div
-                        id="searchDropdown"
-                        class="absolute top-full left-0 mt-2 w-80 bg-surface-dark border border-border-dark rounded-xl shadow-2xl shadow-primary/20 hidden z-50 max-h-96 overflow-y-auto"
-                >
-                    <div id="dropdownContent" class="py-2"></div>
-                    <div id="emptyState" class="px-4 py-8 text-center text-slate-400">
+            <input
+              id="searchInput"
+              class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
+              placeholder="Search elite gear..."
+              type="text"
+              autocomplete="off"
+            />
+            <!-- Search Dropdown Results -->
+            <div
+              id="searchDropdown"
+              class="absolute top-full left-0 mt-2 w-80 bg-surface-dark border border-border-dark rounded-xl shadow-2xl shadow-primary/20 hidden z-50 max-h-96 overflow-y-auto"
+            >
+              <div id="dropdownContent" class="py-2"></div>
+              <div id="emptyState" class="px-4 py-8 text-center text-slate-400">
                 <span class="material-symbols-outlined text-3xl block mb-2"
-                >search</span
+                  >search</span
                 >
-                        <p class="text-sm">Enter a product name to search...</p>
-                    </div>
-                </div>
+                <p class="text-sm">Enter a product name to search...</p>
+              </div>
             </div>
+          </div>
 
-            <div class="flex items-center gap-2">
-                <a
-                        href="/profile"
-                        class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all"
-                >
-                    <div
-                            class="h-full w-full bg-cover bg-center"
-                            th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                            th:if="${user != null and user.avatarUrl != null}"
-                    ></div>
-                    <span
-                            th:unless="${user != null and user.avatarUrl != null}"
-                            class="material-symbols-outlined text-2xl"
-                    >person</span
-                    >
-                </a>
-
-                <a
-                        href="/cart"
-                        class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
-                >
-              <span class="material-symbols-outlined text-2xl"
-              >shopping_cart</span
-              >
-                    <span
-                            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
-                            th:text="${cartItems != null ? #lists.size(cartItems) : 0}"
-                    >0</span
-                    >
-                </a>
-            </div>
-        </div>
-    </div>
-</header>
-<main class="max-w-7xl mx-auto px-4 lg:px-10 py-8">
-    <!-- Search Info Header -->
-    <div
-            class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4"
-    >
-        <div>
-            <nav
-                    class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-2 font-medium uppercase tracking-widest"
+          <div class="flex items-center gap-2">
+            <a
+              href="/profile"
+              class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all"
             >
-                <a class="hover:text-primary transition-colors" href="#">Home</a>
-                <span class="material-symbols-outlined text-[10px]"
-                >chevron_right</span
-                >
-                <a class="hover:text-primary transition-colors" href="#">Shop</a>
-                <span class="material-symbols-outlined text-[10px]"
-                >chevron_right</span
-                >
-                <span class="text-slate-900 dark:text-slate-200"
-                >Search Results</span
-                >
-            </nav>
-            <h2 class="text-3xl font-black">
-                RESULTS FOR <span class="text-primary italic">'RUNNING SHOES'</span>
-            </h2>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">
-                Found 128 items in premium performance gear
-            </p>
+              <div
+                class="h-full w-full bg-cover bg-center"
+                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
+                th:if="${user != null and user.avatarUrl != null}"
+              ></div>
+              <span
+                th:unless="${user != null and user.avatarUrl != null}"
+                class="material-symbols-outlined text-2xl"
+                >person</span
+              >
+            </a>
+
+            <a
+              href="/cart"
+              class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl"
+                >shopping_cart</span
+              >
+              <span
+                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
+                th:text="${cartItems != null ? #lists.size(cartItems) : 0}"
+                >0</span
+              >
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="max-w-7xl mx-auto px-4 lg:px-10 py-8">
+      <!-- Search Info Header -->
+      <div
+        class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4"
+      >
+        <div>
+          <nav
+            class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-2 font-medium uppercase tracking-widest"
+          >
+            <a class="hover:text-primary transition-colors" href="#">Home</a>
+            <span class="material-symbols-outlined text-[10px]"
+              >chevron_right</span
+            >
+            <a class="hover:text-primary transition-colors" href="#">Shop</a>
+            <span class="material-symbols-outlined text-[10px]"
+              >chevron_right</span
+            >
+            <span class="text-slate-900 dark:text-slate-200"
+              >Search Results</span
+            >
+          </nav>
+          <h2 class="text-3xl font-black">
+            RESULTS FOR <span class="text-primary italic">'RUNNING SHOES'</span>
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-1">
+            Found 128 items in premium performance gear
+          </p>
         </div>
         <div class="flex items-center gap-3">
-            <button
-                    class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-lg text-sm font-semibold hover:border-primary transition-colors"
-            >
-                <span class="material-symbols-outlined text-lg">swap_vert</span>
-                Sort: Popularity
-            </button>
-            <button
-                    class="lg:hidden flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold"
-            >
-                <span class="material-symbols-outlined text-lg">filter_list</span>
-                Filters
-            </button>
+          <button
+            class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-lg text-sm font-semibold hover:border-primary transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg">swap_vert</span>
+            Sort: Popularity
+          </button>
+          <button
+            class="lg:hidden flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-lg">filter_list</span>
+            Filters
+          </button>
         </div>
-    </div>
-    <div class="flex gap-8">
+      </div>
+      <div class="flex gap-8">
         <!-- Sidebar Filters -->
         <aside class="hidden lg:block w-64 shrink-0 space-y-8">
-            <!-- Categories -->
-            <div>
-                <h3
-                        class="text-sm font-extrabold uppercase tracking-widest mb-4 flex items-center justify-between"
-                >
-                    Category
-                    <span class="material-symbols-outlined text-lg">remove</span>
-                </h3>
-                <div class="space-y-2">
-                    <label class="flex items-center group cursor-pointer">
-                        <input
-                                checked=""
-                                class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
-                                type="checkbox"
-                        />
-                        <span
-                                class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
-                        >Performance Running (42)</span
-                        >
-                    </label>
-                    <label class="flex items-center group cursor-pointer">
-                        <input
-                                class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
-                                type="checkbox"
-                        />
-                        <span
-                                class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
-                        >Trail &amp; Off-road (21)</span
-                        >
-                    </label>
-                    <label class="flex items-center group cursor-pointer">
-                        <input
-                                class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
-                                type="checkbox"
-                        />
-                        <span
-                                class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
-                        >Lifestyle Sneakers (35)</span
-                        >
-                    </label>
-                    <label class="flex items-center group cursor-pointer">
-                        <input
-                                class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
-                                type="checkbox"
-                        />
-                        <span
-                                class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
-                        >Track &amp; Field (14)</span
-                        >
-                    </label>
-                </div>
-            </div>
-            <!-- Price Range -->
-            <div>
-                <h3
-                        class="text-sm font-extrabold uppercase tracking-widest mb-4 flex items-center justify-between"
-                >
-                    Price Range
-                    <span class="material-symbols-outlined text-lg">remove</span>
-                </h3>
-                <div class="px-2">
-                    <div
-                            class="h-1.5 w-full bg-slate-200 dark:bg-border-dark rounded-full relative"
-                    >
-                        <div
-                                class="absolute inset-y-0 left-1/4 right-1/4 bg-primary rounded-full"
-                        ></div>
-                        <div
-                                class="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-lg cursor-pointer"
-                        ></div>
-                        <div
-                                class="absolute top-1/2 right-1/4 -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-lg cursor-pointer"
-                        ></div>
-                    </div>
-                    <div class="flex justify-between mt-4 text-xs font-bold">
-                        <span>$40</span>
-                        <span>$350</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Size Grid -->
-            <div>
-                <h3
-                        class="text-sm font-extrabold uppercase tracking-widest mb-4 flex items-center justify-between"
-                >
-                    Size (US)
-                    <span class="material-symbols-outlined text-lg">remove</span>
-                </h3>
-                <div class="grid grid-cols-4 gap-2">
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
-                    >
-                        7
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
-                    >
-                        7.5
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-primary bg-primary/10 text-primary rounded text-xs font-bold"
-                    >
-                        8
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
-                    >
-                        8.5
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
-                    >
-                        9
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
-                    >
-                        9.5
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
-                    >
-                        10
-                    </button>
-                    <button
-                            class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold text-slate-400"
-                    >
-                        10.5
-                    </button>
-                </div>
-            </div>
-            <!-- Colors -->
-            <div>
-                <h3 class="text-sm font-extrabold uppercase tracking-widest mb-4">
-                    Color
-                </h3>
-                <div class="flex flex-wrap gap-3">
-                    <button
-                            class="w-8 h-8 rounded-full bg-black border border-white/20 ring-2 ring-primary"
-                    ></button>
-                    <button
-                            class="w-8 h-8 rounded-full bg-white border border-slate-200"
-                    ></button>
-                    <button class="w-8 h-8 rounded-full bg-red-600"></button>
-                    <button class="w-8 h-8 rounded-full bg-blue-600"></button>
-                    <button class="w-8 h-8 rounded-full bg-orange-500"></button>
-                    <button class="w-8 h-8 rounded-full bg-zinc-500"></button>
-                </div>
-            </div>
-            <button
-                    class="w-full py-3 bg-slate-100 dark:bg-surface-dark text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-slate-200 dark:hover:bg-border-dark transition-colors"
+          <!-- Categories -->
+          <div>
+            <h3
+              class="text-sm font-extrabold uppercase tracking-widest mb-4 flex items-center justify-between"
             >
-                Reset All Filters
-            </button>
+              Category
+              <span class="material-symbols-outlined text-lg">remove</span>
+            </h3>
+            <div class="space-y-2">
+              <label class="flex items-center group cursor-pointer">
+                <input
+                  checked=""
+                  class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
+                  type="checkbox"
+                />
+                <span
+                  class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
+                  >Performance Running (42)</span
+                >
+              </label>
+              <label class="flex items-center group cursor-pointer">
+                <input
+                  class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
+                  type="checkbox"
+                />
+                <span
+                  class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
+                  >Trail &amp; Off-road (21)</span
+                >
+              </label>
+              <label class="flex items-center group cursor-pointer">
+                <input
+                  class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
+                  type="checkbox"
+                />
+                <span
+                  class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
+                  >Lifestyle Sneakers (35)</span
+                >
+              </label>
+              <label class="flex items-center group cursor-pointer">
+                <input
+                  class="rounded border-slate-300 dark:border-border-dark bg-transparent text-primary focus:ring-primary h-4 w-4"
+                  type="checkbox"
+                />
+                <span
+                  class="ml-3 text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary"
+                  >Track &amp; Field (14)</span
+                >
+              </label>
+            </div>
+          </div>
+          <!-- Price Range -->
+          <div>
+            <h3
+              class="text-sm font-extrabold uppercase tracking-widest mb-4 flex items-center justify-between"
+            >
+              Price Range
+              <span class="material-symbols-outlined text-lg">remove</span>
+            </h3>
+            <div class="px-2">
+              <div
+                class="h-1.5 w-full bg-slate-200 dark:bg-border-dark rounded-full relative"
+              >
+                <div
+                  class="absolute inset-y-0 left-1/4 right-1/4 bg-primary rounded-full"
+                ></div>
+                <div
+                  class="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-lg cursor-pointer"
+                ></div>
+                <div
+                  class="absolute top-1/2 right-1/4 -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-lg cursor-pointer"
+                ></div>
+              </div>
+              <div class="flex justify-between mt-4 text-xs font-bold">
+                <span>$40</span>
+                <span>$350</span>
+              </div>
+            </div>
+          </div>
+          <!-- Size Grid -->
+          <div>
+            <h3
+              class="text-sm font-extrabold uppercase tracking-widest mb-4 flex items-center justify-between"
+            >
+              Size (US)
+              <span class="material-symbols-outlined text-lg">remove</span>
+            </h3>
+            <div class="grid grid-cols-4 gap-2">
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
+              >
+                7
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
+              >
+                7.5
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-primary bg-primary/10 text-primary rounded text-xs font-bold"
+              >
+                8
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
+              >
+                8.5
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
+              >
+                9
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
+              >
+                9.5
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold"
+              >
+                10
+              </button>
+              <button
+                class="h-9 flex items-center justify-center border border-slate-200 dark:border-border-dark rounded hover:border-primary transition-colors text-xs font-bold text-slate-400"
+              >
+                10.5
+              </button>
+            </div>
+          </div>
+          <!-- Colors -->
+          <div>
+            <h3 class="text-sm font-extrabold uppercase tracking-widest mb-4">
+              Color
+            </h3>
+            <div class="flex flex-wrap gap-3">
+              <button
+                class="w-8 h-8 rounded-full bg-black border border-white/20 ring-2 ring-primary"
+              ></button>
+              <button
+                class="w-8 h-8 rounded-full bg-white border border-slate-200"
+              ></button>
+              <button class="w-8 h-8 rounded-full bg-red-600"></button>
+              <button class="w-8 h-8 rounded-full bg-blue-600"></button>
+              <button class="w-8 h-8 rounded-full bg-orange-500"></button>
+              <button class="w-8 h-8 rounded-full bg-zinc-500"></button>
+            </div>
+          </div>
+          <button
+            class="w-full py-3 bg-slate-100 dark:bg-surface-dark text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-slate-200 dark:hover:bg-border-dark transition-colors"
+          >
+            Reset All Filters
+          </button>
         </aside>
         <!-- Product Grid -->
         <div class="flex-1">
+          <div
+            id="productGrid"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+          >
+            <!-- Product Card 1 -->
             <div
-                    id="productGrid"
-                    class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+              class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
             >
-                <!-- Product Card 1 -->
-                <div
-                        class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
-                >
-                    <div
-                            class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
-                    >
-                        <img
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                data-alt="Red performance running shoe detailed side view"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7OVwooxeTkv5PjpWPQeQJ1x5GcI0EnoIQwTKZPGF4VZlvdn307CYk9tCVnaBbFwLaLyxmSyDkP1l3sCcLeDKXBGfmLpvMdCIY0IGfgByx71R0mX276aiZsAZdbzgYgTXbzR0QNvV1mvgEIQEt9sHadSrEZOKpv2HlKsualxzISZ6Uc4CEOJTR_XjTISvtdUbyy2yvW3-Y_XwRGj4mvADSSYMr-IKpcMqSZNcfB-qUyVeJt1DfdydKz2kFhWpb2F9sOL5lD1scdYA"
-                        />
-                        <div class="absolute top-3 left-3 flex flex-col gap-1">
+              <div
+                class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
+              >
+                <img
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  data-alt="Red performance running shoe detailed side view"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7OVwooxeTkv5PjpWPQeQJ1x5GcI0EnoIQwTKZPGF4VZlvdn307CYk9tCVnaBbFwLaLyxmSyDkP1l3sCcLeDKXBGfmLpvMdCIY0IGfgByx71R0mX276aiZsAZdbzgYgTXbzR0QNvV1mvgEIQEt9sHadSrEZOKpv2HlKsualxzISZ6Uc4CEOJTR_XjTISvtdUbyy2yvW3-Y_XwRGj4mvADSSYMr-IKpcMqSZNcfB-qUyVeJt1DfdydKz2kFhWpb2F9sOL5lD1scdYA"
+                />
+                <div class="absolute top-3 left-3 flex flex-col gap-1">
                   <span
-                          class="px-2 py-1 bg-primary text-[10px] font-black uppercase text-white rounded"
-                  >New Arrival</span
+                    class="px-2 py-1 bg-primary text-[10px] font-black uppercase text-white rounded"
+                    >New Arrival</span
                   >
-                            <span
-                                    class="px-2 py-1 bg-black/50 backdrop-blur-md text-[10px] font-black uppercase text-white rounded"
-                            >Recycled</span
-                            >
-                        </div>
-                        <button
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >favorite</span
-                  >
-                        </button>
-                        <!-- Quick Add Button (Visible on Hover) -->
-                        <div
-                                class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                            <button
-                                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
-                            >
-                                Quick Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
                   <span
-                          class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
-                  >Nike</span
+                    class="px-2 py-1 bg-black/50 backdrop-blur-md text-[10px] font-black uppercase text-white rounded"
+                    >Recycled</span
                   >
-                            <div class="flex items-center text-yellow-500">
-                                <span class="material-symbols-outlined text-xs">star</span>
-                                <span class="text-[10px] font-bold ml-1 text-slate-400"
-                                >4.8 (1.2k)</span
-                                >
-                            </div>
-                        </div>
-                        <h3
-                                class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
-                        >
-                            Air Zoom Pegasus 40 'Phoenix'
-                        </h3>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-black text-primary">$130.00</span>
-                            <span class="text-xs text-slate-500 line-through"
-                            >$160.00</span
-                            >
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Card 2 -->
-                <div
-                        class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
-                >
-                    <div
-                            class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
-                    >
-                        <img
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                data-alt="Chunky white and neon accent athletic sneaker"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNwZjuiuLMLipJIkrO3T_PuESwiNnn0VXLtcWnA_Od3SBHCipUeGSz8UmcUbfWQ92h0KjeyEQQOYb-Jja7BOKUKqlh34HsitAif8P1KJOGUfMJ2YC-UYA-YqT_cZugVtZjeX5JWNj9-_74IBvzhXx6UN3vzveu8AGEnwqbIFzl6gmUah5bbPMe9W4XansxTtQ3czQq6YQRPowiEQ8zif6wu4B7KX1IAsgXXBvO4HrqupId8319o_vcP6hEZi-ghH2rui6RgjQB4-8"
-                        />
-                        <button
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >favorite</span
-                  >
-                        </button>
-                        <div
-                                class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                            <button
-                                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
-                            >
-                                Quick Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
-                  <span
-                          class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
-                  >Adidas</span
-                  >
-                            <div class="flex items-center text-yellow-500">
-                                <span class="material-symbols-outlined text-xs">star</span>
-                                <span class="text-[10px] font-bold ml-1 text-slate-400"
-                                >4.9 (840)</span
-                                >
-                            </div>
-                        </div>
-                        <h3
-                                class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
-                        >
-                            Ultraboost Light Cloud White
-                        </h3>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-black text-primary">$190.00</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Card 3 -->
-                <div
-                        class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
-                >
-                    <div
-                            class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
-                    >
-                        <img
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                data-alt="Neon green technical running shoe"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBtHHsM5mVIqbtU_dPglX7NqpA0Jhe_GuAJKodUDCL09QkHLM6oWN9uOBzORROJu4yhV2xHWMerKs9bdUL27OsAzxslPHX45wG_B18hKVsjlZD22P_SX7nVkF9ns7f6glG8Aa5-NFdXMfiCeoERw42xLEIOx3Z4SvsW53yslgTGdfaQYx9kpJPCVHcW8ZcluS9rpVB1nGaEzDLoeMvndh6BLqYaCWz-SQ7zrv9BtDa3nmDi8H91r5s6FNldsmMx06MIX-flPYe0wg"
-                        />
-                        <div class="absolute top-3 left-3">
-                  <span
-                          class="px-2 py-1 bg-red-600 text-[10px] font-black uppercase text-white rounded"
-                  >Low Stock</span
-                  >
-                        </div>
-                        <button
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >favorite</span
-                  >
-                        </button>
-                        <div
-                                class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                            <button
-                                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
-                            >
-                                Quick Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
-                  <span
-                          class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
-                  >Brooks</span
-                  >
-                            <div class="flex items-center text-yellow-500">
-                                <span class="material-symbols-outlined text-xs">star</span>
-                                <span class="text-[10px] font-bold ml-1 text-slate-400"
-                                >4.7 (312)</span
-                                >
-                            </div>
-                        </div>
-                        <h3
-                                class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
-                        >
-                            Ghost 15 'Electric Glow'
-                        </h3>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-black text-primary">$140.00</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Card 4 -->
-                <div
-                        class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
-                >
-                    <div
-                            class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
-                    >
-                        <img
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                data-alt="Dark gray trail running shoe profile"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxXgF_JrrFqowyNGX7AVc9FjQZE5WLSz4uGx1BNzKjdr2qSMZCrU_acQOPaykZRleFp-hGjMF83rtUtd8J6n6w6-1uKhHO1DZyvP2UOSLU5_EKqLmYky9Xlp7EOUi9kY9x10obHOvbTflgYHu6lw8Q5w4bmUIOG3U8vU8l6P3Ywr4rUOW4TKYo2szb-L_mUgavglW0HP28J4jIdRwBnQNQbsA63CXU86onDL0XC8z5SwDH0KbAXjEbkvirvzMSCRKH36YknUhI4fI"
-                        />
-                        <button
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >favorite</span
-                  >
-                        </button>
-                        <div
-                                class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                            <button
-                                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
-                            >
-                                Quick Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
-                  <span
-                          class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
-                  >Hoka</span
-                  >
-                            <div class="flex items-center text-yellow-500">
-                                <span class="material-symbols-outlined text-xs">star</span>
-                                <span class="text-[10px] font-bold ml-1 text-slate-400"
-                                >4.9 (2.1k)</span
-                                >
-                            </div>
-                        </div>
-                        <h3
-                                class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
-                        >
-                            Speedgoat 5 Trail Master
-                        </h3>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-black text-primary">$155.00</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Card 5 -->
-                <div
-                        class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
-                >
-                    <div
-                            class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
-                    >
-                        <img
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                data-alt="Classic black and white training shoe"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBspg5ExVtpJMl-JO4itD0faqVI5Cmdi9h92QEG5ai0B0mC2d7RmxovjXDWoJCnnTj5iiMTOY3v_zI427N0H_-oEsWxlnBV5hPjsZ7cV5C_4frDCTjRccrqMymSlCThGB5Wht-pSv-qnByS3hmnnzOV7N8BFbgDrr_Q9ZjABtGYbBsFfIQoY7a2UN7xbIgDeewYL5tKVIOR7U2sCle3HgbiMmTGkpJMuC15v2Lv0TSO9XacO_qkVMx_D5HlqpO5uq0AtTLnrye9KK8"
-                        />
-                        <button
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >favorite</span
-                  >
-                        </button>
-                        <div
-                                class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                            <button
-                                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
-                            >
-                                Quick Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
-                  <span
-                          class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
-                  >Under Armour</span
-                  >
-                            <div class="flex items-center text-yellow-500">
-                                <span class="material-symbols-outlined text-xs">star</span>
-                                <span class="text-[10px] font-bold ml-1 text-slate-400"
-                                >4.6 (520)</span
-                                >
-                            </div>
-                        </div>
-                        <h3
-                                class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
-                        >
-                            HOVR Phantom 3 Blackout
-                        </h3>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-black text-primary">$160.00</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Card 6 -->
-                <div
-                        class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
-                >
-                    <div
-                            class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
-                    >
-                        <img
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                data-alt="High performance turquoise athletic shoe"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q"
-                        />
-                        <button
-                                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
-                        >
-                  <span class="material-symbols-outlined text-sm"
-                  >favorite</span
-                  >
-                        </button>
-                        <div
-                                class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                            <button
-                                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
-                            >
-                                Quick Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
-                  <span
-                          class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
-                  >New Balance</span
-                  >
-                            <div class="flex items-center text-yellow-500">
-                                <span class="material-symbols-outlined text-xs">star</span>
-                                <span class="text-[10px] font-bold ml-1 text-slate-400"
-                                >4.8 (1.5k)</span
-                                >
-                            </div>
-                        </div>
-                        <h3
-                                class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
-                        >
-                            Fresh Foam 1080 v12
-                        </h3>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-black text-primary">$165.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Load More / Pagination -->
-            <div class="mt-12 flex flex-col items-center gap-6">
-                <p class="text-sm font-medium text-slate-500">
-                    Showing 6 of 128 products
-                </p>
-                <div
-                        class="w-64 h-1.5 bg-slate-200 dark:bg-border-dark rounded-full"
-                >
-                    <div class="w-[5%] h-full bg-primary rounded-full"></div>
                 </div>
                 <button
-                        class="px-10 py-4 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-full text-sm font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white hover:border-primary transition-all shadow-lg active:scale-95"
+                  class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
                 >
-                    Load More Results
+                  <span class="material-symbols-outlined text-sm"
+                    >favorite</span
+                  >
                 </button>
-            </div>
-        </div>
-    </div>
-</main>
-<!-- Footer Simulation -->
-<footer
-        class="mt-20 border-t border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark py-12 px-4 lg:px-10"
->
-    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
-        <div class="col-span-2">
-            <div class="flex items-center gap-2 mb-6">
+                <!-- Quick Add Button (Visible on Hover) -->
                 <div
-                        class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white"
+                  class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
                 >
-                    <span class="material-symbols-outlined text-xl">bolt</span>
+                  <button
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
+                  >
+                    Quick Add to Cart
+                  </button>
                 </div>
-                <h2 class="text-2xl font-black italic tracking-tighter">
-                    BROSPORT
-                </h2>
-            </div>
-            <p
-                    class="text-slate-500 dark:text-slate-400 max-w-sm mb-6 leading-relaxed"
-            >
-                Premium sportswear for those who push boundaries. Experience the
-                ultimate performance with our curated selection of elite gear.
-            </p>
-            <div class="flex gap-4">
-                <div
-                        class="w-10 h-10 rounded-full border border-slate-200 dark:border-border-dark flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
-                >
-                    <span class="material-symbols-outlined">share</span>
-                </div>
-                <div
-                        class="w-10 h-10 rounded-full border border-slate-200 dark:border-border-dark flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
-                >
-                    <span class="material-symbols-outlined">chat</span>
-                </div>
-            </div>
-        </div>
-        <div>
-            <h4 class="font-black uppercase tracking-widest text-xs mb-6">
-                Quick Links
-            </h4>
-            <ul
-                    class="space-y-4 text-sm font-medium text-slate-500 dark:text-slate-400"
-            >
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Men's Collection
-                </li>
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Women's Collection
-                </li>
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Team Wear
-                </li>
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Accessories
-                </li>
-            </ul>
-        </div>
-        <div>
-            <h4 class="font-black uppercase tracking-widest text-xs mb-6">
-                Support
-            </h4>
-            <ul
-                    class="space-y-4 text-sm font-medium text-slate-500 dark:text-slate-400"
-            >
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Order Status
-                </li>
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Returns &amp; Exchanges
-                </li>
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Shipping Policy
-                </li>
-                <li class="hover:text-primary cursor-pointer transition-colors">
-                    Contact Us
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div
-            class="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-100 dark:border-border-dark flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-500"
-    >
-        <p>© 2024 Brosport Performance. All rights reserved.</p>
-        <div class="flex gap-6 uppercase tracking-widest">
-            <a class="hover:text-primary" href="#">Privacy Policy</a>
-            <a class="hover:text-primary" href="#">Terms of Service</a>
-            <script>
-                // Product Database
-                const products = [
-                  {
-                    id: 1,
-                    name: "Air Zoom Pegasus 40 'Phoenix'",
-                    brand: "Nike",
-                    price: 130.0,
-                    originalPrice: 160.0,
-                    rating: 4.8,
-                    reviews: 650,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
-                  },
-                  {
-                    id: 2,
-                    name: "Ultraboost Light Cloud White",
-                    brand: "Adidas",
-                    price: 190.0,
-                    rating: 4.9,
-                    reviews: 840,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuDNwZjuiuLMLipJIkrO3T_PuESwiNnn0VXLtcWnA_Od3SBHCipUeGSz8UmcUbfWQ92h0KjeyEQQOYb-Jja7BOKUKqlh34HsitAif8P1KJOGUfMJ2YC-UYA-YqT_cZugVtZjeX5JWNj9-_74IBvzhXx6UN3vzveu8AGEnwqbIFzl6gmUah5bbPMe9W4XansxTtQ3czQq6YQRPowiEQ8zif6wu4B7KX1IAsgXXBvO4HrqupId8319o_vcP6hEZi-ghH2rui6RgjQB4-8",
-                  },
-                  {
-                    id: 3,
-                    name: "Ghost 15 'Electric Glow'",
-                    brand: "Brooks",
-                    price: 140.0,
-                    rating: 4.7,
-                    reviews: 312,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCBtHHsM5mVIqbtU_dPglX7NqpA0Jhe_GuAJKodUDCL09QkHLM6oWN9uOBzORROJu4yhV2xHWMerKs9bdUL27OsAzxslPHX45wG_B18hKVsjlZD22P_SX7nVkF9ns7f6glG8Aa5-NFdXMfiCeoERw42xLEIOx3Z4SvsW53yslgTGdfaQYx9kpJPCVHcW8ZcluS9rpVB1nGaEzDLoeMvndh6BLqYaCWz-SQ7zrv9BtDa3nmDi8H91r5s6FNldsmMx06MIX-flPYe0wg",
-                  },
-                  {
-                    id: 4,
-                    name: "Speedgoat 5 Trail Master",
-                    brand: "Hoka",
-                    price: 155.0,
-                    rating: 4.9,
-                    reviews: 2100,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuBxXgF_JrrFqowyNGX7AVc9FjQZE5WLSz4uGx1BNzKjdr2qSMZCrU_acQOPaykZRleFp-hGjMF83rtUtd8J6n6w6-1uKhHO1DZyvP2UOSLU5_EKqLmYky9Xlp7EOUi9kY9x10obHOvbTflgYHu6lw8Q5w4bmUIOG3U8vU8l6P3Ywr4rUOW4TKYo2szb-L_mUgavglW0HP28J4jIdRwBnQNQbsA63CXU86onDL0XC8z5SwDH0KbAXjEbkvirvzMSCRKH36YknUhI4fI",
-                  },
-                  {
-                    id: 5,
-                    name: "HOVR Phantom 3 Blackout",
-                    brand: "Under Armour",
-                    price: 160.0,
-                    rating: 4.6,
-                    reviews: 520,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuBspg5ExVtpJMl-JO4itD0faqVI5Cmdi9h92QEG5ai0B0mC2d7RmxovjXDWoJCnnTj5iiMTOY3v_zI427N0H_-oEsWxlnBV5hPjsZ7cV5C_4frDCTjRccrqMymSlCThGB5Wht-pSv-qnByS3hmnnzOV7N8BFbgDrr_Q9ZjABtGYbBsFfIQoY7a2UN7xbIgDeewYL5tKVIOR7U2sCle3HgbiMmTGkpJMuC15v2Lv0TSO9XacO_qkVMx_D5HlqpO5uq0AtTLnrye9KK8",
-                  },
-                  {
-                    id: 6,
-                    name: "Fresh Foam 1080 v12",
-                    brand: "New Balance",
-                    price: 165.0,
-                    rating: 4.8,
-                    reviews: 1500,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
-                  },
-                  {
-                    id: 7,
-                    name: "Invincible 3",
-                    brand: "Nike",
-                    price: 180.0,
-                    rating: 4.7,
-                    reviews: 890,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
-                  },
-                  {
-                    id: 8,
-                    name: "Gel-Kayano 30",
-                    brand: "Asics",
-                    price: 175.0,
-                    rating: 4.8,
-                    reviews: 1200,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
-                  },
-                  {
-                    id: 9,
-                    name: "Running Shorts Pro",
-                    brand: "Nike",
-                    price: 65.0,
-                    rating: 4.6,
-                    reviews: 340,
-                    image:
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
-                  },
-                ];
-
-                const searchInput = document.getElementById("searchInput");
-                const searchDropdown = document.getElementById("searchDropdown");
-                const dropdownContent = document.getElementById("dropdownContent");
-                const emptyState = document.getElementById("emptyState");
-
-                // Search functionality
-                searchInput.addEventListener("input", (e) => {
-                  const query = e.target.value.toLowerCase().trim();
-
-                  if (query.length === 0) {
-                    searchDropdown.classList.add("hidden");
-                    return;
-                  }
-
-                  // Filter products based on search query
-                  const results = products.filter(
-                    (product) =>
-                      product.name.toLowerCase().includes(query) ||
-                      product.brand.toLowerCase().includes(query),
-                  );
-
-                  // Update dropdown content
-                  if (results.length > 0) {
-                    dropdownContent.innerHTML = results
-                      .map(
-                        (product) => `
-                <div class="px-4 py-3 hover:bg-white/5 border-b border-border-dark last:border-b-0 cursor-pointer transition-colors group" onclick="selectProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}')"
-                  <div class="flex items-start gap-3">
-                    <img src="${product.image}" alt="${product.name}" class="w-12 h-12 rounded bg-slate-700 object-cover flex-shrink-0" />
-                    <div class="flex-1 min-w-0">
-                      <h4 class="text-sm font-semibold text-white group-hover:text-primary transition-colors truncate">${product.name}</h4>
-                      <p class="text-xs text-slate-400 mb-1">${product.brand}</p>
-                      <div class="flex items-center justify-between">
-                        <span class="text-sm font-bold text-primary">$${product.price.toFixed(2)}</span>
-                        <div class="flex items-center text-yellow-500 text-xs">
-                          <span class="material-symbols-outlined text-xs">star</span>
-                          <span class="ml-0.5 text-slate-400">${product.rating} (${product.reviews})</span>
-                        </div>
-                      </div>
-                    </div>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <span
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Nike</span
+                  >
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined text-xs">star</span>
+                    <span class="text-[10px] font-bold ml-1 text-slate-400"
+                      >4.8 (1.2k)</span
+                    >
                   </div>
                 </div>
-              `,
-                      )
-                      .join("");
-                    emptyState.classList.add("hidden");
-                  } else {
-                    dropdownContent.innerHTML = "";
-                    emptyState.classList.remove("hidden");
-                  }
+                <h3
+                  class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
+                >
+                  Air Zoom Pegasus 40 'Phoenix'
+                </h3>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-lg font-black text-primary">$130.00</span>
+                  <span class="text-xs text-slate-500 line-through"
+                    >$160.00</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Product Card 2 -->
+            <div
+              class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
+              >
+                <img
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  data-alt="Chunky white and neon accent athletic sneaker"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNwZjuiuLMLipJIkrO3T_PuESwiNnn0VXLtcWnA_Od3SBHCipUeGSz8UmcUbfWQ92h0KjeyEQQOYb-Jja7BOKUKqlh34HsitAif8P1KJOGUfMJ2YC-UYA-YqT_cZugVtZjeX5JWNj9-_74IBvzhXx6UN3vzveu8AGEnwqbIFzl6gmUah5bbPMe9W4XansxTtQ3czQq6YQRPowiEQ8zif6wu4B7KX1IAsgXXBvO4HrqupId8319o_vcP6hEZi-ghH2rui6RgjQB4-8"
+                />
+                <button
+                  class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >favorite</span
+                  >
+                </button>
+                <div
+                  class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                >
+                  <button
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
+                  >
+                    Quick Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <span
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Adidas</span
+                  >
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined text-xs">star</span>
+                    <span class="text-[10px] font-bold ml-1 text-slate-400"
+                      >4.9 (840)</span
+                    >
+                  </div>
+                </div>
+                <h3
+                  class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
+                >
+                  Ultraboost Light Cloud White
+                </h3>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-lg font-black text-primary">$190.00</span>
+                </div>
+              </div>
+            </div>
+            <!-- Product Card 3 -->
+            <div
+              class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
+              >
+                <img
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  data-alt="Neon green technical running shoe"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBtHHsM5mVIqbtU_dPglX7NqpA0Jhe_GuAJKodUDCL09QkHLM6oWN9uOBzORROJu4yhV2xHWMerKs9bdUL27OsAzxslPHX45wG_B18hKVsjlZD22P_SX7nVkF9ns7f6glG8Aa5-NFdXMfiCeoERw42xLEIOx3Z4SvsW53yslgTGdfaQYx9kpJPCVHcW8ZcluS9rpVB1nGaEzDLoeMvndh6BLqYaCWz-SQ7zrv9BtDa3nmDi8H91r5s6FNldsmMx06MIX-flPYe0wg"
+                />
+                <div class="absolute top-3 left-3">
+                  <span
+                    class="px-2 py-1 bg-red-600 text-[10px] font-black uppercase text-white rounded"
+                    >Low Stock</span
+                  >
+                </div>
+                <button
+                  class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >favorite</span
+                  >
+                </button>
+                <div
+                  class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                >
+                  <button
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
+                  >
+                    Quick Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <span
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Brooks</span
+                  >
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined text-xs">star</span>
+                    <span class="text-[10px] font-bold ml-1 text-slate-400"
+                      >4.7 (312)</span
+                    >
+                  </div>
+                </div>
+                <h3
+                  class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
+                >
+                  Ghost 15 'Electric Glow'
+                </h3>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-lg font-black text-primary">$140.00</span>
+                </div>
+              </div>
+            </div>
+            <!-- Product Card 4 -->
+            <div
+              class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
+              >
+                <img
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  data-alt="Dark gray trail running shoe profile"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxXgF_JrrFqowyNGX7AVc9FjQZE5WLSz4uGx1BNzKjdr2qSMZCrU_acQOPaykZRleFp-hGjMF83rtUtd8J6n6w6-1uKhHO1DZyvP2UOSLU5_EKqLmYky9Xlp7EOUi9kY9x10obHOvbTflgYHu6lw8Q5w4bmUIOG3U8vU8l6P3Ywr4rUOW4TKYo2szb-L_mUgavglW0HP28J4jIdRwBnQNQbsA63CXU86onDL0XC8z5SwDH0KbAXjEbkvirvzMSCRKH36YknUhI4fI"
+                />
+                <button
+                  class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >favorite</span
+                  >
+                </button>
+                <div
+                  class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                >
+                  <button
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
+                  >
+                    Quick Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <span
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Hoka</span
+                  >
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined text-xs">star</span>
+                    <span class="text-[10px] font-bold ml-1 text-slate-400"
+                      >4.9 (2.1k)</span
+                    >
+                  </div>
+                </div>
+                <h3
+                  class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
+                >
+                  Speedgoat 5 Trail Master
+                </h3>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-lg font-black text-primary">$155.00</span>
+                </div>
+              </div>
+            </div>
+            <!-- Product Card 5 -->
+            <div
+              class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
+              >
+                <img
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  data-alt="Classic black and white training shoe"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBspg5ExVtpJMl-JO4itD0faqVI5Cmdi9h92QEG5ai0B0mC2d7RmxovjXDWoJCnnTj5iiMTOY3v_zI427N0H_-oEsWxlnBV5hPjsZ7cV5C_4frDCTjRccrqMymSlCThGB5Wht-pSv-qnByS3hmnnzOV7N8BFbgDrr_Q9ZjABtGYbBsFfIQoY7a2UN7xbIgDeewYL5tKVIOR7U2sCle3HgbiMmTGkpJMuC15v2Lv0TSO9XacO_qkVMx_D5HlqpO5uq0AtTLnrye9KK8"
+                />
+                <button
+                  class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >favorite</span
+                  >
+                </button>
+                <div
+                  class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                >
+                  <button
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
+                  >
+                    Quick Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <span
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Under Armour</span
+                  >
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined text-xs">star</span>
+                    <span class="text-[10px] font-bold ml-1 text-slate-400"
+                      >4.6 (520)</span
+                    >
+                  </div>
+                </div>
+                <h3
+                  class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
+                >
+                  HOVR Phantom 3 Blackout
+                </h3>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-lg font-black text-primary">$160.00</span>
+                </div>
+              </div>
+            </div>
+            <!-- Product Card 6 -->
+            <div
+              class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20"
+              >
+                <img
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  data-alt="High performance turquoise athletic shoe"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q"
+                />
+                <button
+                  class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >favorite</span
+                  >
+                </button>
+                <div
+                  class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                >
+                  <button
+                    class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg"
+                  >
+                    Quick Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <span
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >New Balance</span
+                  >
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined text-xs">star</span>
+                    <span class="text-[10px] font-bold ml-1 text-slate-400"
+                      >4.8 (1.5k)</span
+                    >
+                  </div>
+                </div>
+                <h3
+                  class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors"
+                >
+                  Fresh Foam 1080 v12
+                </h3>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-lg font-black text-primary">$165.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Load More / Pagination -->
+          <div class="mt-12 flex flex-col items-center gap-6">
+            <p class="text-sm font-medium text-slate-500">
+              Showing 6 of 128 products
+            </p>
+            <div
+              class="w-64 h-1.5 bg-slate-200 dark:bg-border-dark rounded-full"
+            >
+              <div class="w-[5%] h-full bg-primary rounded-full"></div>
+            </div>
+            <button
+              class="px-10 py-4 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-full text-sm font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white hover:border-primary transition-all shadow-lg active:scale-95"
+            >
+              Load More Results
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer Simulation -->
+    <footer
+      class="mt-20 border-t border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark py-12 px-4 lg:px-10"
+    >
+      <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
+        <div class="col-span-2">
+          <div class="flex items-center gap-2 mb-6">
+            <div
+              class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined text-xl">bolt</span>
+            </div>
+            <h2 class="text-2xl font-black italic tracking-tighter">
+              BROSPORT
+            </h2>
+          </div>
+          <p
+            class="text-slate-500 dark:text-slate-400 max-w-sm mb-6 leading-relaxed"
+          >
+            Premium sportswear for those who push boundaries. Experience the
+            ultimate performance with our curated selection of elite gear.
+          </p>
+          <div class="flex gap-4">
+            <div
+              class="w-10 h-10 rounded-full border border-slate-200 dark:border-border-dark flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
+            >
+              <span class="material-symbols-outlined">share</span>
+            </div>
+            <div
+              class="w-10 h-10 rounded-full border border-slate-200 dark:border-border-dark flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
+            >
+              <span class="material-symbols-outlined">chat</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-black uppercase tracking-widest text-xs mb-6">
+            Quick Links
+          </h4>
+          <ul
+            class="space-y-4 text-sm font-medium text-slate-500 dark:text-slate-400"
+          >
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Men's Collection
+            </li>
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Women's Collection
+            </li>
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Team Wear
+            </li>
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Accessories
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-black uppercase tracking-widest text-xs mb-6">
+            Support
+          </h4>
+          <ul
+            class="space-y-4 text-sm font-medium text-slate-500 dark:text-slate-400"
+          >
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Order Status
+            </li>
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Returns &amp; Exchanges
+            </li>
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Shipping Policy
+            </li>
+            <li class="hover:text-primary cursor-pointer transition-colors">
+              Contact Us
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-100 dark:border-border-dark flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-500"
+      >
+        <p>© 2024 Brosport Performance. All rights reserved.</p>
+        <div class="flex gap-6 uppercase tracking-widest">
+          <a class="hover:text-primary" href="#">Privacy Policy</a>
+          <a class="hover:text-primary" href="#">Terms of Service</a>
+          <script>
+            // Product Database
+            const products = [
+              {
+                id: 1,
+                name: "Air Zoom Pegasus 40 'Phoenix'",
+                brand: "Nike",
+                price: 130.0,
+                originalPrice: 160.0,
+                rating: 4.8,
+                reviews: 650,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
+              },
+              {
+                id: 2,
+                name: "Ultraboost Light Cloud White",
+                brand: "Adidas",
+                price: 190.0,
+                rating: 4.9,
+                reviews: 840,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuDNwZjuiuLMLipJIkrO3T_PuESwiNnn0VXLtcWnA_Od3SBHCipUeGSz8UmcUbfWQ92h0KjeyEQQOYb-Jja7BOKUKqlh34HsitAif8P1KJOGUfMJ2YC-UYA-YqT_cZugVtZjeX5JWNj9-_74IBvzhXx6UN3vzveu8AGEnwqbIFzl6gmUah5bbPMe9W4XansxTtQ3czQq6YQRPowiEQ8zif6wu4B7KX1IAsgXXBvO4HrqupId8319o_vcP6hEZi-ghH2rui6RgjQB4-8",
+              },
+              {
+                id: 3,
+                name: "Ghost 15 'Electric Glow'",
+                brand: "Brooks",
+                price: 140.0,
+                rating: 4.7,
+                reviews: 312,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCBtHHsM5mVIqbtU_dPglX7NqpA0Jhe_GuAJKodUDCL09QkHLM6oWN9uOBzORROJu4yhV2xHWMerKs9bdUL27OsAzxslPHX45wG_B18hKVsjlZD22P_SX7nVkF9ns7f6glG8Aa5-NFdXMfiCeoERw42xLEIOx3Z4SvsW53yslgTGdfaQYx9kpJPCVHcW8ZcluS9rpVB1nGaEzDLoeMvndh6BLqYaCWz-SQ7zrv9BtDa3nmDi8H91r5s6FNldsmMx06MIX-flPYe0wg",
+              },
+              {
+                id: 4,
+                name: "Speedgoat 5 Trail Master",
+                brand: "Hoka",
+                price: 155.0,
+                rating: 4.9,
+                reviews: 2100,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuBxXgF_JrrFqowyNGX7AVc9FjQZE5WLSz4uGx1BNzKjdr2qSMZCrU_acQOPaykZRleFp-hGjMF83rtUtd8J6n6w6-1uKhHO1DZyvP2UOSLU5_EKqLmYky9Xlp7EOUi9kY9x10obHOvbTflgYHu6lw8Q5w4bmUIOG3U8vU8l6P3Ywr4rUOW4TKYo2szb-L_mUgavglW0HP28J4jIdRwBnQNQbsA63CXU86onDL0XC8z5SwDH0KbAXjEbkvirvzMSCRKH36YknUhI4fI",
+              },
+              {
+                id: 5,
+                name: "HOVR Phantom 3 Blackout",
+                brand: "Under Armour",
+                price: 160.0,
+                rating: 4.6,
+                reviews: 520,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuBspg5ExVtpJMl-JO4itD0faqVI5Cmdi9h92QEG5ai0B0mC2d7RmxovjXDWoJCnnTj5iiMTOY3v_zI427N0H_-oEsWxlnBV5hPjsZ7cV5C_4frDCTjRccrqMymSlCThGB5Wht-pSv-qnByS3hmnnzOV7N8BFbgDrr_Q9ZjABtGYbBsFfIQoY7a2UN7xbIgDeewYL5tKVIOR7U2sCle3HgbiMmTGkpJMuC15v2Lv0TSO9XacO_qkVMx_D5HlqpO5uq0AtTLnrye9KK8",
+              },
+              {
+                id: 6,
+                name: "Fresh Foam 1080 v12",
+                brand: "New Balance",
+                price: 165.0,
+                rating: 4.8,
+                reviews: 1500,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
+              },
+              {
+                id: 7,
+                name: "Invincible 3",
+                brand: "Nike",
+                price: 180.0,
+                rating: 4.7,
+                reviews: 890,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
+              },
+              {
+                id: 8,
+                name: "Gel-Kayano 30",
+                brand: "Asics",
+                price: 175.0,
+                rating: 4.8,
+                reviews: 1200,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
+              },
+              {
+                id: 9,
+                name: "Running Shorts Pro",
+                brand: "Nike",
+                price: 65.0,
+                rating: 4.6,
+                reviews: 340,
+                image:
+                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCm7-ZSXPGfGebRG4-gp_iCnztVoUy4DHVjybtbxinilPpVlUQOQ_GpZ6SfXR5r4pGJK8qrFDGp47GvaOASWS_8Nqv8jdGKKo0SdnfAjxjKfufOaOOKXYQGyavh1dMO7Fi6T9lR6ubaODd1GDkJs2oNUdgh8LXTqS_sBAF7oXNA0vMnNDZZWcpq7z5lrdLixzOm6MGpoVbEMtSBWnVnUI9an4Ps7UEiXQxsi6Qu0146Rl_jhx3yXnRSYN8Sr3n-HdiAAvspY3aLS_Q",
+              },
+            ];
 
-                  searchDropdown.classList.remove("hidden");
-                });
+            const searchInput = document.getElementById("searchInput");
+            const searchDropdown = document.getElementById("searchDropdown");
+            const dropdownContent = document.getElementById("dropdownContent");
+            const emptyState = document.getElementById("emptyState");
 
-                // Handle Enter key press - Show search results
-                searchInput.addEventListener("keypress", (e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    const query = e.target.value.trim();
+            // Search functionality
+            searchInput.addEventListener("input", async (e) => {
+              const query = e.target.value.trim();
 
-                    if (query.length === 0) return;
+              if (query.length === 0) {
+                searchDropdown.classList.add("hidden");
+                return;
+              }
 
-                    searchDropdown.classList.add("hidden");
-                    searchByKeyword(query);
-                  }
-                });
+              try {
+                const res = await fetch(
+                  `/api/v1/search/autocomplete?keyword=${encodeURIComponent(query)}`,
+                );
+                const data = await res.json();
 
-                // Click outside to close dropdown
-                document.addEventListener("click", (e) => {
-                  if (
-                    !e.target.closest("#searchInput") &&
-                    !e.target.closest("#searchDropdown")
-                  ) {
-                    searchDropdown.classList.add("hidden");
-                  }
-                });
+                // Xử lý linh hoạt: lấy mảng từ data.content (nếu có) hoặc chính data
+                const products = data.content || data;
 
-                // Focus to show dropdown
-                searchInput.addEventListener("focus", (e) => {
-                  if (e.target.value.length > 0) {
-                    searchDropdown.classList.remove("hidden");
-                  }
-                });
+                if (products && products.length > 0) {
+                  dropdownContent.innerHTML = products
+                    .map(
+                      (item) => `
+<div class="px-4 py-3 hover:bg-white/10 cursor-pointer flex items-center gap-3 transition-colors"
+     onclick="selectProduct('${item.slug}', '${item.name.replace(/'/g, "\\'")}')">
 
-                // Search by keyword - Update page results
-                function searchByKeyword(query) {
-                  const searchQuery = query.toLowerCase().trim();
+  <div class="w-12 h-12 shrink-0 bg-white/5 rounded-md border border-border-dark overflow-hidden flex items-center justify-center">
+    <img src="${item.thumbnail || ""}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.style.display='none'"/>
+  </div>
 
-                  // Filter products based on search query
-                  const results = products.filter(
-                    (product) =>
-                      product.name.toLowerCase().includes(searchQuery) ||
-                      product.brand.toLowerCase().includes(searchQuery),
-                  );
+  <div class="flex-1">
+    <h4 class="text-sm font-semibold text-white line-clamp-1">${item.name}</h4>
+    <div class="flex gap-2 items-center mt-1">
+      ${item.showPrice ? `<span class="text-xs font-bold text-primary">${item.showPrice.toLocaleString("vi-VN")}đ</span>` : ""}
+      ${item.originPrice && item.originPrice > item.showPrice ? `<span class="text-[10px] text-slate-500 line-through">${item.originPrice.toLocaleString("vi-VN")}đ</span>` : ""}
+    </div>
+  </div>
 
-                  // Update search results header
-                  const resultTitle = document.querySelector("h2");
-                  if (resultTitle) {
-                    resultTitle.innerHTML = `RESULTS FOR <span class="text-primary italic">'${query.toUpperCase()}'</span>`;
-                  }
+</div>
+`,
+                    )
+                    .join("");
 
-                  // Update item count text
-                  const resultText = document.querySelector("main > div p");
-                  if (resultText) {
-                    resultText.textContent = `Found ${Math.max(results.length, 1)} item${results.length !== 1 ? "s" : ""} in premium performance gear`;
-                  }
+                  emptyState.classList.add("hidden");
+                } else {
+                  dropdownContent.innerHTML = "";
+                  emptyState.classList.remove("hidden");
+                }
 
-                  // Update product grid
-                  const productGrid = document.getElementById("productGrid");
-                  if (productGrid) {
-                    if (results.length > 0) {
-                      productGrid.innerHTML = results
-                        .map(
-                          (product) => `
-                    <div class="group relative flex flex-col bg-white dark:bg-surface-dark border border-slate-100 dark:border-border-dark rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1">
-                      <div class="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-black/20 cursor-pointer" onclick="selectProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}')"
-                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="${product.image}" alt="${product.name}" />
-                        <button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full transition-colors" onclick="event.stopPropagation()">
-                          <span class="material-symbols-outlined text-sm">favorite</span>
-                        </button>
-                        <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                          <button class="w-full py-3 bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg" onclick="event.stopPropagation()">
-                            Quick Add to Cart
-                          </button>
-                        </div>
+                searchDropdown.classList.remove("hidden");
+              } catch (err) {
+                console.error("Lỗi khi tìm kiếm:", err);
+              }
+            });
+
+            // Handle Enter key press - Show search results
+            searchInput.addEventListener("keypress", (e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const query = e.target.value.trim();
+
+                if (query.length === 0) return;
+
+                searchDropdown.classList.add("hidden");
+                searchByKeyword(query);
+              }
+            });
+
+            // Click outside to close dropdown
+            document.addEventListener("click", (e) => {
+              if (
+                !e.target.closest("#searchInput") &&
+                !e.target.closest("#searchDropdown")
+              ) {
+                searchDropdown.classList.add("hidden");
+              }
+            });
+
+            // Focus to show dropdown
+            searchInput.addEventListener("focus", (e) => {
+              if (e.target.value.length > 0) {
+                searchDropdown.classList.remove("hidden");
+              }
+            });
+
+            // Search by keyword - Update page results
+            async function searchByKeyword(query) {
+              try {
+                const res = await fetch(
+                  `/api/v1/search/products?keyword=${encodeURIComponent(query)}&page=0&size=9`,
+                );
+
+                const data = await res.json();
+                const results = data.content;
+
+                // Title
+                document.querySelector("h2").innerHTML =
+                  `RESULTS FOR <span class="text-primary italic">'${query.toUpperCase()}'</span>`;
+
+                // Count
+                document.querySelector("main > div p").textContent =
+                  `Found ${data.totalElements} items`;
+
+                const productGrid = document.getElementById("productGrid");
+
+                if (results.length > 0) {
+                  productGrid.innerHTML = results
+                    .map(
+                      (product) => `
+                    <div class="group flex flex-col bg-white dark:bg-surface-dark rounded-xl overflow-hidden">
+
+                      <div class="aspect-[4/5] cursor-pointer"
+                           onclick="window.location.href='/product/${product.slug}'">
+                        <img src="${product.thumbnail}" class="w-full h-full object-cover"/>
                       </div>
+
                       <div class="p-5">
-                        <div class="flex items-center justify-between mb-1">
-                          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">${product.brand}</span>
-                          <div class="flex items-center text-yellow-500">
-                            <span class="material-symbols-outlined text-xs">star</span>
-                            <span class="text-[10px] font-bold ml-1 text-slate-400">${product.rating} (${product.reviews})</span>
-                          </div>
-                        </div>
-                        <h3 class="text-base font-bold leading-tight mb-2 group-hover:text-primary transition-colors cursor-pointer" onclick="selectProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}')">${product.name}</h3>
-                        <div class="flex items-baseline gap-2">
-                          <span class="text-lg font-black text-primary">$${product.price.toFixed(2)}</span>
-                          ${product.originalPrice ? `<span class="text-xs text-slate-500 line-through">$${product.originalPrice.toFixed(2)}</span>` : ""}
+                        <span class="text-xs text-slate-400 uppercase">
+                          ${product.brandName}
+                        </span>
+
+                        <h3 class="font-bold">${product.name}</h3>
+
+                        <div class="flex gap-2 items-center">
+                          <span class="text-primary font-bold">
+                            ${product.showPrice.toLocaleString()}đ
+                          </span>
+
+                          <span class="text-xs line-through text-slate-400">
+                            ${product.originPrice.toLocaleString()}đ
+                          </span>
                         </div>
                       </div>
+
                     </div>
                   `,
-                        )
-                        .join("");
-                    } else {
-                      productGrid.innerHTML = `
+                    )
+                    .join("");
+                } else {
+                  productGrid.innerHTML = `
                     <div class="col-span-full text-center py-12">
-                      <span class="material-symbols-outlined text-5xl text-slate-300 mb-4 block">search_off</span>
-                      <h3 class="text-lg font-bold text-slate-600 dark:text-slate-300 mb-2">No products found</h3>
-                      <p class="text-sm text-slate-500 dark:text-slate-400">Try searching for different keywords</p>
+                      <h3>No products found</h3>
                     </div>
                   `;
-                    }
-                  }
-
-                  // Update showing count
-                  const showingText = document.querySelector(
-                    "main > div:nth-child(3) p",
-                  );
-                  if (showingText) {
-                    const count = Math.min(results.length, 6);
-                    showingText.textContent = `Showing ${count} of ${Math.max(results.length, 1)} products`;
-                  }
-
-                  console.log(
-                    "Search:",
-                    query,
-                    "Found:",
-                    results.length,
-                    "results",
-                  );
                 }
+              } catch (err) {
+                console.error(err);
+              }
+            }
 
-                // Select product function - Navigate to product detail page
-                function selectProduct(productId, productName) {
-                  searchInput.value = productName;
-                  // Navigate to product detail page with product ID
-                  window.location.href = `/product/${productId}`;
-                }
-            </script>
+            // Select product function - Navigate to product detail page
+            function selectProduct(slug, name) {
+              searchInput.value = name;
+              window.location.href = `/product/${slug}`;
+            }
+          </script>
         </div>
-    </div>
-</footer>
-</body>
+      </div>
+    </footer>
+  </body>
 </html>

@@ -90,7 +90,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public ProductResponse getProductBySlug(String slug) {
-        return null;
+        // Truy vấn dữ liệu thật từ database
+        Product product = productRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Sản phẩm không tồn tại với slug: " + slug));
+
+        // Chuyển đổi Entity sang DTO để trả về
+        return productMapper.toResponse(product);
     }
 
     @Override
