@@ -11,6 +11,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductNameResponse {
+  String slug;
   String name;
   String thumbnail;
+  Long showPrice;
+  Long originPrice;
 }
