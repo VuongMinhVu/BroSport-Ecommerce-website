@@ -33,25 +33,23 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-            .csrf(csrf -> csrf.disable()) // Tạm thời disable CSRF
-            .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests(auth -> auth
-                    .anyRequest().permitAll() // Cho phép tất cả request
-            )
-            .formLogin(form -> form
-                    .loginPage("/login")
-                    .loginProcessingUrl("/login")
-                    .usernameParameter("email")
-                    .passwordParameter("password")
-                    .defaultSuccessUrl("/", true)
-                    .failureUrl("/login?error")
-                    .permitAll()
-            )
-            .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout")
-                    .permitAll()
-            );
+        .csrf(csrf -> csrf.disable()) // Tạm thời disable CSRF
+        .authenticationProvider(authenticationProvider())
+        .authorizeHttpRequests(auth -> auth
+            .anyRequest().permitAll() // Cho phép tất cả request
+        )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .loginProcessingUrl("/login")
+            .usernameParameter("email")
+            .passwordParameter("password")
+            .defaultSuccessUrl("/", true)
+            .failureUrl("/login?error")
+            .permitAll())
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout")
+            .permitAll());
 
     return http.build();
   }
