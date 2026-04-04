@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 params.append('page', filters.page);
                 params.append('size', filters.size);
 
-                const response = await fetch(`/api/v1/search/products?${params.toString()}`, {
+                const response = await fetch(`/api/v1/products?${params.toString()}`, {
                     signal: this.abortController.signal,
                     headers: {
                         'Accept': 'application/json'
