@@ -216,7 +216,24 @@
 .sports-swiper .swiper-button-prev:hover {
     background-color: #ff6600;
 }
+
+        /* Thiết lập khung hình chữ nhật đứng cho Sport Swiper */
+    .sports-swiper .swiper-slide {
+    aspect-ratio: 3 / 4 !important; /* Tỷ lệ 3 rộng : 4 cao */
+    height: auto !important;
+    overflow: hidden;
+    }
+
+    .sports-swiper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Giúp ảnh lấp đầy khung hình chữ nhật mà không bị dãn */
+    display: block;
+    transition: transform 0.5s ease-out;
+    }
     </style>
+
+
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display transition-colors duration-300 min-h-screen">
@@ -267,7 +284,7 @@
                 <div class="absolute inset-0 z-0">
                     <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"></div>
                     <img alt="Athlete training" class="h-full w-full object-cover object-center"
-                         src="https://images.stockcake.com/public/f/a/d/fad38060-fc8e-44e2-8680-ea0378ea06a4_large/dynamic-running-athlete-stockcake.jpg" />
+                         src="https://www.shutterstock.com/image-photo/dynamic-image-muscular-man-athlete-600nw-2464643573.jpg" />
                 </div>
                 <div class="relative z-20 w-full max-w-7xl text-center lg:text-left flex flex-col items-center lg:items-start space-y-8">
                     <div class="space-y-2">
@@ -451,12 +468,12 @@
                     VIEW ALL <span class="material-symbols-outlined transition-transform group-hover:translate-x-2">arrow_forward</span>
                 </a>
             </div>
-            <!-- Skeleton -->
-            <div id="accessories-skeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-                <div th:each="i : ${#numbers.sequence(1,4)}" class="skeleton h-72 rounded-3xl"></div>
+
+            <div id="accessories-skeleton" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                <div th:each="i : ${#numbers.sequence(1,10)}" class="skeleton h-80 rounded-2xl"></div>
             </div>
-            <!-- Accessories grid (populated by JS) -->
-            <div id="accessories-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"></div>
+
+            <div id="accessories-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"></div>
         </div>
     </section>
 
@@ -589,29 +606,56 @@
 
     // Extract unique colors from productDetails
     function getUniqueColors(product) {
-        if (product.productDetails && product.productDetails.length > 0) {
-            const seen = new Set();
-            return product.productDetails.filter(d => {
-                if (!d.color) return false;
-                const key = d.color.id || d.color.name;
-                if (seen.has(key)) return false;
-                seen.add(key);
+    // productDetails chứa danh sách các biến thể
+    const details = product.productDetails || [];
+    if (details.length > 0) {
+        const seen = new Set();
+        return details
+            .map(d => d.color) // d.color lúc này là chuỗi "Đỏ", "Đen"...
+            .filter(colorName => {
+                if (!colorName) return false;
+                const normalized = colorName.trim();
+                if (seen.has(normalized)) return false;
+                seen.add(normalized);
                 return true;
-            }).map(d => d.color);
-        }
-        if (product.colors && product.colors.length > 0) return product.colors;
-        return [];
+            })
+            .map(name => name.trim());
     }
+    return [];
+}
 
     // Color dots HTML
     function renderColorDots(colors, theme = 'light') {
-        if (!colors || colors.length === 0) return '<span style="font-size:10px;color:#ccc;">No color</span>';
-        return colors.slice(0, 5).map((c, i) => {
-            const hex = c.hexCode || c.code || '#888888';
-            const active = i === 0 ? 'outline: 2px solid #FF7A00; outline-offset: 2px; transform: scale(1.1);' : '';
-            return `<div class="color-dot" style="background-color:${hex};${active}" title="${c.name || ''}" onclick="selectColorDot(this)"></div>`;
-        }).join('');
-    }
+    if (!colors || colors.length === 0) return '<span class="text-[10px] text-gray-500 italic">No color</span>';
+
+    // Bảng ánh xạ: LUÔN để key là chữ thường
+    const colorMap = {
+        'đỏ': '#FF0000',
+        'đen': '#000000',
+        'trắng': '#FFFFFF',
+        'xanh dương': '#0000FF',
+        'xám': '#808080',
+        'vàng': '#FFFF00',
+        'cam': '#FF6600',
+        'hồng': '#FFC0CB',
+        'tím': '#800080'
+    };
+
+    return colors.slice(0, 5).map((colorName, i) => {
+        // colorName lúc này là chuỗi "Đỏ", ta chuyển về "đỏ" để tra cứu
+        const normalizedName = colorName.toLowerCase();
+        const hex = colorMap[normalizedName] || '#888';
+
+        const activeClass = i === 0 ? 'outline outline-2 outline-primary outline-offset-2 scale-110' : '';
+
+        return `
+            <div class="color-dot ${activeClass}"
+                 style="background-color: ${hex}; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;"
+                 title="${colorName}"
+                 onclick="selectColorDot(this)">
+            </div>`;
+    }).join('');
+}
 
     // Color dot selection
     function selectColorDot(el) {
@@ -706,9 +750,8 @@
         const colors = getUniqueColors(product);
         const colorsHtml = renderColorDots(colors, 'light');
         const image = getProductImage(product);
-        const price = product.price ? formatVND(product.price) : 'Liên hệ';
-        const brand = product.brandName || (product.brand && product.brand.name) || 'BROSPORT';
-
+        const price = product.showPrice ? formatVND(product.showPrice) : 'Liên hệ';
+        const brand = product.brand || 'BROSPORT';
         return `
         <div class="product-card group cursor-pointer flex flex-col"
              onclick="window.location='/products/${product.id}'"
@@ -890,7 +933,7 @@
     if (sports.length === 0) return;
 
     container.innerHTML = sports.map(sport => {
-        const image = sport.imageUrl || 'https://via.placeholder.com/400x600?text=Sport';
+        const image = sport.logoUrl || 'https://via.placeholder.com/400x600?text=Sport';
 
         return `
         <div class="swiper-slide group cursor-pointer overflow-hidden rounded-sm" style="background: transparent;">
@@ -925,43 +968,60 @@
        (fallback to GET /api/v1/products?size=4)
        ========================================================= */
     async function loadAccessories() {
-        // Try accessories category first
-        let data = await apiFetch('/products?categorySlug=accessories&size=4');
-        if (!data || (data.content || data).length === 0) {
-            data = await apiFetch('/products?size=4');
-        }
-
-        const grid = document.getElementById('accessories-grid');
-
-        if (!data) { showContent('accessories-skeleton', 'accessories-grid'); return; }
-
-        const products = Array.isArray(data) ? data : (data.content || []);
-
-        grid.innerHTML = products.map(product => {
-            const image    = getProductImage(product);
-            const price    = product.price ? formatVND(product.price) : 'Liên hệ';
-            const category = (product.categoryName || (product.category && product.category.name) || 'Equipment').toUpperCase();
-
-            return `
-            <div class="group cursor-pointer" onclick="window.location='/products/${product.id}'">
-                <div class="relative aspect-square rounded-3xl overflow-hidden bg-surface-dark mb-6">
-                    <img alt="${product.name}"
-                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                         src="${image}"
-                         onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
-                    <button class="absolute bottom-6 right-6 h-14 w-14 rounded-full bg-white text-black flex items-center justify-center opacity-0 translate-y-6 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 shadow-xl"
-                            onclick="event.stopPropagation(); addToCart(${product.id})">
-                        <span class="material-symbols-outlined text-2xl font-bold">shopping_bag</span>
-                    </button>
-                </div>
-                <p class="text-[10px] font-black tracking-widest text-slate-500 uppercase mb-1">${category}</p>
-                <h4 class="font-bold text-lg text-white uppercase tracking-tight">${product.name}</h4>
-                <p class="text-primary font-black text-xl mt-1">${price}</p>
-            </div>`;
-        }).join('');
-
-        showContent('accessories-skeleton', 'accessories-grid');
+    // 1. Gọi API lấy 10 sản phẩm
+    let data = await apiFetch('/products?categorySlug=accessories&size=10');
+    if (!data || (data.content || data).length === 0) {
+        data = await apiFetch('/products?size=10');
     }
+
+    const grid = document.getElementById('accessories-grid');
+    if (!data) { showContent('accessories-skeleton', 'accessories-grid'); return; }
+
+    const products = Array.isArray(data) ? data : (data.content || []);
+
+    // 2. Render theo cấu trúc của Flash Sale
+    grid.innerHTML = products.map(product => {
+        const colors = getUniqueColors(product);
+        const colorsHtml = renderColorDots(colors, 'dark'); // Dùng theme dark cho nền đen
+        const image = getProductImage(product);
+        const price = product.price ? formatVND(product.price) : 'Liên hệ';
+        const brand = product.brandName || (product.brand && product.brand.name) || 'BROSPORT';
+
+        return `
+        <div class="product-card group cursor-pointer flex flex-col"
+             onclick="window.location='/products/${product.id}'">
+
+            <div class="relative aspect-square w-full overflow-hidden mb-4 bg-surface-dark rounded-xl">
+                <img src="${image}" alt="${product.name}"
+     class="w-full h-full object-cover block transform-gpu transition-transform duration-700 ease-in-out group-hover:scale-110"
+     style="backface-visibility: hidden; will-change: transform;"
+     onerror="this.src='https://via.placeholder.com/500x625?text=Product'">
+
+                <button class="absolute bottom-4 right-4 bg-primary text-white p-3 rounded-full opacity-0 group-hover:opacity-100 hover:scale-110 transition-all shadow-xl z-10"
+                        onclick="event.stopPropagation(); addToCart(${product.id})">
+                    <span class="material-symbols-outlined" style="font-size:22px;">add_shopping_cart</span>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <div class="flex gap-2 mb-1 min-h-[20px] items-center">
+                    ${colorsHtml}
+                </div>
+                <p class="text-[11px] text-gray-500 font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
+                    ${brand}
+                </p>
+                <h3 class="font-medium text-[15px] text-white leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                    ${product.name}
+                </h3>
+                <p class="text-primary font-black text-lg mt-1">
+                    ${price}
+                </p>
+            </div>
+        </div>`;
+    }).join('');
+
+    showContent('accessories-skeleton', 'accessories-grid');
+}
 
     /* =========================================================
        8. ADD TO CART — POST /api/v1/cart
