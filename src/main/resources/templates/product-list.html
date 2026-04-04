@@ -62,7 +62,7 @@
     <!-- Top Navigation Bar -->
     <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
       <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
-        <a class="flex items-center gap-2 group flex-shrink-0" href="/">
+        <a class="flex items-center gap-2 group flex-shrink-0" href="/homepage">
           <div
             class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
             <span class="material-symbols-outlined font-bold">bolt</span>
@@ -71,21 +71,26 @@
         </a>
 
         <nav class="hidden xl:flex items-center gap-8 h-full">
-          <a class="nav-link" href="#">New Arrivals</a>
-          <a class="nav-link" href="#">Men</a>
-          <a class="nav-link" href="#">Women</a>
-          <a class="nav-link" href="#">Accessories</a>
-          <a class="nav-link" href="#">Brands</a>
-          <a class="nav-link" href="#">Sports</a>
+          <a class="nav-link" th:href="@{/products/new-arrivals}">New Arrivals</a>
+          <a class="nav-link" th:href="@{/products/men}"
+            th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
+          <a class="nav-link" th:href="@{/products/women}"
+            th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
+          <a class="nav-link" th:href="@{/products/accessories}"
+            th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
+          <a class="nav-link" th:href="@{/products/brands}"
+            th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
+          <a class="nav-link" th:href="@{/products/sports}"
+            th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
           <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-            href="#">Sales</a>
+            th:href="@{/products/sales}" th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
         </nav>
 
         <div class="flex items-center gap-4">
           <div class="relative hidden lg:block group">
             <span
               class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
-            <input
+            <input id="searchInput"
               class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
               placeholder="Search elite gear..." type="text" />
           </div>
@@ -128,21 +133,58 @@
             </h4>
             <div class="space-y-2">
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input checked="" class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" />
-                <span class="text-sm group-hover:text-primary transition-colors">Running Shoes</span>
+                <input
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="1" />
+                <span class="text-sm group-hover:text-primary transition-colors">Giày Thể Thao</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
-                <span class="text-sm group-hover:text-primary transition-colors">Training</span>
+                <input
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="2" />
+                <span class="text-sm group-hover:text-primary transition-colors">Quần Áo</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
-                <span class="text-sm group-hover:text-primary transition-colors">Basketball</span>
+                <input
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="3" />
+                <span class="text-sm group-hover:text-primary transition-colors">Phụ Kiện</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
-                <span class="text-sm group-hover:text-primary transition-colors">Apparel</span>
+                <input
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="4" />
+                <span class="text-sm group-hover:text-primary transition-colors">Giày Chạy Bộ</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                        type="checkbox" value="5" />
+                <span class="text-sm group-hover:text-primary transition-colors">Giày Đá Bóng</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                        type="checkbox" value="6" />
+                <span class="text-sm group-hover:text-primary transition-colors">Giày Bóng Rổ</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                        type="checkbox" value="7" />
+                <span class="text-sm group-hover:text-primary transition-colors">Áo Thun</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                        type="checkbox" value="8" />
+                <span class="text-sm group-hover:text-primary transition-colors">Quần Dài</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                        type="checkbox" value="9" />
+                <span class="text-sm group-hover:text-primary transition-colors">Quần Short</span>
               </label>
             </div>
           </div>
@@ -153,21 +195,34 @@
             </h4>
             <div class="space-y-2">
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <input
+                  class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="1" />
                 <span class="text-sm group-hover:text-primary transition-colors">Nike</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input checked="" class="rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" />
-                <span class="text-sm group-hover:text-primary transition-colors">Brosport Elite</span>
-              </label>
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <input
+                  class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="2" />
                 <span class="text-sm group-hover:text-primary transition-colors">Adidas</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
-                <input class="rounded border-slate-700 bg-surface text-primary focus:ring-primary" type="checkbox" />
+                <input
+                  class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="3" />
+                <span class="text-sm group-hover:text-primary transition-colors">Puma</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="4" />
                 <span class="text-sm group-hover:text-primary transition-colors">Under Armour</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                        class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                        type="checkbox" value="5" />
+                <span class="text-sm group-hover:text-primary transition-colors">New Balance</span>
               </label>
             </div>
           </div>
@@ -177,19 +232,20 @@
               Price Range
             </h4>
             <div class="px-2">
-              <input class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
-                max="500" min="0" type="range" value="250" />
+              <input id="priceRange"
+                class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="500"
+                min="0" type="range" value="500" />
               <div class="flex justify-between mt-3 text-xs font-medium text-slate-400">
                 <span>$0</span>
                 <span>$500+</span>
               </div>
             </div>
           </div>
-          <button
+          <button id="applyFiltersBtn"
             class="w-full py-3 rounded-lg bg-primary text-background-dark font-bold text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
             Apply Filters
           </button>
-          <button
+          <button id="resetFiltersBtn"
             class="w-full py-3 mt-2 rounded-lg bg-surface text-white font-bold text-sm uppercase tracking-widest border border-white/5 hover:bg-white/5 transition-all">
             Reset
           </button>
@@ -204,10 +260,7 @@
               th:text="${pageTitle ?: 'Performance Gear'}">
               Performance Gear
             </h1>
-            <p class="text-slate-400 mt-1"
-              th:text="${pageSubtitle ?: 'Showing 1,240 results for high-performance athlete gear'}">
-              Showing 1,240 results for high-performance athlete gear
-            </p>
+
           </div>
 
           <div class="flex bg-surface rounded-lg p-1 border border-white/5">
@@ -255,8 +308,10 @@
               </div>
               <div class="flex items-center justify-between mt-auto pt-4">
                 <span class="text-2xl font-black text-primary"
-                  th:text="'$' + ${#numbers.formatDecimal(product.showPrice, 1, 2)}">$99.99</span>
-                <button class="bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                  th:text="${#numbers.formatDecimal(product.showPrice, 0, 'COMMA', 0, 'POINT')} + '$'">99$</span>
+                <button
+                  th:data-detail-id="${product.productDetails != null and !product.productDetails.isEmpty() ? product.productDetails[0].id : ''}"
+                  class="btn-add-to-cart bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
                   <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                 </button>
               </div>
@@ -270,11 +325,14 @@
           </div>
         </div>
         <!-- Pagination -->
-        <div th:if="${totalPages != null and totalPages > 1}" class="mt-16 flex items-center justify-center gap-2">
+        <div id="pagination-container" th:if="${totalPages != null and totalPages > 1}"
+          class="mt-16 flex items-center justify-center gap-2"
+          th:with="baseUrl=${categorySlug != null ? '/products/' + categorySlug : '/products'}">
 
-          <a th:href="@{/products(page=${currentPage - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+          <a th:href="@{__${baseUrl}__(page=${currentPage - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+            th:attr="data-page=${currentPage - 1}"
             th:classappend="${currentPage == 0} ? 'pointer-events-none opacity-50' : ''"
-            class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors">
+            class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors">
             <span class="material-symbols-outlined text-sm">chevron_left</span>
           </a>
 
@@ -287,33 +345,35 @@
       finalEnd=${end >= totalPages ? totalPages - 1 : end}">
 
               <div th:if="${finalStart > 0}" class="flex gap-2">
-                <a th:href="@{/products(page=0, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
-                  class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm">1</a>
+                <a th:href="@{__${baseUrl}__(page=0, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+                  data-page="0"
+                  class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm">1</a>
                 <span th:if="${finalStart > 1}"
                   class="flex h-10 w-10 items-center justify-center text-slate-500 font-bold">...</span>
               </div>
 
               <th:block th:each="i : ${#numbers.sequence(finalStart, finalEnd)}">
-                <a th:href="@{/products(page=${i}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
-                  th:text="${i + 1}"
+                <a th:href="@{__${baseUrl}__(page=${i}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+                  th:attr="data-page=${i}" th:text="${i + 1}"
                   th:classappend="${i == currentPage} ? 'bg-primary text-background-dark border-primary' : 'bg-surface text-slate-400 border-white/10 hover:border-primary/50 text-slate-300'"
-                  class="flex h-10 w-10 items-center justify-center rounded-lg border transition-colors font-bold text-sm">
+                  class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border transition-colors font-bold text-sm">
                 </a>
               </th:block>
 
               <div th:if="${finalEnd < totalPages - 1}" class="flex gap-2">
                 <span th:if="${finalEnd < totalPages - 2}"
                   class="flex h-10 w-10 items-center justify-center text-slate-500 font-bold">...</span>
-                <a th:href="@{/products(page=${totalPages - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
-                  th:text="${totalPages}"
-                  class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm"></a>
+                <a th:href="@{__${baseUrl}__(page=${totalPages - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+                  th:attr="data-page=${totalPages - 1}" th:text="${totalPages}"
+                  class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:border-primary/50 font-bold text-sm"></a>
               </div>
             </th:block>
           </th:block>
 
-          <a th:href="@{/products(page=${currentPage + 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+          <a th:href="@{__${baseUrl}__(page=${currentPage + 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
+            th:attr="data-page=${currentPage + 1}"
             th:classappend="${currentPage >= totalPages - 1} ? 'pointer-events-none opacity-50' : ''"
-            class="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors">
+            class="pagination-btn flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-surface text-slate-400 hover:bg-primary hover:text-background-dark transition-colors">
             <span class="material-symbols-outlined text-sm">chevron_right</span>
           </a>
         </div>
@@ -404,6 +464,18 @@
         Elite.
       </div>
     </footer>
+    <!-- Add to Cart Toast Notification -->
+    <div id="toast-success"
+      class="fixed inset-0 flex items-center justify-center z-[100] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
+      <div
+        class="bg-black/80 text-white rounded-lg flex flex-col items-center justify-center py-6 px-8 min-w-[240px] shadow-2xl backdrop-blur-sm">
+        <div
+          class="bg-emerald-500 rounded-full w-14 h-14 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
+          <span class="material-symbols-outlined text-white text-3xl font-bold">check</span>
+        </div>
+        <span class="text-lg font-medium tracking-wide">Sản phẩm đã được thêm vào Giỏ hàng</span>
+      </div>
+    </div>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -446,6 +518,7 @@
       }
     });
   </script>
+  <script src="/js/product-list.js"></script>
 </body>
 
 </html>
