@@ -1,5 +1,6 @@
 package com.se2.demo.controller.ui;
 
+import com.se2.demo.dto.request.ForgotPasswordRequest;
 import com.se2.demo.dto.request.RegisterRequest;
 import com.se2.demo.service.AuthService;
 import jakarta.validation.Valid;
@@ -28,6 +29,18 @@ public class AuthController {
     public String showLoginPage(Model model) {
         model.addAttribute("registerRequest", new RegisterRequest());
         return "auth/login";
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(Model model) {
+        model.addAttribute("forgotPasswordRequest", new ForgotPasswordRequest());
+        return "auth/forgot-password";
+    }
+
+    @GetMapping("/verify-otp")
+    public String verifyOtp(Model model) {
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "auth/verify-otp";
     }
 
     @PostMapping("/register")

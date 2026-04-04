@@ -38,4 +38,6 @@ public class ProductSearchController {
     PageResponse<ProductDocumentResponse> result = searchService.searchProduct(criteriaRequest);
     return ResponseEntity.ok(result);
   }
+
+
 }

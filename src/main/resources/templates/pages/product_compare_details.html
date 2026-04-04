@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Compare Items - Brosport</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f96706",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#0a0a0a",
+                        "surface-dark": "#1a1a1a",
+                        "border-dark": "#2a2a2a",
+                    },
+                    fontFamily: { "display": ["Lexend"] },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-background-dark text-white font-display; }
+        }
+        .comparison-table th, .comparison-table td { @apply border-b border-border-dark px-6 py-4; }
+    </style>
+</head>
+<body class="min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+
+    <div th:replace="~{fragments/header :: site-header}"></div>
+
+    <main class="flex-1 px-4 lg:px-20 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-start mb-12">
+            <div>
+                <h1 class="text-4xl font-bold text-white mb-4">Compare Items</h1>
+                <div class="flex flex-col gap-2">
+                    <a class="text-primary hover:underline text-sm flex items-center gap-1" th:href="@{/products}">
+                        <span class="material-symbols-outlined text-sm">arrow_back</span> Back to shopping
+                    </a>
+                    <a class="text-slate-400 hover:text-white text-sm" href="javascript:void(0)" onclick="clearComparison()">Remove all items</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse comparison-table" th:if="${not #lists.isEmpty(compareList)}">
+                <thead>
+                <tr class="align-top">
+                    <th class="w-64"></th>
+                    <th th:each="product : ${compareList}" class="min-w-[280px]">
+                        <div class="flex flex-col gap-4">
+                            <div class="aspect-square bg-surface-dark rounded-xl flex items-center justify-center overflow-hidden p-4">
+                                <img th:src="${not #lists.isEmpty(product.productImages) ? product.productImages[0].imageUrl : '/images/default.jpg'}"
+                                     th:alt="${product.name}" class="max-w-full h-auto object-contain"/>
+                            </div>
+                            <div class="space-y-2">
+                                <h3 class="font-bold text-lg leading-tight" th:text="${product.name}">Product Name</h3>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-primary text-xl font-bold" th:text="${#numbers.formatCurrency(product.showPrice)}">$0.00</span>
+                                    <span class="text-slate-500 line-through text-sm" th:text="${#numbers.formatCurrency(product.originPrice)}">$0.00</span>
+                                </div>
+                            </div>
+                            <a th:href="@{'/products/' + ${product.slug}}" class="w-full bg-primary hover:bg-orange-600 text-white text-center font-bold py-3 rounded-lg uppercase tracking-wider text-sm">
+                                Shop Item
+                            </a>
+                            <button class="w-full border border-border-dark hover:bg-white/5 text-slate-400 py-2 rounded-lg text-sm">
+                                Remove
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="text-sm">
+                <tr>
+                    <td class="font-bold text-slate-400">Brand</td>
+                    <td th:each="product : ${compareList}" th:text="${product.brand}">Brand Name</td>
+                </tr>
+                <tr>
+                    <td class="font-bold text-slate-400">Category</td>
+                    <td th:each="product : ${compareList}" th:text="${product.category}">Category</td>
+                </tr>
+                <tr>
+                    <td class="font-bold text-slate-400">Sport</td>
+                    <td th:each="product : ${compareList}" th:text="${product.sport}">Sport</td>
+                </tr>
+                <tr>
+                    <td class="font-bold text-slate-400">Description</td>
+                    <td th:each="product : ${compareList}" th:text="${product.feature}">Feature Info</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(compareList)}" class="text-center py-20 bg-surface-dark rounded-2xl border border-dashed border-border-dark">
+                <span class="material-symbols-outlined text-6xl text-slate-600 mb-4">compare_arrows</span>
+                <p class="text-slate-400">No items selected for comparison.</p>
+                <a th:href="@{/products}" class="text-primary font-bold hover:underline mt-4 inline-block">Go find some gear</a>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: site-footer}"></div>
+</div>
+</body>
+</html>

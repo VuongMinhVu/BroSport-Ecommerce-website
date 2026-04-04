@@ -25,4 +25,12 @@ public class CartResponse {
     private Double total;
 
     private LocalDateTime updatedAt;
+
+    // Additional Product Details
+    private String productName;
+    private Double productPrice;
+    private String productImage;
+    private String color;
+    private String size;
+    private Integer quantity;
 }

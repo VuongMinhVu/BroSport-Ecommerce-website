@@ -45,6 +45,27 @@ public class DataSeeder {
                 return args -> {
                         log.info("Checking database for seed data...");
 
+                        if (productRepository.count() >= 30) {
+                                log.info("Database already seeded with enough products.");
+                                List<Product> existingProducts = productRepository.findAll();
+                                boolean needUpdate = false;
+                                for (Product p : existingProducts) {
+                                        if (p.getOriginPrice() != null && p.getOriginPrice()
+                                                        .compareTo(BigDecimal.valueOf(10000)) > 0) {
+                                                p.setOriginPrice(p.getOriginPrice().divide(BigDecimal.valueOf(10000)));
+                                                p.setShowPrice(p.getShowPrice().divide(BigDecimal.valueOf(10000)));
+                                                needUpdate = true;
+                                        }
+                                }
+                                if (needUpdate) {
+                                        productRepository.saveAll(existingProducts);
+                                        log.info("Scaled down all high product prices to match new format.");
+                                }
+                                return;
+                        }
+
+                        log.info("Starting to seed database...");
+
                         // 1. Seed Brands
                         List<Brand> brands = new ArrayList<>();
                         if (brandRepository.count() == 0) {
