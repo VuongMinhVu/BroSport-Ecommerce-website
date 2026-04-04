@@ -1,39 +1,43 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="site-header" class="topbar">
-    <div class="topbar-left">
-        <a href="#" class="logo">
-            <span class="logo-badge"><i class="fa-solid fa-bolt"></i></span>
-            <span class="logo-text">BROSPORT</span>
+<header th:fragment="site-header" class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
+        <a class="flex items-center gap-2 group flex-shrink-0" th:href="@{/}">
+            <div class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
+                <span class="material-symbols-outlined font-bold">bolt</span>
+            </div>
+            <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">Brosport</h1>
         </a>
-
-        <nav class="main-nav">
-            <a href="#">NEW ARRIVALS</a>
-            <a href="#">MEN</a>
-            <a href="#">WOMEN</a>
-            <a href="#">KIDS</a>
-            <a href="#">ACCESSORIES</a>
-            <a href="#">BRANDS</a>
-            <a href="#">SPORTS</a>
-            <a href="#" class="sale">SALES</a>
+        <nav class="hidden xl:flex items-center gap-8 h-full">
+            <a class="nav-link" th:href="@{/products}">New Arrivals</a>
+            <a class="nav-link" th:href="@{/products/men}" th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
+            <a class="nav-link" th:href="@{/products/women}" th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
+            <a class="nav-link" th:href="@{/products/kids}" th:classappend="${categorySlug == 'kids' ? 'text-primary' : ''}">Kids</a>
+            <a class="nav-link" th:href="@{/products/accessories}" th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
+            <a class="nav-link" th:href="@{/products/brands}" th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
+            <a class="nav-link" th:href="@{/products/sports}" th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
+            <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
+               th:href="@{/products/sales}" th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
         </nav>
-    </div>
-
-    <div class="topbar-right">
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search elite gear...">
+        <div class="flex items-center gap-4">
+            <div class="relative hidden lg:block group">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
+                <input id="search-input" class="h-11 w-64 rounded-full border-none bg-surface-dark pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all" placeholder="Search elite gear..." type="text" />
+                <div id="search-results" class="hidden absolute top-full left-0 mt-2 w-full bg-[#1a1a1a] border border-border-dark rounded-2xl overflow-hidden shadow-2xl z-50 max-h-80 overflow-y-auto"></div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a th:href="@{/profile}" class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all text-white">
+                    <div class="h-full w-full bg-cover bg-center" th:style="'background-image: url(' + ${user?.avatarUrl} + ')'" th:if="${user != null and user.avatarUrl != null}"></div>
+                    <span th:unless="${user != null and user.avatarUrl != null}" class="material-symbols-outlined text-2xl">person</span>
+                </a>
+                <a th:href="@{/cart}" class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors">
+                    <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                    <span id="cart-count" class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
+                          th:text="${cartItems != null ? #lists.size(cartItems) : 0}">0</span>
+                </a>
+            </div>
         </div>
-
-        <button class="icon-btn" type="button">
-            <i class="fa-regular fa-user"></i>
-        </button>
-
-        <button class="icon-btn cart-btn" type="button">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <span class="dot">3</span>
-        </button>
     </div>
 </header>
 </body>

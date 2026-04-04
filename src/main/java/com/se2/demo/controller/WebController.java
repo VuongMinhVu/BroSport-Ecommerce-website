@@ -111,14 +111,15 @@ public class WebController {
         return "redirect:/order-success";
     }
 
-    @GetMapping("/homepage")
-    public String Homepage(){
-        return "homepage";
+    @GetMapping("/")
+    public String showHomePage(Model model) {
+        return "pages/homepage";
     }
     @GetMapping("/order-success")
     public String showOrderSuccess() {
         return "order-success";
     }
+
 
     // Điều hướng đến trang Lịch sử đơn hàng
     @GetMapping("/order-history")
