@@ -21,8 +21,36 @@ public class WebController {
         this.productService = productService;
     }
 
-    @GetMapping("/products")
-    public String showProductList(@ModelAttribute ProductFilterRequest filter, Model model) {
+    @GetMapping({"/products", "/products/{categorySlug}"})
+    public String showProductList(
+            @PathVariable(name = "categorySlug", required = false) String categorySlug,
+            @ModelAttribute ProductFilterRequest filter,
+            Model model) {
+        
+        if (categorySlug != null) {
+            switch (categorySlug.toLowerCase()) {
+                case "men":
+                    filter.setGenderId(1); // MOCK: Thay ID thật của Men
+                    break;
+                case "women":
+                    filter.setGenderId(2); // MOCK: Thay ID thật của Women
+                    break;
+                case "accessories":
+                    filter.setCategoryId(3); // MOCK: Thay ID thật của Accessories
+                    break;
+                case "sports":
+                    filter.setCategoryId(4); // MOCK: Thay ID thật của Sports
+                    break;
+                case "brands":
+                    // filter logic for brands
+                    break;
+                case "sales":
+                    // filter logic for sales
+                    break;
+            }
+            model.addAttribute("categorySlug", categorySlug);
+        }
+
         if (filter.getPage() == null || filter.getPage() < 0) {
             filter.setPage(0);
         }
@@ -83,6 +111,10 @@ public class WebController {
         return "redirect:/order-success";
     }
 
+    @GetMapping("/homepage")
+    public String Homepage(){
+        return "homepage";
+    }
     @GetMapping("/order-success")
     public String showOrderSuccess() {
         return "order-success";

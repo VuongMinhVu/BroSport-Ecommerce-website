@@ -40,7 +40,7 @@
     <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
         <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
             <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
-                <a class="flex items-center gap-2 group flex-shrink-0" href="/">
+                <a class="flex items-center gap-2 group flex-shrink-0" href="/homepage">
                     <div
                         class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
                         <span class="material-symbols-outlined font-bold">bolt</span>
@@ -49,14 +49,20 @@
                 </a>
 
                 <nav class="hidden xl:flex items-center gap-8 h-full">
-                    <a class="nav-link" href="#">New Arrivals</a>
-                    <a class="nav-link" href="#">Men</a>
-                    <a class="nav-link" href="#">Women</a>
-                    <a class="nav-link" href="#">Accessories</a>
-                    <a class="nav-link" href="#">Brands</a>
-                    <a class="nav-link" href="#">Sports</a>
+                    <a class="nav-link" th:href="@{/products}">New Arrivals</a>
+                    <a class="nav-link" th:href="@{/products/men}"
+                        th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
+                    <a class="nav-link" th:href="@{/products/women}"
+                        th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
+                    <a class="nav-link" th:href="@{/products/accessories}"
+                        th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
+                    <a class="nav-link" th:href="@{/products/brands}"
+                        th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
+                    <a class="nav-link" th:href="@{/products/sports}"
+                        th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
                     <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                        href="#">Sales</a>
+                        th:href="@{/products/sales}"
+                        th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
                 </nav>
 
                 <div class="flex items-center gap-4">
@@ -160,20 +166,6 @@
                                     </div>
                                     <input checked="" class="w-5 h-5 text-primary focus:ring-offset-background-dark"
                                         name="payment" value="vnpay" type="radio" />
-                                </label>
-                                <label
-                                    class="relative flex items-center justify-between p-4 bg-[#342618] border border-[#493622] rounded-xl cursor-pointer hover:border-[#684d31] transition-all">
-                                    <div class="flex items-center gap-4">
-                                        <div class="bg-gray-100 p-1 rounded">
-                                            <span class="material-symbols-outlined text-gray-800">credit_card</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-bold">Credit Card</p>
-                                            <p class="text-xs text-[#cbad90]">Visa, Mastercard, AMEX</p>
-                                        </div>
-                                    </div>
-                                    <input class="w-5 h-5 text-primary focus:ring-offset-background-dark" name="payment"
-                                        value="creditCard" type="radio" />
                                 </label>
                                 <label
                                     class="relative flex items-center justify-between p-4 bg-[#342618] border border-[#493622] rounded-xl cursor-pointer hover:border-[#684d31] transition-all">

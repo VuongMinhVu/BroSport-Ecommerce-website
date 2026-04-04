@@ -54,23 +54,30 @@
   <div class="relative flex h-auto min-h-screen w-full flex-col bg-dark-gradient overflow-x-hidden">
     <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
       <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
-        <a class="flex items-center gap-2 group flex-shrink-0" href="/">
+        <a class="flex items-center gap-2 group flex-shrink-0" href="/homepage">
           <div
             class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
             <span class="material-symbols-outlined font-bold">bolt</span>
           </div>
+
           <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">Brosport</h1>
+
         </a>
 
         <nav class="hidden xl:flex items-center gap-8 h-full">
-          <a class="nav-link" href="#">New Arrivals</a>
-          <a class="nav-link" href="#">Men</a>
-          <a class="nav-link" href="#">Women</a>
-          <a class="nav-link" href="#">Accessories</a>
-          <a class="nav-link" href="#">Brands</a>
-          <a class="nav-link" href="#">Sports</a>
+          <a class="nav-link" th:href="@{/products}">New Arrivals</a>
+          <a class="nav-link" th:href="@{/products/men}"
+            th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
+          <a class="nav-link" th:href="@{/products/women}"
+            th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
+          <a class="nav-link" th:href="@{/products/accessories}"
+            th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
+          <a class="nav-link" th:href="@{/products/brands}"
+            th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
+          <a class="nav-link" th:href="@{/products/sports}"
+            th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
           <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-            href="#">Sales</a>
+            th:href="@{/products/sales}" th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
         </nav>
 
         <div class="flex items-center gap-4">
@@ -235,8 +242,7 @@
           .then((data) => {
             let cartItems = [];
             if (data && data.length > 0) {
-              // Using the first cart just for demonstration
-              cartItems = data[0].cartItemResponseList || [];
+              cartItems = data;
             }
             renderCartItems(cartItems);
             updateCartSummary(cartItems);
@@ -280,7 +286,7 @@
 
           // Same fallback image logic as product-list
           const imageSrc = item.productImage
-            ? `/api/v1/products/images/${item.productImage}`
+            ? item.productImage
             : `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(name)}`;
 
           const html = `
@@ -293,18 +299,27 @@
                             <div class="flex-grow">
                                 <h3 class="text-white font-bold text-lg">${name}</h3>
                                 <div class="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                                    <span class="flex items-center gap-1"><b class="text-white/70">Standard Size</b></span>
+                                    <span class="flex items-center gap-1"><b class="text-white/70">
+                                      ${item.size ? 'Size: ' + item.size : ''} 
+                                      ${item.size && item.color ? '| ' : ''} 
+                                      ${item.color ? 'Color: ' + item.color : ''}
+                                      ${!item.size && !item.color ? 'Standard Size' : ''}
+                                    </b></span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-                                <div class="flex items-center bg-white/5 rounded-lg border border-white/10">
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.productId}, -1)"><span class="material-symbols-outlined text-lg">remove</span></button>
-                                    <span class="w-8 text-center font-bold text-white">${quantity}</span>
-                                    <button class="p-2 hover:text-primary transition-colors flex items-center" onclick="updateQuantity(${item.productId}, 1)"><span class="material-symbols-outlined text-lg">add</span></button>
+                                <div class="flex items-center bg-[#1a110b] rounded-lg border border-white/10 p-1">
+                                    <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/10 rounded-md transition-colors" onclick="updateQty(${item.id}, -1)">
+                                        <span class="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <input type="number" id="qty-${item.id}" value="${quantity}" readonly class="w-12 h-8 bg-transparent text-center text-white font-medium border-none focus:ring-0 p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                    <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/10 rounded-md transition-colors" onclick="updateQty(${item.id}, 1)">
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                    </button>
                                 </div>
-                                <div class="text-right">
+                                <div class="text-right flex flex-col items-end gap-2">
                                     <p class="text-white font-bold text-lg">$${price}</p>
-                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto" onclick="removeItem(${item.productId})">
+                                    <button class="text-white/30 hover:text-red-500 transition-colors flex items-center justify-center p-2 rounded-lg hover:bg-red-500/10" onclick="deleteItem(${item.id})">
                                         <span class="material-symbols-outlined text-sm">delete</span>
                                     </button>
                                 </div>
@@ -333,16 +348,34 @@
           `$${total.toFixed(2)}`;
       }
 
-      function updateQuantity(productId, change) {
-        // To be integrated with backend update API
-        alert(
-          `Requested to update quantity of product ID ${productId} by ${change}`,
-        );
+
+
+      function updateQty(id, delta) {
+        const input = document.getElementById('qty-' + id);
+        const newQty = parseInt(input.value) + delta;
+
+        if (newQty < 1) return; // Không cho giảm xuống 0
+
+        fetch(`/api/v1/carts/details/${id}?quantity=${newQty}`, {
+          method: 'PUT'
+        })
+          .then(res => {
+            if (res.ok) location.reload(); // Tải lại trang để cập nhật giá tiền
+            else alert("Lỗi cập nhật số lượng");
+          });
       }
 
-      function removeItem(productId) {
-        // To be integrated with backend delete API
-        alert(`Requested to remove product ID ${productId} from cart`);
+      // Hàm xử lý xóa sản phẩm
+      function deleteItem(id) {
+        if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
+
+        fetch(`/api/v1/carts/details/${id}`, {
+          method: 'DELETE'
+        })
+          .then(res => {
+            if (res.ok) location.reload();
+            else alert("Lỗi khi xóa sản phẩm");
+          });
       }
     </script>
 
@@ -361,6 +394,7 @@
       </div>
     </footer>
   </div>
+
 </body>
 
 </html>
