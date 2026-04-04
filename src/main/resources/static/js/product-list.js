@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 params.append('page', filters.page);
                 params.append('size', filters.size);
 
-                const response = await fetch(`/api/v1/products?${params.toString()}`, {
+                const response = await fetch(`/api/v1/search/products?${params.toString()}`, {
                     signal: this.abortController.signal,
                     headers: {
                         'Accept': 'application/json'
@@ -419,22 +419,45 @@ document.addEventListener('DOMContentLoaded', () => {
             // Hardcode userId = 1 for testing purposes
             const userId = 1;
 
-            fetch('/api/v1/carts', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    userId: userId,
-                    productDetailId: parseInt(detailId)
+            // 1. Get or create cart for user
+            fetch(`/api/v1/carts/user/${userId}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    // If cart not found (or 500 error from backend throw), create a new one
+                    return fetch('/api/v1/carts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ userId: userId })
+                    }).then(res => {
+                        if (!res.ok) throw new Error('Failed to create cart');
+                        return res.json();
+                    });
                 })
-            })
+                .then(cart => {
+                    // 2. Add product to cart details
+                    return fetch('/api/v1/cart-details', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cartId: cart.id,
+                            productDetailId: parseInt(detailId),
+                            quantity: 1
+                        })
+                    });
+                })
                 .then(response => {
                     if (response.ok) {
                         showSuccessToast();
                         // Update cart count in header
-                        const cartCountElement = document.querySelector('a[href="/cart"] span.absolute');
+                        const cartCountElement = document.querySelector('a[href="/cart"] span.absolute') || document.querySelector('.cart-count');
                         if (cartCountElement) {
                             const currentCount = parseInt(cartCountElement.textContent) || 0;
                             cartCountElement.textContent = currentCount + 1;
