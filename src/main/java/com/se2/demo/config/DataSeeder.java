@@ -39,6 +39,20 @@ public class DataSeeder {
 
                         if (productRepository.count() >= 30) {
                                 log.info("Database already seeded with enough products.");
+                                List<Product> existingProducts = productRepository.findAll();
+                                boolean needUpdate = false;
+                                for (Product p : existingProducts) {
+                                        if (p.getOriginPrice() != null && p.getOriginPrice()
+                                                        .compareTo(BigDecimal.valueOf(10000)) > 0) {
+                                                p.setOriginPrice(p.getOriginPrice().divide(BigDecimal.valueOf(10000)));
+                                                p.setShowPrice(p.getShowPrice().divide(BigDecimal.valueOf(10000)));
+                                                needUpdate = true;
+                                        }
+                                }
+                                if (needUpdate) {
+                                        productRepository.saveAll(existingProducts);
+                                        log.info("Scaled down all high product prices to match new format.");
+                                }
                                 return;
                         }
 
@@ -227,9 +241,8 @@ public class DataSeeder {
                                                 + randomBrand.getName().toLowerCase() + "-"
                                                 + i;
 
-                                BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 100000); // 500k to
-                                                                                                          // 2.5m
-                                BigDecimal comparePrice = price.multiply(BigDecimal.valueOf(1.2)); // 20% higher
+                                BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 10);
+                                BigDecimal comparePrice = price.multiply(BigDecimal.valueOf(1.2));
 
                                 Product product = Product.builder()
                                                 .name(productName)

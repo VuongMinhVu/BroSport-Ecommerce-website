@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -19,8 +20,36 @@ public class WebController {
         this.productService = productService;
     }
 
-    @GetMapping("/products")
-    public String showProductList(@ModelAttribute ProductFilterRequest filter, Model model) {
+    @GetMapping({"/products", "/products/{categorySlug}"})
+    public String showProductList(
+            @PathVariable(name = "categorySlug", required = false) String categorySlug,
+            @ModelAttribute ProductFilterRequest filter,
+            Model model) {
+        
+        if (categorySlug != null) {
+            switch (categorySlug.toLowerCase()) {
+                case "men":
+                    filter.setGenderId(1); // MOCK: Thay ID thật của Men
+                    break;
+                case "women":
+                    filter.setGenderId(2); // MOCK: Thay ID thật của Women
+                    break;
+                case "accessories":
+                    filter.setCategoryId(3); // MOCK: Thay ID thật của Accessories
+                    break;
+                case "sports":
+                    filter.setCategoryId(4); // MOCK: Thay ID thật của Sports
+                    break;
+                case "brands":
+                    // filter logic for brands
+                    break;
+                case "sales":
+                    // filter logic for sales
+                    break;
+            }
+            model.addAttribute("categorySlug", categorySlug);
+        }
+
         if (filter.getPage() == null || filter.getPage() < 0) {
             filter.setPage(0);
         }
@@ -35,8 +64,11 @@ public class WebController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("filter", filter);
         
-        model.addAttribute("pageTitle", "Performance Gear");
-        model.addAttribute("pageSubtitle", "Showing " + products.getTotalElements() + " results for high-performance athlete gear");
+        String title = categorySlug != null ? 
+            categorySlug.substring(0, 1).toUpperCase() + categorySlug.substring(1) : 
+            "Performance Gear";
+        model.addAttribute("pageTitle", title);
+        model.addAttribute("pageSubtitle", "Showing " + products.getTotalElements() + " results for " + title.toLowerCase());
         return "product-list";
     }
 
@@ -77,6 +109,10 @@ public class WebController {
         return "redirect:/order-success";
     }
 
+    @GetMapping("/homepage")
+    public String Homepage(){
+        return "homepage";
+    }
     @GetMapping("/order-success")
     public String showOrderSuccess() {
         return "order-success";
