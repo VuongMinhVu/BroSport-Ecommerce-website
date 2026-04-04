@@ -1,6 +1,7 @@
 package com.se2.demo.controller.ui;
 
 import com.se2.demo.dto.request.ForgotPasswordRequest;
+import com.se2.demo.dto.request.LoginRequest;
 import com.se2.demo.dto.request.RegisterRequest;
 import com.se2.demo.service.AuthService;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLoginPage(Model model) {
-        model.addAttribute("registerRequest", new RegisterRequest());
+        model.addAttribute("loginRequest", new LoginRequest());
         return "auth/login";
     }
 
@@ -63,7 +64,7 @@ public class AuthController {
 
         try {
             authService.register(request);
-            return "redirect:/login";
+            return "redirect:/login?success";
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "auth/register";
