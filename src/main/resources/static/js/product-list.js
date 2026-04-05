@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         constructor() {
             this.filters = {
                 keyword: '',
-                categoryId: null,
-                brandId: null,
+                categories: [],
+                brands: [],
                 minPrice: null,
                 maxPrice: null,
                 page: 0,
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initFromUrl() {
             const params = new URLSearchParams(window.location.search);
             if (params.has('keyword')) this.filters.keyword = params.get('keyword');
-            if (params.has('categoryId')) this.filters.categoryId = params.get('categoryId');
-            if (params.has('brandId')) this.filters.brandId = params.get('brandId');
+            if (params.has('categories')) this.filters.categories = params.get('categories').split(',').filter(Boolean);
+            if (params.has('brands')) this.filters.brands = params.get('brands').split(',').filter(Boolean);
             if (params.has('minPrice')) this.filters.minPrice = params.get('minPrice');
             if (params.has('maxPrice')) this.filters.maxPrice = params.get('maxPrice');
             if (params.has('page')) this.filters.page = parseInt(params.get('page')) || 0;
@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUrl() {
             const params = new URLSearchParams();
             if (this.filters.keyword) params.set('keyword', this.filters.keyword);
-            if (this.filters.categoryId) params.set('categoryId', this.filters.categoryId);
-            if (this.filters.brandId) params.set('brandId', this.filters.brandId);
+            if (this.filters.categories && this.filters.categories.length > 0) params.set('categories', this.filters.categories.join(','));
+            if (this.filters.brands && this.filters.brands.length > 0) params.set('brands', this.filters.brands.join(','));
             if (this.filters.minPrice) params.set('minPrice', this.filters.minPrice);
-            if (this.filters.maxPrice && this.filters.maxPrice < 500) params.set('maxPrice', this.filters.maxPrice);
+            if (this.filters.maxPrice && this.filters.maxPrice < 5000000) params.set('maxPrice', this.filters.maxPrice);
             if (this.filters.page > 0) params.set('page', this.filters.page);
 
             const path = window.location.pathname;
@@ -74,14 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const range = document.getElementById('priceRange');
                 if (range) range.value = this.filters.maxPrice;
             }
-            if (this.filters.categoryId) {
+            if (this.filters.categories) {
                 document.querySelectorAll('.category-filter').forEach(cb => {
-                    cb.checked = (cb.value === this.filters.categoryId);
+                    cb.checked = this.filters.categories.includes(cb.value);
                 });
             }
-            if (this.filters.brandId) {
+            if (this.filters.brands) {
                 document.querySelectorAll('.brand-filter').forEach(cb => {
-                    cb.checked = (cb.value === this.filters.brandId);
+                    cb.checked = this.filters.brands.includes(cb.value);
                 });
             }
         }
@@ -102,14 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const params = new URLSearchParams();
                 if (filters.keyword) params.append('keyword', filters.keyword);
-                if (filters.categoryId) params.append('categoryId', filters.categoryId);
-                if (filters.brandId) params.append('brandId', filters.brandId);
-                if (filters.minPrice) params.append('minPrice', filters.minPrice);
-                if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
+                if (filters.categories && filters.categories.length > 0) params.append('categories', filters.categories.join(','));
+                if (filters.brands && filters.brands.length > 0) params.append('brands', filters.brands.join(','));
+                if (filters.maxPrice) {
+                    params.append('minPrice', filters.minPrice || 0);
+                    params.append('maxPrice', filters.maxPrice);
+                } else if (filters.minPrice) {
+                    params.append('minPrice', filters.minPrice);
+                }
                 params.append('page', filters.page);
                 params.append('size', filters.size);
 
-                const response = await fetch(`/api/v1/products?${params.toString()}`, {
+                const response = await fetch(`/api/v1/search/products?${params.toString()}`, {
                     signal: this.abortController.signal,
                     headers: {
                         'Accept': 'application/json'
@@ -187,9 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
             this.container.className = isList ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
 
             this.container.innerHTML = products.map(product => {
-                const imageUrl = (product.productImages && product.productImages.length > 0)
-                    ? product.productImages[0].imageUrl
-                    : `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`;
+                let imageUrl = `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`;
+                if (product.thumbnail) {
+                    imageUrl = product.thumbnail;
+                } else if (product.productImages && product.productImages.length > 0) {
+                    imageUrl = product.productImages[0].imageUrl;
+                }
+                const brand = product.brandName || product.brand || 'Brand';
 
                 return `
           <div class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? 'md:flex-row md:items-center' : ''}">
@@ -205,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <h3 class="font-bold text-white text-lg leading-tight">${product.name}</h3>
-                  <p class="text-slate-400 text-sm">${product.brand || 'Brand'}</p>
+                  <p class="text-slate-400 text-sm">${brand}</p>
                 </div>
                 <div class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
@@ -339,16 +347,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryCheckboxes = document.querySelectorAll('.category-filter');
     const brandCheckboxes = document.querySelectorAll('.brand-filter');
 
-    // Helper for single select checkbox group
+    // Helper for multiple select checkbox group
     const handleCheckboxGroup = (checkboxes, filterKey) => {
         checkboxes.forEach(cb => {
             cb.addEventListener('change', (e) => {
+                if (!state.filters[filterKey]) state.filters[filterKey] = [];
                 if (e.target.checked) {
-                    // Uncheck others (single select style)
-                    checkboxes.forEach(other => { if (other !== cb) other.checked = false; });
-                    state.filters[filterKey] = e.target.value;
+                    if (!state.filters[filterKey].includes(e.target.value)) {
+                        state.filters[filterKey].push(e.target.value);
+                    }
                 } else {
-                    state.filters[filterKey] = null;
+                    state.filters[filterKey] = state.filters[filterKey].filter(val => val !== e.target.value);
                 }
                 state.filters.page = 0; // reset to first page
                 loadProducts();
@@ -356,8 +365,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    handleCheckboxGroup(categoryCheckboxes, 'categoryId');
-    handleCheckboxGroup(brandCheckboxes, 'brandId');
+    handleCheckboxGroup(categoryCheckboxes, 'categories');
+    handleCheckboxGroup(brandCheckboxes, 'brands');
 
     if (searchInput) {
         searchInput.addEventListener('input', debounce((e) => {
@@ -372,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sự kiện 'input' chạy liên tục khi kéo (không bị debounce để UI mượt)
         priceRange.addEventListener('input', (e) => {
-            if (priceDisplay) priceDisplay.textContent = `$${e.target.value}`;
+            if (priceDisplay) priceDisplay.textContent = new Intl.NumberFormat('en-US').format(e.target.value) + '$';
         });
 
         // Gọi API thì vẫn giữ debounce
@@ -399,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const clearBtn = e.target.closest('#clearFiltersBtn');
         if (clearBtn) {
-            state.filters = { keyword: '', categoryId: null, brandId: null, minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
             state.updateUrl();
             state.syncUI();
             isInitialLoad = false;
@@ -476,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('resetFiltersBtn');
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-            state.filters = { keyword: '', categoryId: null, brandId: null, minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
             state.updateUrl();
             state.syncUI();
             isInitialLoad = false;
@@ -489,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.state) {
             state.filters = event.state;
         } else {
-            state.filters = { keyword: '', categoryId: null, brandId: null, minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
             state.initFromUrl();
         }
         state.syncUI();
