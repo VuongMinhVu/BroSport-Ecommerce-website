@@ -61,85 +61,7 @@
     class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300"
   >
     <!-- Header / Nav -->
-    <header
-      class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
-    >
-      <div
-        class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
-      >
-        <a class="flex items-center gap-2 group flex-shrink-0" href="/">
-          <div
-            class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
-          >
-            <span class="material-symbols-outlined font-bold">bolt</span>
-          </div>
-          <h1
-            class="text-2xl font-black tracking-tighter uppercase italic text-white"
-          >
-            Brosport
-          </h1>
-        </a>
-
-        <nav class="hidden xl:flex items-center gap-8 h-full">
-          <a class="nav-link" href="#">New Arrivals</a>
-          <a class="nav-link" href="#">Men</a>
-          <a class="nav-link" href="#">Women</a>
-          <a class="nav-link" href="#">Accessories</a>
-          <a class="nav-link" href="#">Brands</a>
-          <a class="nav-link" href="#">Sports</a>
-          <a
-            class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-            href="#"
-            >Sales</a
-          >
-        </nav>
-
-        <div class="flex items-center gap-4">
-          <div class="relative hidden lg:block group">
-            <span
-              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
-              >search</span
-            >
-            <input
-              class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-              placeholder="Search elite gear..."
-              type="text"
-            />
-          </div>
-
-          <div class="flex items-center gap-2">
-            <a
-              href="/profile"
-              class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all"
-            >
-              <div
-                class="h-full w-full bg-cover bg-center"
-                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                th:if="${user != null and user.avatarUrl != null}"
-              ></div>
-              <span
-                th:unless="${user != null and user.avatarUrl != null}"
-                class="material-symbols-outlined text-2xl"
-                >person</span
-              >
-            </a>
-
-            <a
-              href="/cart"
-              class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
-            >
-              <span class="material-symbols-outlined text-2xl"
-                >shopping_cart</span
-              >
-              <span
-                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg cart-badge"
-                >0</span
-              >
-            </a>
-          </div>
-        </div>
-      </div>
-    </header>
+    <div th:replace="~{fragments/header :: site-header}"></div>
     <main class="max-w-7xl mx-auto px-6 py-8">
       <!-- Breadcrumbs -->
       <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
@@ -157,10 +79,13 @@
           <div
             class="aspect-square bg-white/5 rounded-xl overflow-hidden group relative"
           >
-            <div class="absolute top-4 left-4 z-10">
+            <div
+              class="absolute top-4 left-4 z-10"
+              th:if="${product.status == 'ACTIVE'}"
+            >
               <span
                 class="bg-primary text-white text-[10px] font-black uppercase px-2 py-1 rounded"
-                >New Release</span
+                >Có sẵn</span
               >
             </div>
             <img
@@ -169,59 +94,22 @@
               class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110 main-product-img"
               th:alt="${product.name}"
             />
-
-            <img
-              th:unless="${not #lists.isEmpty(product.productImages)}"
-              src="https://via.placeholder.com/800?text=No+Image"
-              class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110 main-product-img"
-              alt="No Image Available"
-            />
           </div>
-          <div class="grid grid-cols-4 gap-4">
+
+          <div
+            class="grid grid-cols-4 gap-4"
+            th:if="${not #lists.isEmpty(product.productImages)}"
+          >
             <div
-              class="aspect-square rounded-lg border-2 border-primary bg-white/5 overflow-hidden cursor-pointer gallery-thumbnail"
+              th:each="img, iterStat : ${product.productImages}"
+              class="aspect-square rounded-lg bg-white/5 overflow-hidden cursor-pointer gallery-thumbnail transition-colors"
+              th:classappend="${iterStat.index == 0 ? 'border-2 border-primary' : 'border border-white/10 hover:border-primary/50'}"
             >
               <img
-                alt="Apex Pro thumbnail 1"
+                th:src="${img.imageUrl}"
                 class="w-full h-full object-cover"
-                data-alt="Close up of running shoe sole"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiV94R7XNf7A4UtBlq5_NUbwo6L0el5aSR0dLhFTp0G5RKhFP3ZWUs5e4rw2AQYzJWuiMqsExR1FMzkw5MZDi88Eg8R-kGQ_w2ObUEO9hIp77ZzoPX5cjkOV6aeRduyXgyjVcM9qFFsUfml6llilD9dbrlw-T70AJT3bsZ56Q81AD6Y9XLKnwwOKP0r7UOZ1zIlrCIdONvAxGH7d083ZnksVvTHpAGvy29ltWClOpL40hUpZRi4IILZ4iPW57UUXGStbuXaQni8Vk"
+                th:alt="${product.name} + ' ' + ${iterStat.index + 1}"
               />
-            </div>
-            <div
-              class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors gallery-thumbnail"
-            >
-              <img
-                alt="Apex Pro thumbnail 2"
-                class="w-full h-full object-cover"
-                data-alt="Top down view of athletic sneakers"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBawBYwSNLlH7hDXlZqxmu3dqMa8BuvCUBJDtnUA6scnVhMuJ0USYXTtUuMUsdfNlrHnzwuBwoTY7_5Yi3LzfnSvNzeQCLdUd77e-RqpMPiWxPc63bZ00Bd_5R601zijgHF08MNeJJyp-Yhyyf6Cjq0jdk33YUWjXIcBm6E0KRZn5Yj2bU8FHpXs2qVZzhwdML6ooBBxFFJMjLBeomG2gYVKlKDG5mDmOrMvb_NMnLnoRrYZVdkzRLugRFSnjwetRUl7dKiFAcM0Gg"
-              />
-            </div>
-            <div
-              class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors gallery-thumbnail"
-            >
-              <img
-                alt="Apex Pro thumbnail 3"
-                class="w-full h-full object-cover"
-                data-alt="Rear view showing heel support of a white sneaker"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhsh8Ue2ERmrECiACJuIuv6vbG1c4FgjeMWaIS_DGMFiEdwkWLNLcc3WRu0gSln87ZMt16Zdq_hRVWb54z0NOamM5C8nMFO9bXdPjubuN8Ul98PWzCEKpoKowmwfDQE351pC8BNvNXcwUt_adV099cbSOMeDtxjFHaMkPHpLQEULf6Zx_QSYiyTigYhbrN-2p_Ef7Azk9RSUNb1p90E0PjI0_foexLFOVlgzIh6Bpj8TffXiHvA48zCDWyzKEUgKYXl5FVUMFOLfI"
-              />
-            </div>
-            <div
-              class="aspect-square rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:border-primary/50 cursor-pointer transition-colors relative gallery-thumbnail"
-            >
-              <img
-                alt="Apex Pro thumbnail 4"
-                class="w-full h-full object-cover opacity-50"
-                data-alt="Runner wearing bright athletic shoes in motion"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl1ZpiCaoldDPRMdQvFnYbd9lNi9C34fttzclRnr3J_D-a3WzgASkaXy7K4JwpQXBozOMm75XX3x7VkucAFgXbQsLIImbHAtlviS9a6o20bsqpUv81UvuSwZWJW8qS4Tw4xTes3NnFVFBeWg-8_S5snGk1v_0y5lWFX93KXZDA9xJGLncx29aB_yQcYd4DFHQ0Tu5ohTS21meM4KxqcwiSgEnNPk0LehZBEXbo0ZtYhCAdHi2lxfsfOzXl_is_3aIr1RGtoIMCxLU"
-              />
-              <div
-                class="absolute inset-0 flex items-center justify-center font-bold text-sm"
-              >
-                +2 More
-              </div>
             </div>
           </div>
         </div>
@@ -267,111 +155,84 @@
             <span
               class="text-3xl font-black text-white"
               th:if="${product.showPrice != null}"
-              th:text="${#numbers.formatDecimal(product.showPrice, 0, 'COMMA', 0, 'POINT') + 'đ'}"
-              >0đ</span
+              th:text="${#numbers.formatDecimal(product.showPrice, 1, 'POINT', 0, 'COMMA')} + 'đ'"
             >
+            </span>
 
             <span
               class="text-3xl font-black text-white"
               th:unless="${product.showPrice != null}"
-              >Liên hệ</span
             >
+              Liên hệ
+            </span>
 
             <span
               class="text-slate-500 line-through text-lg font-medium"
               th:if="${product.originPrice != null and product.showPrice != null and product.originPrice > product.showPrice}"
-              th:text="${#numbers.formatDecimal(product.originPrice, 0, 'COMMA', 0, 'POINT') + 'đ'}"
-              >0đ</span
+              th:text="${#numbers.formatDecimal(product.originPrice, 1, 'POINT', 0, 'COMMA')} + 'đ'"
             >
+            </span>
           </div>
           <!-- Color Selection -->
           <div class="space-y-4">
             <p class="text-sm font-bold uppercase tracking-wider">
-              Color:
-              <span class="text-slate-400 font-normal color-name"
-                >Neon Flame</span
+              Màu sắc:
+              <span
+                class="text-slate-400 font-normal color-name"
+                id="selectedColorName"
+                >Vui lòng chọn</span
               >
             </p>
-            <div class="flex gap-3">
+            <div class="flex flex-wrap gap-3">
               <button
-                class="size-12 rounded-full border-2 border-primary p-0.5 bg-background-dark color-btn"
+                th:each="color : ${#sets.toSet(product.productDetails.![color])}"
+                class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn relative group"
+                th:data-color="${color}"
               >
-                <div class="w-full h-full rounded-full bg-primary"></div>
-              </button>
-              <button
-                class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn"
-              >
-                <div class="w-full h-full rounded-full bg-slate-800"></div>
-              </button>
-              <button
-                class="size-12 rounded-full border border-white/10 p-0.5 hover:border-white/30 transition-colors bg-background-dark color-btn"
-              >
-                <div class="w-full h-full rounded-full bg-white"></div>
+                <div
+                  class="w-full h-full rounded-full"
+                  th:style="'background-color: ' + ${#strings.toLowerCase(color)}"
+                ></div>
+                <span
+                  class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10"
+                  th:text="${color}"
+                ></span>
               </button>
             </div>
           </div>
+
           <!-- Size Selection -->
-          <div class="space-y-4">
+          <div class="space-y-4 mt-6">
             <div class="flex justify-between items-center">
               <p class="text-sm font-bold uppercase tracking-wider">
-                Select Size
+                Chọn Kích thước
               </p>
-              <button
+              <a
+                th:if="${product.sizeGuide != null}"
+                th:href="${product.sizeGuide}"
+                target="_blank"
                 class="text-xs text-primary font-semibold underline underline-offset-4 hover:text-white transition-colors"
               >
-                Size Guide
-              </button>
+                Hướng dẫn Size
+              </a>
             </div>
             <div class="grid grid-cols-4 gap-2">
               <button
+                th:each="size : ${#sets.toSet(product.productDetails.![size])}"
                 class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-              >
-                US 7
-              </button>
-              <button
-                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-              >
-                US 8
-              </button>
-              <button
-                class="py-3 text-sm font-bold border-2 border-primary rounded-lg text-primary bg-primary/10 size-btn"
-              >
-                US 9
-              </button>
-              <button
-                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-              >
-                US 10
-              </button>
-              <button
-                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-              >
-                US 11
-              </button>
-              <button
-                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-              >
-                US 12
-              </button>
-              <button
-                class="py-3 text-sm font-bold border border-white/10 rounded-lg opacity-30 cursor-not-allowed line-through size-btn"
-              >
-                US 13
-              </button>
-              <button
-                class="py-3 text-sm font-bold border border-white/10 rounded-lg hover:border-primary hover:text-primary transition-all size-btn"
-              >
-                US 14
-              </button>
+                th:data-size="${size}"
+                th:text="${size}"
+              ></button>
             </div>
           </div>
+
           <!-- CTA -->
           <div class="flex flex-col gap-3 pt-4">
             <button
-              class="w-full py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 add-to-cart-btn"
+              class="w-full py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 buy-now-btn"
             >
-              <span class="material-symbols-outlined">shopping_bag</span>
-              Add to Cart
+              <span class="material-symbols-outlined">bolt</span>
+              Mua ngay
             </button>
             <div class="flex gap-3">
               <button
@@ -380,12 +241,15 @@
                 <span class="material-symbols-outlined text-xl"
                   >compare_arrows</span
                 >
-                Compare
+                So sánh
               </button>
               <button
-                class="p-4 border border-white/10 rounded-xl hover:bg-white/5 transition-colors wishlist-btn"
+                class="flex-1 py-4 border border-white/10 rounded-xl font-bold text-sm uppercase flex items-center justify-center gap-2 hover:bg-white/5 transition-colors add-to-cart-btn"
               >
-                <span class="material-symbols-outlined">favorite</span>
+                <span class="material-symbols-outlined text-xl"
+                  >shopping_cart</span
+                >
+                Thêm vào giỏ
               </button>
             </div>
           </div>
@@ -409,309 +273,186 @@
       </div>
       <!-- Product Specs Tabs (Simulated) -->
       <div class="mt-20 border-t border-white/10 pt-12">
-        <h3 class="text-2xl font-black mb-8">PRODUCT FEATURES</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
-            <span class="material-symbols-outlined text-primary text-4xl mb-4"
-              >cyclone</span
-            >
-            <h4 class="text-lg font-bold mb-2 uppercase italic">
-              AeroStream™ Mesh
-            </h4>
-            <p class="text-sm text-slate-400">
-              Engineered micro-perforations allow for maximal heat dissipation
-              during high-intensity sessions.
-            </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div>
+            <h3 class="text-2xl font-black mb-6">ĐẶC ĐIỂM NỔI BẬT</h3>
+            <p
+              class="text-slate-400 leading-relaxed"
+              th:text="${product.feature} ?: 'Chưa có thông tin.'"
+            ></p>
           </div>
-          <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
-            <span class="material-symbols-outlined text-primary text-4xl mb-4"
-              >hexagon</span
-            >
-            <h4 class="text-lg font-bold mb-2 uppercase italic">
-              Carbon Catalyst
-            </h4>
-            <p class="text-sm text-slate-400">
-              Full-length carbon plate integrated into the midsole provides
-              explosive energy return with every stride.
-            </p>
-          </div>
-          <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
-            <span class="material-symbols-outlined text-primary text-4xl mb-4"
-              >fitbit</span
-            >
-            <h4 class="text-lg font-bold mb-2 uppercase italic">
-              GripLock Outsole
-            </h4>
-            <p class="text-sm text-slate-400">
-              Dual-density rubber compound provides superior traction on both
-              dry and wet urban surfaces.
-            </p>
+
+          <div>
+            <h3 class="text-2xl font-black mb-6">THÔNG TIN CHI TIẾT</h3>
+            <div class="space-y-4">
+              <div
+                th:each="info : ${product.information}"
+                class="flex justify-between border-b border-white/10 pb-2"
+              >
+                <span
+                  class="font-bold text-slate-300"
+                  th:text="${info.key}"
+                ></span>
+                <span
+                  class="text-slate-400 text-right"
+                  th:text="${info.value}"
+                ></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <!-- Reviews Section -->
       <section class="mt-24 border-t border-white/10 pt-20 pb-20">
         <div class="flex flex-col md:flex-row gap-16">
-          <!-- Rating Breakdown -->
           <div class="md:w-1/3 space-y-8">
             <div>
-              <h3 class="text-3xl font-black mb-2">REVIEWS</h3>
+              <h3 class="text-3xl font-black mb-2">ĐÁNH GIÁ SẢN PHẨM</h3>
               <p class="text-slate-400 text-sm">
-                Based on 124 verified purchases
+                Dựa trên
+                <span id="total-reviews-text" class="font-bold text-white"
+                  >0</span
+                >
+                lượt mua hàng
               </p>
             </div>
             <div class="flex items-center gap-4">
-              <div class="text-6xl font-black text-white">4.8</div>
+              <div
+                id="avg-rating-number"
+                class="text-6xl font-black text-white"
+              >
+                0.0
+              </div>
               <div class="space-y-1">
-                <div class="flex text-primary">
-                  <span class="material-symbols-outlined fill-1">star</span>
-                  <span class="material-symbols-outlined fill-1">star</span>
-                  <span class="material-symbols-outlined fill-1">star</span>
-                  <span class="material-symbols-outlined fill-1">star</span>
-                  <span class="material-symbols-outlined fill-1">star</span>
+                <div id="avg-rating-stars" class="flex text-primary"></div>
+              </div>
+            </div>
+
+            <div class="space-y-3" id="rating-bars-container">
+              <div
+                th:each="i : ${#numbers.sequence(5, 1, -1)}"
+                class="grid grid-cols-[20px_1fr_40px] items-center gap-3"
+              >
+                <span
+                  class="text-xs font-bold text-slate-400"
+                  th:text="${i}"
+                ></span>
+                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    th:id="'bar-' + ${i}"
+                    class="h-full bg-primary rounded-full transition-all duration-700"
+                    style="width: 0%"
+                  ></div>
                 </div>
-                <p
-                  class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+                <span
+                  th:id="'pct-' + ${i}"
+                  class="text-xs text-right font-medium"
+                  >0%</span
                 >
-                  Recommended by 98%
-                </p>
               </div>
             </div>
-            <div class="space-y-3">
-              <!-- 5 Star -->
-              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                <span class="text-xs font-bold text-slate-400">5</span>
-                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-primary rounded-full"
-                    style="width: 85%"
-                  ></div>
-                </div>
-                <span class="text-xs text-right font-medium">85%</span>
-              </div>
-              <!-- 4 Star -->
-              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                <span class="text-xs font-bold text-slate-400">4</span>
-                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-primary rounded-full"
-                    style="width: 10%"
-                  ></div>
-                </div>
-                <span class="text-xs text-right font-medium">10%</span>
-              </div>
-              <!-- 3 Star -->
-              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                <span class="text-xs font-bold text-slate-400">3</span>
-                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-primary rounded-full"
-                    style="width: 3%"
-                  ></div>
-                </div>
-                <span class="text-xs text-right font-medium">3%</span>
-              </div>
-              <!-- 2 Star -->
-              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                <span class="text-xs font-bold text-slate-400">2</span>
-                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-primary rounded-full"
-                    style="width: 1%"
-                  ></div>
-                </div>
-                <span class="text-xs text-right font-medium">1%</span>
-              </div>
-              <!-- 1 Star -->
-              <div class="grid grid-cols-[20px_1fr_40px] items-center gap-3">
-                <span class="text-xs font-bold text-slate-400">1</span>
-                <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-primary rounded-full"
-                    style="width: 1%"
-                  ></div>
-                </div>
-                <span class="text-xs text-right font-medium">1%</span>
-              </div>
-            </div>
+
             <button
+              id="toggle-review-form-btn"
               class="w-full py-4 border border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-colors"
             >
-              Write a Review
+              Viết Đánh Giá
             </button>
+
+            <div
+              id="review-form-section"
+              class="hidden flex flex-col gap-4 p-5 border border-white/10 rounded-xl bg-white/5"
+            >
+              <p
+                class="text-sm font-bold uppercase tracking-widest text-slate-300"
+              >
+                Đánh giá của bạn
+              </p>
+              <div
+                class="flex gap-2 text-3xl text-slate-500 cursor-pointer"
+                id="star-selector"
+              >
+                <span
+                  class="material-symbols-outlined hover:text-primary transition-colors"
+                  data-val="1"
+                  >star</span
+                >
+                <span
+                  class="material-symbols-outlined hover:text-primary transition-colors"
+                  data-val="2"
+                  >star</span
+                >
+                <span
+                  class="material-symbols-outlined hover:text-primary transition-colors"
+                  data-val="3"
+                  >star</span
+                >
+                <span
+                  class="material-symbols-outlined hover:text-primary transition-colors"
+                  data-val="4"
+                  >star</span
+                >
+                <span
+                  class="material-symbols-outlined hover:text-primary transition-colors"
+                  data-val="5"
+                  >star</span
+                >
+              </div>
+              <input
+                type="text"
+                id="review-title"
+                placeholder="Tiêu đề (Ví dụ: Giày đi rất êm!)"
+                class="bg-transparent border border-white/10 rounded p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary"
+              />
+              <textarea
+                id="review-comment"
+                rows="3"
+                placeholder="Chia sẻ thêm cảm nhận của bạn về sản phẩm..."
+                class="bg-transparent border border-white/10 rounded p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary"
+              ></textarea>
+              <button
+                id="submit-review-btn"
+                class="bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Gửi Đánh Giá
+              </button>
+            </div>
           </div>
-          <!-- Review Feed -->
-          <div class="md:w-2/3 space-y-12 reviews-container">
+
+          <div class="md:w-2/3 space-y-12">
             <div
               class="flex items-center justify-between pb-6 border-b border-white/10"
             >
               <div class="flex gap-4">
-                <button
-                  class="text-sm font-bold text-white border-b-2 border-primary pb-1 review-sort-btn"
+                <span
+                  class="text-sm font-bold text-white border-b-2 border-primary pb-1"
                 >
-                  Most Relevant
-                </button>
-                <button
-                  class="text-sm font-bold text-slate-500 hover:text-white pb-1 review-sort-btn"
-                >
-                  Newest
-                </button>
+                  Mới nhất
+                </span>
               </div>
               <div class="flex items-center gap-2 text-sm font-medium">
-                <span class="text-slate-400">Filter:</span>
+                <span class="text-slate-400">Lọc:</span>
                 <select
-                  class="bg-transparent border-none focus:ring-0 text-sm py-0 rating-filter"
+                  id="rating-filter"
+                  class="bg-background-dark border border-white/10 focus:ring-1 focus:ring-primary text-sm py-1.5 px-3 rounded text-white outline-none"
                 >
-                  <option>All Ratings</option>
-                  <option>5 Stars</option>
-                  <option>4 Stars</option>
+                  <option value="">Tất cả đánh giá</option>
+                  <option value="5">5 Sao</option>
+                  <option value="4">4 Sao</option>
+                  <option value="3">3 Sao</option>
+                  <option value="2">2 Sao</option>
+                  <option value="1">1 Sao</option>
                 </select>
               </div>
             </div>
-            <!-- Review 1 -->
-            <div
-              class="space-y-4 review-item"
-              data-date="2 days ago"
-              data-timestamp="2"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic"
-                  >
-                    JD
-                  </div>
-                  <div>
-                    <h5 class="font-bold text-sm">Jordan D.</h5>
-                    <div class="flex items-center gap-2">
-                      <div class="flex text-primary text-[10px]">
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                      </div>
-                      <span
-                        class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1"
-                      >
-                        <span class="material-symbols-outlined text-[10px]"
-                          >check_circle</span
-                        >
-                        Verified Buyer
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <span class="text-xs text-slate-500">2 days ago</span>
-              </div>
-              <p class="font-bold text-lg italic">"Insane energy return!"</p>
-              <p class="text-slate-400 leading-relaxed">
-                I've been running in these for a week now and the carbon plate
-                is a game changer. My splits have dropped by nearly 10 seconds
-                per mile. They are stiff at first but break in beautifully.
-                10/10 would recommend for marathon prep.
-              </p>
-              <div class="flex items-center gap-4 pt-2">
-                <button
-                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-helpful-btn"
-                >
-                  <span class="material-symbols-outlined text-sm"
-                    >thumb_up</span
-                  >
-                  Helpful (<span class="helpful-count">24</span>)
-                </button>
-                <button
-                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-reply-btn"
-                >
-                  <span class="material-symbols-outlined text-sm">reply</span>
-                  Reply
-                </button>
-              </div>
-            </div>
-            <!-- Review 2 -->
-            <div
-              class="space-y-4 review-item"
-              data-date="1 week ago"
-              data-timestamp="7"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic"
-                  >
-                    SK
-                  </div>
-                  <div>
-                    <h5 class="font-bold text-sm">Sarah K.</h5>
-                    <div class="flex items-center gap-2">
-                      <div class="flex text-primary text-[10px]">
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs fill-1"
-                          >star</span
-                        >
-                        <span class="material-symbols-outlined text-xs"
-                          >star</span
-                        >
-                      </div>
-                      <span
-                        class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1"
-                      >
-                        <span class="material-symbols-outlined text-[10px]"
-                          >check_circle</span
-                        >
-                        Verified Buyer
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <span class="text-xs text-slate-500">1 week ago</span>
-              </div>
-              <p class="font-bold text-lg italic">"Breathable but narrow."</p>
-              <p class="text-slate-400 leading-relaxed">
-                The AeroStream mesh is legitimately cool—my feet don't overheat
-                even in Florida humidity. Just a heads up, the toe box is a bit
-                narrower than v1. If you have wide feet, maybe size up a half
-                notch.
-              </p>
-              <div class="flex items-center gap-4 pt-2">
-                <button
-                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-helpful-btn"
-                >
-                  <span class="material-symbols-outlined text-sm"
-                    >thumb_up</span
-                  >
-                  Helpful (<span class="helpful-count">12</span>)
-                </button>
-                <button
-                  class="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary review-reply-btn"
-                >
-                  <span class="material-symbols-outlined text-sm">reply</span>
-                  Reply
-                </button>
-              </div>
-            </div>
+
+            <div id="reviews-list-container" class="space-y-8"></div>
+
             <button
-              class="w-full py-4 text-sm font-bold text-slate-400 hover:text-white uppercase tracking-widest load-more-btn"
+              id="load-more-reviews-btn"
+              class="w-full py-4 text-sm font-bold text-slate-400 hover:text-white uppercase tracking-widest hidden"
             >
-              Load More Reviews
+              Tải thêm đánh giá
             </button>
           </div>
         </div>
@@ -812,194 +553,188 @@
         </div>
       </div>
     </footer>
-    <script>
-      // Product state
-      const productState = {
-        selectedColor: "Neon Flame",
-        selectedSize: "US 9",
-        inWishlist: false,
-        cartCount: 0,
-        colors: [
-          { name: "Neon Flame", class: "bg-primary" },
-          { name: "Midnight Black", class: "bg-slate-800" },
-          { name: "Pearl White", class: "bg-white" },
-        ],
-      };
+    <script th:inline="javascript">
+      // Lấy mảng biến thể (productDetails) từ Spring Boot đổ sang JS
+      const variants = /*[[${product.productDetails}]]*/ [];
+      const productId = /*[[${product.id}]]*/ null;
 
-      // Color Selection
-      document.querySelectorAll(".color-btn").forEach((btn, idx) => {
-        btn.addEventListener("click", function () {
-          document.querySelectorAll(".color-btn").forEach((b) => {
-            b.classList.remove("border-2", "border-primary");
-            b.classList.add("border");
+      let selectedColor = null;
+      let selectedSize = null;
+      let selectedVariantId = null;
+
+      // 1. XỬ LÝ ẢNH THUMBNAIL (Bấm vào ảnh nhỏ thì ảnh to thay đổi)
+      const mainImg = document.querySelector(".main-product-img");
+      const thumbnails = document.querySelectorAll(".gallery-thumbnail");
+
+      thumbnails.forEach((thumb) => {
+        thumb.addEventListener("click", function () {
+          thumbnails.forEach((t) => {
+            t.classList.remove("border-2", "border-primary");
+            t.classList.add("border-white/10");
           });
-          this.classList.remove("border");
+          this.classList.remove("border-white/10");
           this.classList.add("border-2", "border-primary");
-          productState.selectedColor = productState.colors[idx].name;
-          document.querySelector(".color-name").textContent =
-            productState.selectedColor;
+          mainImg.src = this.querySelector("img").src;
         });
       });
 
-      // Size Selection
-      document.querySelectorAll(".size-btn").forEach((btn) => {
+      // 2. CHỌN MÀU SẮC
+      const colorBtns = document.querySelectorAll(".color-btn");
+      colorBtns.forEach((btn) => {
         btn.addEventListener("click", function () {
-          if (this.classList.contains("opacity-30")) return;
-          document.querySelectorAll(".size-btn").forEach((b) => {
-            if (!b.classList.contains("opacity-30")) {
-              b.classList.remove(
-                "border-2",
-                "border-primary",
-                "text-primary",
-                "bg-primary/10",
-              );
-              b.classList.add("border", "border-white/10");
-            }
+          colorBtns.forEach((b) => {
+            b.classList.remove("border-2", "border-primary");
+            b.classList.add("border-white/10");
           });
-          this.classList.remove("border", "border-white/10");
+          this.classList.remove("border-white/10");
+          this.classList.add("border-2", "border-primary");
+
+          selectedColor = this.getAttribute("data-color");
+          document.getElementById("selectedColorName").textContent =
+            selectedColor;
+          checkVariantAvailability();
+        });
+      });
+
+      // 3. CHỌN SIZE
+      const sizeBtns = document.querySelectorAll(".size-btn");
+      sizeBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          sizeBtns.forEach((b) => {
+            b.classList.remove(
+              "border-2",
+              "border-primary",
+              "text-primary",
+              "bg-primary/10",
+            );
+            b.classList.add("border-white/10");
+          });
+          this.classList.remove("border-white/10");
           this.classList.add(
             "border-2",
             "border-primary",
             "text-primary",
             "bg-primary/10",
           );
-          productState.selectedSize = this.textContent.trim();
+
+          selectedSize = this.getAttribute("data-size");
+          checkVariantAvailability();
         });
       });
 
-      // Add to Cart
-      document
-        .querySelector(".add-to-cart-btn")
-        .addEventListener("click", function () {
-          productState.cartCount++;
-          showNotification(
-            `Added "${productState.selectedColor}" in ${productState.selectedSize} to cart!`,
-          );
-          updateCartBadge();
-        });
+      // 4. KIỂM TRA TÌNH TRẠNG CÒN HÀNG (Cập nhật cho cả 2 nút)
+      const addToCartBtn = document.querySelector(".add-to-cart-btn");
+      const buyNowBtn = document.querySelector(".buy-now-btn");
 
-      // Wishlist
-      document
-        .querySelector(".wishlist-btn")
-        .addEventListener("click", function () {
-          productState.inWishlist = !productState.inWishlist;
-          this.style.color = productState.inWishlist ? "#f48c25" : "#ffffff";
-          this.classList.toggle("fill-1");
-          showNotification(
-            productState.inWishlist
-              ? "Added to Wishlist"
-              : "Removed from Wishlist",
-          );
-        });
+      function checkVariantAvailability() {
+        if (!selectedColor || !selectedSize) return;
 
-      // Compare
-      document
-        .querySelector(".compare-btn")
-        .addEventListener("click", function () {
-          showNotification("Added to Compare. View comparison →");
-        });
+        const variant = variants.find(
+          (v) => v.color === selectedColor && v.size === selectedSize,
+        );
 
-      // Review Sorting
-      const reviewButtons = document.querySelectorAll(".review-sort-btn");
-      let currentSortType = "relevant";
-
-      reviewButtons.forEach((btn) => {
-        btn.addEventListener("click", function () {
-          reviewButtons.forEach((b) => {
-            b.classList.remove(
-              "text-white",
-              "border-b-2",
-              "border-primary",
-              "pb-1",
-            );
-            b.classList.add("text-slate-500", "hover:text-white");
-          });
-          this.classList.remove("text-slate-500", "hover:text-white");
-          this.classList.add(
-            "text-white",
-            "border-b-2",
-            "border-primary",
-            "pb-1",
-          );
-
-          const sortType = this.textContent.trim().toLowerCase();
-          currentSortType =
-            sortType === "most relevant" ? "relevant" : "newest";
-          sortReviews(currentSortType);
-          showNotification(`Sorting by: ${this.textContent.trim()}`);
-        });
-      });
-
-      function sortReviews(type) {
-        const container = document.querySelector(".reviews-container");
-        const reviews = Array.from(document.querySelectorAll(".review-item"));
-
-        if (type === "newest") {
-          reviews.sort((a, b) => {
-            const timestampA = parseInt(a.getAttribute("data-timestamp"));
-            const timestampB = parseInt(b.getAttribute("data-timestamp"));
-            return timestampA - timestampB;
-          });
+        if (variant) {
+          selectedVariantId = variant.id;
+          if (variant.stockQuantity > 0) {
+            // Bật cả 2 nút nếu còn hàng
+            addToCartBtn.disabled = false;
+            addToCartBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            buyNowBtn.disabled = false;
+            buyNowBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            buyNowBtn.innerHTML =
+              '<span class="material-symbols-outlined">bolt</span> Mua ngay';
+          } else {
+            // Tắt cả 2 nút nếu hết hàng
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.add("opacity-50", "cursor-not-allowed");
+            buyNowBtn.disabled = true;
+            buyNowBtn.classList.add("opacity-50", "cursor-not-allowed");
+            buyNowBtn.innerHTML =
+              '<span class="material-symbols-outlined">block</span> Hết hàng';
+          }
         } else {
-          reviews.sort((a, b) => {
-            const timestampA = parseInt(a.getAttribute("data-timestamp"));
-            const timestampB = parseInt(b.getAttribute("data-timestamp"));
-            return timestampB - timestampA;
-          });
+          selectedVariantId = null;
+          // Tắt nút nếu biến thể không tồn tại
+          addToCartBtn.disabled = true;
+          addToCartBtn.classList.add("opacity-50", "cursor-not-allowed");
+          buyNowBtn.disabled = true;
+          buyNowBtn.classList.add("opacity-50", "cursor-not-allowed");
+          buyNowBtn.innerHTML =
+            '<span class="material-symbols-outlined">block</span> Không có sẵn';
         }
-
-        // Di chuyển lại các reviews
-        reviews.forEach((review) => {
-          container.appendChild(review);
-        });
       }
 
-      // Rating Filter
-      document
-        .querySelector(".rating-filter")
-        .addEventListener("change", function () {
-          console.log("Filtering by:", this.value);
-          showNotification(`Filtering reviews by: ${this.value}`);
-        });
+      // 5. HÀM GỌI API DÙNG CHUNG CHO GIỎ HÀNG VÀ MUA NGAY
+      async function executeAddToCart() {
+        if (!selectedColor || !selectedSize) {
+          showNotification("Vui lòng chọn Màu sắc và Kích thước trước!");
+          return false;
+        }
+        if (!selectedVariantId) return false;
 
-      // Helpful button
-      document.querySelectorAll(".review-helpful-btn").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          let count = parseInt(
-            this.querySelector(".helpful-count").textContent,
-          );
-          count++;
-          this.querySelector(".helpful-count").textContent = count;
-          this.style.color = "#f48c25";
-          this.disabled = true;
-          showNotification("Thank you for your feedback!");
-        });
-      });
+        // ⚠️ LƯU Ý QUAN TRỌNG VỀ cartId:
+        // Để API chạy được, bạn cần truyền ID giỏ hàng của User đang đăng nhập.
+        // Tạm thời ở đây tôi mock (giả lập) cartId = 1 để bạn test tính năng.
+        // Sau này bạn có thể truyền cartId từ WebController sang qua Thymeleaf.
+        const currentCartId = 1;
 
-      // Reply button
-      document.querySelectorAll(".review-reply-btn").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          showNotification("Reply form would open here");
-        });
-      });
+        // Cấu trúc payload chuẩn khớp chính xác 100% với CartDetailRequest.java
+        const payload = {
+          cartId: currentCartId,
+          productDetailId: selectedVariantId,
+          quantity: 1,
+        };
 
-      // Gallery thumbnail click
-      document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
-        thumb.addEventListener("click", function () {
-          if (idx === 3) return; // Skip "+2 More"
-          document.querySelectorAll(".gallery-thumbnail").forEach((t) => {
-            t.classList.remove("border-2", "border-primary");
-            t.classList.add("border");
+        try {
+          // Đã đổi URL thành /api/v1/cart-details
+          const response = await fetch("/api/v1/cart-details", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
           });
-          this.classList.remove("border");
-          this.classList.add("border-2", "border-primary");
-          const mainImg = document.querySelector(".main-product-img");
-          mainImg.src = this.querySelector("img").src;
-          mainImg.style.transform = "scale(1)";
-        });
+
+          if (response.ok) {
+            return true;
+          } else if (response.status === 401 || response.status === 403) {
+            showNotification("Bạn cần đăng nhập để thực hiện chức năng này!");
+            return false;
+          } else {
+            showNotification(
+              "Có lỗi xảy ra khi thêm vào giỏ, vui lòng thử lại!",
+            );
+            return false;
+          }
+        } catch (err) {
+          console.error(err);
+          showNotification("Lỗi kết nối tới Server!");
+          return false;
+        }
+      }
+
+      // Sự kiện click: THÊM VÀO GIỎ HÀNG
+      addToCartBtn.addEventListener("click", async function () {
+        const isSuccess = await executeAddToCart();
+        if (isSuccess) {
+          showNotification(
+            `Đã thêm ${selectedColor} (Size ${selectedSize}) vào giỏ hàng!`,
+          );
+          // Tuỳ chọn: Bạn có thể cập nhật số lượng badge giỏ hàng ở đây
+        }
       });
 
-      // Notification system
+      // Sự kiện click: MUA NGAY (Bỏ qua giỏ hàng, đi thẳng tới checkout)
+      buyNowBtn.addEventListener("click", function () {
+        if (!selectedColor || !selectedSize || !selectedVariantId) {
+          showNotification("Vui lòng chọn Màu sắc và Kích thước!");
+          return;
+        }
+        // Chuyển hướng kèm theo dữ liệu Mua Ngay
+        window.location.href = `/checkout?buyNow=true&variantId=${selectedVariantId}&qty=1`;
+      });
+
+      // 6. THÔNG BÁO (Notification popup)
       function showNotification(message) {
         const existing = document.querySelector(".notification");
         if (existing) existing.remove();
@@ -1013,30 +748,233 @@
         setTimeout(() => notification.remove(), 3000);
       }
 
-      // Update cart badge
-      function updateCartBadge() {
-        document.querySelector(".cart-badge").textContent =
-          productState.cartCount;
+      // ==========================================
+      // PHẦN QUẢN LÝ ĐÁNH GIÁ (REVIEWS) API LOGIC
+      // ==========================================
+      let reviewPage = 0;
+      const reviewSize = 5;
+
+      const reviewListContainer = document.getElementById(
+        "reviews-list-container",
+      );
+      const loadMoreReviewsBtn = document.getElementById(
+        "load-more-reviews-btn",
+      );
+      const ratingFilter = document.getElementById("rating-filter");
+
+      // Elements của Form đánh giá
+      const toggleReviewFormBtn = document.getElementById(
+        "toggle-review-form-btn",
+      );
+      const reviewFormSection = document.getElementById("review-form-section");
+      const starSelector = document.querySelectorAll("#star-selector span");
+      const submitReviewBtn = document.getElementById("submit-review-btn");
+      let selectedRating = 0;
+
+      // 1. GỌI API LẤY DANH SÁCH REVIEW
+      async function fetchReviews(append = false) {
+        const ratingVal = ratingFilter.value;
+        let url = `/api/v1/reviews/product/${productId}?page=${reviewPage}&size=${reviewSize}`;
+        if (ratingVal) url += `&rating=${ratingVal}`;
+
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+
+            updateReviewSummary(data);
+
+            if (!append) reviewListContainer.innerHTML = "";
+
+            if (data.reviews.content.length === 0 && !append) {
+              reviewListContainer.innerHTML =
+                '<p class="text-slate-500 italic py-8 text-center">Sản phẩm này chưa có đánh giá nào ở mức sao này.</p>';
+            } else {
+              data.reviews.content.forEach((review) => {
+                reviewListContainer.insertAdjacentHTML(
+                  "beforeend",
+                  createReviewHTML(review),
+                );
+              });
+            }
+
+            // Ẩn/Hiện nút Load More
+            if (data.reviews.last || data.reviews.content.length === 0) {
+              loadMoreReviewsBtn.style.display = "none";
+            } else {
+              loadMoreReviewsBtn.style.display = "block";
+            }
+          }
+        } catch (error) {
+          console.error("Lỗi tải đánh giá:", error);
+        }
       }
 
-      // Add animation
-      const style = document.createElement("style");
-      style.textContent = `
-      @keyframes slideIn {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
+      // 2. CẬP NHẬT GIAO DIỆN THỐNG KÊ (Bên trái)
+      function updateReviewSummary(data) {
+        const total = data.totalReviews || 0;
+        const avg = data.averageRating || 0;
+        const counts = data.ratingCounts || {};
+
+        document.getElementById("total-reviews-text").textContent = total;
+        document.getElementById("avg-rating-number").textContent =
+          avg.toFixed(1);
+
+        // Vẽ sao trung bình
+        let starsHtml = "";
+        for (let i = 1; i <= 5; i++) {
+          // dùng fill-1 cho những sao <= avg
+          starsHtml += `<span class="material-symbols-outlined text-xl ${i <= Math.round(avg) ? "fill-1" : ""}">star</span>`;
         }
-        to {
-          transform: translateX(0);
-          opacity: 1;
+        document.getElementById("avg-rating-stars").innerHTML = starsHtml;
+
+        // Vẽ thanh phần trăm
+        for (let i = 5; i >= 1; i--) {
+          const countForStar = counts[i] || 0;
+          const pct =
+            total === 0 ? 0 : Math.round((countForStar / total) * 100);
+          document.getElementById(`bar-${i}`).style.width = `${pct}%`;
+          document.getElementById(`pct-${i}`).textContent = `${pct}%`;
         }
       }
-      .animate-slideIn {
-        animation: slideIn 0.3s ease-out;
+
+      // 3. TẠO HTML CHO TỪNG BÀI ĐÁNH GIÁ (Đã bỏ nút Like/Helpful)
+      function createReviewHTML(review) {
+        const dateStr = new Date(review.createdAt).toLocaleDateString("vi-VN");
+
+        let starsHtml = "";
+        for (let i = 1; i <= 5; i++) {
+          starsHtml += `<span class="material-symbols-outlined text-xs ${i <= review.rating ? "fill-1" : ""}">star</span>`;
+        }
+
+        const initial = review.fullName
+          ? review.fullName.charAt(0).toUpperCase()
+          : "U";
+        const avatarHtml = review.avatarUrl
+          ? `<img src="${review.avatarUrl}" class="size-10 rounded-full object-cover">`
+          : `<div class="size-10 rounded-full bg-slate-800 flex items-center justify-center font-black text-primary italic">${initial}</div>`;
+
+        return `
+        <div class="space-y-4 review-item py-6 border-b border-white/5 last:border-0">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                    ${avatarHtml}
+                    <div>
+                        <h5 class="font-bold text-sm">${review.fullName || "Người dùng ẩn danh"}</h5>
+                        <div class="flex items-center gap-2">
+                            <div class="flex text-primary text-[10px]">
+                                ${starsHtml}
+                            </div>
+                            <span class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[10px]">check_circle</span>
+                                Đã mua hàng
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <span class="text-xs text-slate-500">${dateStr}</span>
+            </div>
+            ${review.title ? `<p class="font-bold text-lg">${review.title}</p>` : ""}
+            <p class="text-slate-400 leading-relaxed">${review.comment || ""}</p>
+        </div>
+        `;
       }
-    `;
-      document.head.appendChild(style);
+
+      // 4. SỰ KIỆN: Bộ Lọc (Dropdown)
+      ratingFilter.addEventListener("change", () => {
+        reviewPage = 0;
+        fetchReviews(false);
+      });
+
+      // 5. SỰ KIỆN: Tải thêm
+      loadMoreReviewsBtn.addEventListener("click", () => {
+        reviewPage++;
+        fetchReviews(true);
+      });
+
+      // 6. SỰ KIỆN: Mở Form Đánh giá
+      toggleReviewFormBtn.addEventListener("click", () => {
+        reviewFormSection.classList.toggle("hidden");
+      });
+
+      // 7. SỰ KIỆN: Chấm sao
+      starSelector.forEach((star) => {
+        star.addEventListener("click", function () {
+          selectedRating = parseInt(this.getAttribute("data-val"));
+          starSelector.forEach((s) => {
+            if (parseInt(s.getAttribute("data-val")) <= selectedRating) {
+              s.classList.add("text-primary", "fill-1");
+              s.classList.remove("text-slate-500");
+            } else {
+              s.classList.remove("text-primary", "fill-1");
+              s.classList.add("text-slate-500");
+            }
+          });
+        });
+      });
+
+      // 8. SỰ KIỆN: Đẩy Form Đánh Giá
+      submitReviewBtn.addEventListener("click", async () => {
+        if (selectedRating === 0) {
+          showNotification("Vui lòng chọn số sao!");
+          return;
+        }
+
+        const title = document.getElementById("review-title").value.trim();
+        const comment = document.getElementById("review-comment").value.trim();
+
+        // ⚠️ MOCK DỮ LIỆU USERID
+        const currentUserId = 1;
+
+        const payload = {
+          productId: productId,
+          userId: currentUserId,
+          rating: selectedRating,
+          title: title,
+          comment: comment,
+        };
+
+        try {
+          submitReviewBtn.textContent = "Đang gửi...";
+          submitReviewBtn.disabled = true;
+
+          const res = await fetch("/api/v1/reviews", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok) {
+            showNotification("Đánh giá của bạn đã được ghi nhận!");
+            reviewFormSection.classList.add("hidden");
+
+            // Reset form
+            document.getElementById("review-title").value = "";
+            document.getElementById("review-comment").value = "";
+            selectedRating = 0;
+            starSelector.forEach((s) => {
+              s.classList.remove("text-primary", "fill-1");
+              s.classList.add("text-slate-500");
+            });
+
+            // Trở về trang 1 và clear Filter
+            reviewPage = 0;
+            ratingFilter.value = "";
+            fetchReviews(false);
+          } else {
+            const errorData = await res.text();
+            showNotification("Lỗi: " + errorData);
+          }
+        } catch (err) {
+          showNotification("Lỗi kết nối tới Server!");
+        } finally {
+          submitReviewBtn.textContent = "Gửi Đánh Giá";
+          submitReviewBtn.disabled = false;
+        }
+      });
+
+      // KHỞI CHẠY KHI VỪA VÀO TRANG
+      fetchReviews();
     </script>
   </body>
 </html>

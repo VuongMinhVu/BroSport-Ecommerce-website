@@ -1,758 +1,1157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" class="dark" lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Brosport - Elite Sportswear</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#ff6600",
-                        "background-light": "#f8f7f5",
-                        "background-dark": "#000000",
-                        "surface-dark": "#121212",
-                        "border-dark": "#ffffff10",
-                    },
-                    fontFamily: { "display": ["Lexend"] },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem", "lg": "0.5rem",
-                        "xl": "0.75rem", "full": "9999px"
-                    },
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ff6600",
+              "background-light": "#f8f7f5",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
             },
-        }
+            fontFamily: { display: ["Lexend"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
     </script>
     <style type="text/tailwindcss">
-        body { font-family: 'Lexend', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .filled { font-variation-settings: 'FILL' 1; }
-        #chat-toggle:checked ~ #chat-window { display: flex; }
-        #chat-toggle:checked ~ #chat-trigger .open-icon { display: none; }
-        #chat-toggle:checked ~ #chat-trigger .close-icon { display: block; }
-        .close-icon { display: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .nav-link {
-            @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
-        }
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .filled {
+        font-variation-settings: "FILL" 1;
+      }
+      #chat-toggle:checked ~ #chat-window {
+        display: flex;
+      }
+      #chat-toggle:checked ~ #chat-trigger .open-icon {
+        display: none;
+      }
+      #chat-toggle:checked ~ #chat-trigger .close-icon {
+        display: block;
+      }
+      .close-icon {
+        display: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .nav-link {
+        @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
+      }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <style>
-        /* Swiper pagination */
-        .hero-swiper .swiper-pagination-bullet {
-            width: 32px !important; height: 6px !important;
-            border-radius: 99px !important;
-            background: rgba(255,255,255,0.2) !important;
-            opacity: 1 !important; transition: all 0.3s ease;
+      /* Swiper pagination */
+      .hero-swiper .swiper-pagination-bullet {
+        width: 32px !important;
+        height: 6px !important;
+        border-radius: 99px !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+        opacity: 1 !important;
+        transition: all 0.3s ease;
+      }
+      .hero-swiper .swiper-pagination-bullet-active {
+        background: #ff7a00 !important;
+        width: 48px !important;
+      }
+      /* Flash sale countdown */
+      .bg-orange-box {
+        background-color: #ff7a00 !important;
+        box-shadow: 0 10px 25px -5px rgba(255, 122, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      /* Skeleton shimmer */
+      @keyframes shimmer {
+        0% {
+          background-position: -1000px 0;
         }
-        .hero-swiper .swiper-pagination-bullet-active {
-            background: #FF7A00 !important; width: 48px !important;
+        100% {
+          background-position: 1000px 0;
         }
-        /* Flash sale countdown */
-        .bg-orange-box {
-            background-color: #FF7A00 !important;
-            box-shadow: 0 10px 25px -5px rgba(255,122,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
+      }
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #1a1a1a 25%,
+          #2a2a2a 50%,
+          #1a1a1a 75%
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      .skeleton-light {
+        background: linear-gradient(
+          90deg,
+          #e5e7eb 25%,
+          #f3f4f6 50%,
+          #e5e7eb 75%
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      /* Product card hover */
+      .product-card:hover {
+        box-shadow: 0 20px 40px rgba(255, 102, 0, 0.15);
+        transform: translateY(-4px);
+      }
+      .product-card {
+        transition: all 0.3s ease;
+      }
+      /* New arrivals card */
+      .arrival-card:hover {
+        border-color: #ff6600;
+      }
+      /* Sport icon card */
+      .sport-card:hover .sport-icon {
+        color: #ff6600;
+        transform: scale(1.1);
+      }
+      .sport-icon {
+        transition: all 0.3s ease;
+      }
+      /* Color dot */
+      .color-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.2s;
+      }
+      /* Chat messages */
+      #chat-messages {
+        scroll-behavior: smooth;
+      }
+      .chat-bubble-ai {
+        animation: fadeInUp 0.3s ease;
+      }
+      .chat-bubble-user {
+        animation: fadeInUp 0.3s ease;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-        /* Skeleton shimmer */
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .skeleton {
-            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
-            background-size: 1000px 100%;
-            animation: shimmer 1.5s infinite;
+      }
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff6600;
+        animation: typing 1.2s infinite;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
         }
-        .skeleton-light {
-            background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
-            background-size: 1000px 100%;
-            animation: shimmer 1.5s infinite;
+        30% {
+          transform: translateY(-6px);
+          opacity: 1;
         }
-        /* Product card hover */
-        .product-card:hover { box-shadow: 0 20px 40px rgba(255,102,0,0.15); transform: translateY(-4px); }
-        .product-card { transition: all 0.3s ease; }
-        /* New arrivals card */
-        .arrival-card:hover { border-color: #ff6600; }
-        /* Sport icon card */
-        .sport-card:hover .sport-icon { color: #ff6600; transform: scale(1.1); }
-        .sport-icon { transition: all 0.3s ease; }
-        /* Color dot */
-        .color-dot { width:16px; height:16px; border-radius:50%; cursor:pointer; border:1px solid rgba(0,0,0,0.1); transition:all 0.2s; }
-        /* Chat messages */
-        #chat-messages { scroll-behavior: smooth; }
-        .chat-bubble-ai { animation: fadeInUp 0.3s ease; }
-        .chat-bubble-user { animation: fadeInUp 0.3s ease; }
-        @keyframes fadeInUp {
-            from { opacity:0; transform:translateY(10px); }
-            to   { opacity:1; transform:translateY(0); }
-        }
-        .typing-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #ff6600; animation: typing 1.2s infinite;
-        }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing {
-            0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-            30% { transform: translateY(-6px); opacity: 1; }
-        }
+      }
     </style>
     <style>
-        /* Swiper Container Custom */
-        .arrivals-swiper {
-            padding: 10px 0 !important;
-            /* Giúp nút next/prev có thể nằm ngoài khung nếu cần */
-            overflow: visible !important;
-        }
+      /* Swiper Container Custom */
+      .arrivals-swiper {
+        padding: 10px 0 !important;
+        /* Giúp nút next/prev có thể nằm ngoài khung nếu cần */
+        overflow: visible !important;
+      }
 
-        /* Đảm bảo khung Slide bằng nhau và căn giữa ảnh */
-        .arrivals-swiper .swiper-slide {
-            /* THAY ĐỔI: Đổi sang tỷ lệ 3:4 để ảnh dài ra */
-            aspect-ratio: 3 / 4;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            overflow: hidden;
-        }
+      /* Đảm bảo khung Slide bằng nhau và căn giữa ảnh */
+      .arrivals-swiper .swiper-slide {
+        /* THAY ĐỔI: Đổi sang tỷ lệ 3:4 để ảnh dài ra */
+        aspect-ratio: 3 / 4;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        overflow: hidden;
+      }
 
-        /* Tùy chỉnh ảnh trong slide */
-        .arrivals-swiper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Đảm bảo ảnh lấp đầy khung */
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      /* Tùy chỉnh ảnh trong slide */
+      .arrivals-swiper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Đảm bảo ảnh lấp đầy khung */
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-        .arrivals-swiper .swiper-slide:hover img {
-            transform: scale(1.03);
-        }
+      .arrivals-swiper .swiper-slide:hover img {
+        transform: scale(1.03);
+      }
 
-        /* === TẠO MŨI TÊN CHO NÚT ĐIỀU HƯỚNG === */
-        .arrivals-swiper .swiper-button-next,
-        .arrivals-swiper .swiper-button-prev {
-            background-color: rgba(0, 0, 0, 0.7); /* Nền đen đậm hơn */
-            width: 45px !important;
-            height: 45px !important;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* THAY ĐỔI: Vị trí của nút */
-            top: 50%;
-            transform: translateY(-50%);
-        }
+      /* === TẠO MŨI TÊN CHO NÚT ĐIỀU HƯỚNG === */
+      .arrivals-swiper .swiper-button-next,
+      .arrivals-swiper .swiper-button-prev {
+        background-color: rgba(0, 0, 0, 0.7); /* Nền đen đậm hơn */
+        width: 45px !important;
+        height: 45px !important;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* THAY ĐỔI: Vị trí của nút */
+        top: 50%;
+        transform: translateY(-50%);
+      }
 
-        .arrivals-swiper .swiper-button-next {
-            right: -15px; /* Nằm ngoài khung ảnh một chút */
-        }
+      .arrivals-swiper .swiper-button-next {
+        right: -15px; /* Nằm ngoài khung ảnh một chút */
+      }
 
-        .arrivals-swiper .swiper-button-prev {
-            left: -15px; /* Nằm ngoài khung ảnh một chút */
-        }
+      .arrivals-swiper .swiper-button-prev {
+        left: -15px; /* Nằm ngoài khung ảnh một chút */
+      }
 
-        /* CSS tạo mũi tên (Mặc định của Swiper) */
-        .arrivals-swiper .swiper-button-next:after,
-        .arrivals-swiper .swiper-button-prev:after {
-            font-family: swiper-icons; /* Sử dụng Swiper Icons */
-            font-size: 18px !important;
-            font-weight: bold;
-            color: white;
-            text-transform: none !important;
-            letter-spacing: 0 !important;
-            display: block;
-        }
+      /* CSS tạo mũi tên (Mặc định của Swiper) */
+      .arrivals-swiper .swiper-button-next:after,
+      .arrivals-swiper .swiper-button-prev:after {
+        font-family: swiper-icons; /* Sử dụng Swiper Icons */
+        font-size: 18px !important;
+        font-weight: bold;
+        color: white;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+        display: block;
+      }
 
-        /* Định hình mũi tên Next */
-        .arrivals-swiper .swiper-button-next:after {
-            content: 'next' !important; /* Mũi tên mặc định của Swiper */
-        }
+      /* Định hình mũi tên Next */
+      .arrivals-swiper .swiper-button-next:after {
+        content: "next" !important; /* Mũi tên mặc định của Swiper */
+      }
 
-        /* Định hình mũi tên Prev */
-        .arrivals-swiper .swiper-button-prev:after {
-            content: 'prev' !important; /* Mũi tên mặc định của Swiper */
-        }
+      /* Định hình mũi tên Prev */
+      .arrivals-swiper .swiper-button-prev:after {
+        content: "prev" !important; /* Mũi tên mặc định của Swiper */
+      }
 
-        /* Hiệu ứng Hover cho nút */
-        .arrivals-swiper .swiper-button-next:hover,
-        .arrivals-swiper .swiper-button-prev:hover {
-            background-color: #ff6600; /* Màu Primary */
-            border-color: #ff6600;
-            transform: translateY(-50%) scale(1.1);
-        }
+      /* Hiệu ứng Hover cho nút */
+      .arrivals-swiper .swiper-button-next:hover,
+      .arrivals-swiper .swiper-button-prev:hover {
+        background-color: #ff6600; /* Màu Primary */
+        border-color: #ff6600;
+        transform: translateY(-50%) scale(1.1);
+      }
     </style>
 
     <style>
-        .sports-swiper .swiper-button-next,
-.sports-swiper .swiper-button-prev {
-    background-color: rgba(0, 0, 0, 0.6);
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50%;
-    color: white !important;
-    transition: all 0.3s ease;
-}
+      .sports-swiper .swiper-button-next,
+      .sports-swiper .swiper-button-prev {
+        background-color: rgba(0, 0, 0, 0.6);
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        color: white !important;
+        transition: all 0.3s ease;
+      }
 
-.sports-swiper .swiper-button-next:after,
-.sports-swiper .swiper-button-prev:after {
-    font-size: 16px !important;
-    font-weight: bold;
-}
+      .sports-swiper .swiper-button-next:after,
+      .sports-swiper .swiper-button-prev:after {
+        font-size: 16px !important;
+        font-weight: bold;
+      }
 
-.sports-swiper .swiper-button-next:hover,
-.sports-swiper .swiper-button-prev:hover {
-    background-color: #ff6600;
-}
+      .sports-swiper .swiper-button-next:hover,
+      .sports-swiper .swiper-button-prev:hover {
+        background-color: #ff6600;
+      }
 
-        /* Thiết lập khung hình chữ nhật đứng cho Sport Swiper */
-    .sports-swiper .swiper-slide {
-    aspect-ratio: 3 / 4 !important; /* Tỷ lệ 3 rộng : 4 cao */
-    height: auto !important;
-    overflow: hidden;
-    }
+      /* Thiết lập khung hình chữ nhật đứng cho Sport Swiper */
+      .sports-swiper .swiper-slide {
+        aspect-ratio: 3 / 4 !important; /* Tỷ lệ 3 rộng : 4 cao */
+        height: auto !important;
+        overflow: hidden;
+      }
 
-    .sports-swiper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Giúp ảnh lấp đầy khung hình chữ nhật mà không bị dãn */
-    display: block;
-    transition: transform 0.5s ease-out;
-    }
+      .sports-swiper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Giúp ảnh lấp đầy khung hình chữ nhật mà không bị dãn */
+        display: block;
+        transition: transform 0.5s ease-out;
+      }
     </style>
+  </head>
 
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display transition-colors duration-300 min-h-screen"
+  >
+    <!-- ===================== HEADER ===================== -->
+    <div th:replace="~{fragments/header :: site-header}"></div>
 
-</head>
-
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display transition-colors duration-300 min-h-screen">
-
-<!-- ===================== HEADER ===================== -->
-<div th:replace="~{fragments/header :: site-header}"></div>
-
-<!-- ===================== TOP BAR ===================== -->
-<section class="bg-[#0a0a0a] border-b border-border-dark py-2.5">
-    <div class="mx-auto max-w-7xl px-6 flex flex-wrap justify-center sm:justify-between items-center gap-4">
-        <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-            <span class="material-symbols-outlined text-primary text-base">local_shipping</span>
-            Free shipping on orders over $150
+    <!-- ===================== TOP BAR ===================== -->
+    <section class="bg-[#0a0a0a] border-b border-border-dark py-2.5">
+      <div
+        class="mx-auto max-w-7xl px-6 flex flex-wrap justify-center sm:justify-between items-center gap-4"
+      >
+        <div
+          class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+        >
+          <span class="material-symbols-outlined text-primary text-base"
+            >local_shipping</span
+          >
+          Free shipping on orders over $150
         </div>
-        <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-            <span class="material-symbols-outlined text-primary text-base">published_with_changes</span>
-            30-day performance trial
+        <div
+          class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+        >
+          <span class="material-symbols-outlined text-primary text-base"
+            >published_with_changes</span
+          >
+          30-day performance trial
         </div>
-        <div class="hidden md:flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-            <span class="material-symbols-outlined text-primary text-base">verified</span>
-            100% authentic elite gear
+        <div
+          class="hidden md:flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+        >
+          <span class="material-symbols-outlined text-primary text-base"
+            >verified</span
+          >
+          100% authentic elite gear
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<main>
-
-    <!-- ===================== HERO SWIPER ===================== -->
-    <section class="hero-swiper swiper w-full overflow-hidden bg-background-dark">
+    <main>
+      <!-- ===================== HERO SWIPER ===================== -->
+      <section
+        class="hero-swiper swiper w-full overflow-hidden bg-background-dark"
+      >
         <div class="swiper-wrapper">
-            <div class="swiper-slide relative flex min-h-[500px] lg:min-h-[750px] w-full items-center justify-center px-6 py-20 lg:px-20">
-                <div class="absolute inset-0 z-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"></div>
-                    <img alt="Dynamic football player" class="h-full w-full object-cover object-top"
-                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUJSx6LNZ69_22sIfGGFaujk7HPZLrQACfp_kUGn2Hf0XSG9Qp9ttcaJc8Yl_V_D_ugrlAc6pFyC_sgwQzVprR-78FHX5zVJx38XkA-2WAVJcpzA_bw7H6wGtLE0Z1Jaw0F_0rUmePVMF1J65jEIDIH2QVS0bLWtnkKMhD_Dd4YOzP-VkIjG-TNcJtCXLpEIhIW5CjjdFpXkEY436I7an5DDhDzDeYgoPMox4-jPRi5cZiyNt_GhEBktK-kRN7Ynj4jcf7__B5QLU" />
-                </div>
-                <div class="relative z-20 w-full max-w-7xl text-center lg:text-left flex flex-col items-center lg:items-start space-y-8">
-                    <div class="space-y-2">
-                        <h2 class="text-4xl font-black uppercase italic leading-none tracking-tighter text-white sm:text-6xl lg:text-8xl">NEXT GEN PERFORMANCE</h2>
-                        <h3 class="text-2xl font-black uppercase italic tracking-tighter text-white/90 lg:text-5xl">EXCLUSIVE DROP AT <span class="text-primary">BROSPORT</span></h3>
-                    </div>
-                    <a th:href="@{/products}" class="flex h-14 items-center justify-center rounded-lg bg-white px-12 text-lg font-black text-black transition-all hover:scale-105 hover:bg-primary hover:text-white shadow-xl">
-                        SHOP COLLECTION <span class="material-symbols-outlined ml-2">arrow_forward</span>
-                    </a>
-                </div>
+          <div
+            class="swiper-slide relative flex min-h-[500px] lg:min-h-[750px] w-full items-center justify-center px-6 py-20 lg:px-20"
+          >
+            <div class="absolute inset-0 z-0">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"
+              ></div>
+              <img
+                alt="Dynamic football player"
+                class="h-full w-full object-cover object-top"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUJSx6LNZ69_22sIfGGFaujk7HPZLrQACfp_kUGn2Hf0XSG9Qp9ttcaJc8Yl_V_D_ugrlAc6pFyC_sgwQzVprR-78FHX5zVJx38XkA-2WAVJcpzA_bw7H6wGtLE0Z1Jaw0F_0rUmePVMF1J65jEIDIH2QVS0bLWtnkKMhD_Dd4YOzP-VkIjG-TNcJtCXLpEIhIW5CjjdFpXkEY436I7an5DDhDzDeYgoPMox4-jPRi5cZiyNt_GhEBktK-kRN7Ynj4jcf7__B5QLU"
+              />
             </div>
-            <div class="swiper-slide relative flex min-h-[500px] lg:min-h-[750px] w-full items-center justify-center px-6 py-20 lg:px-20">
-                <div class="absolute inset-0 z-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"></div>
-                    <img alt="Athlete training" class="h-full w-full object-cover object-center"
-                         src="https://www.shutterstock.com/image-photo/dynamic-image-muscular-man-athlete-600nw-2464643573.jpg" />
-                </div>
-                <div class="relative z-20 w-full max-w-7xl text-center lg:text-left flex flex-col items-center lg:items-start space-y-8">
-                    <div class="space-y-2">
-                        <h2 class="text-4xl font-black uppercase italic leading-none tracking-tighter text-white sm:text-6xl lg:text-8xl">ULTIMATE COMFORT</h2>
-                        <h3 class="text-2xl font-black uppercase italic tracking-tighter text-white/90 lg:text-5xl">NEW SEASON <span class="text-primary">ARRIVALS</span></h3>
-                    </div>
-                    <a th:href="@{/products}" class="flex h-14 items-center justify-center rounded-lg bg-white px-12 text-lg font-black text-black transition-all hover:scale-105 hover:bg-primary hover:text-white shadow-xl">
-                        EXPLORE NOW <span class="material-symbols-outlined ml-2">arrow_forward</span>
-                    </a>
-                </div>
+            <div
+              class="relative z-20 w-full max-w-7xl text-center lg:text-left flex flex-col items-center lg:items-start space-y-8"
+            >
+              <div class="space-y-2">
+                <h2
+                  class="text-4xl font-black uppercase italic leading-none tracking-tighter text-white sm:text-6xl lg:text-8xl"
+                >
+                  NEXT GEN PERFORMANCE
+                </h2>
+                <h3
+                  class="text-2xl font-black uppercase italic tracking-tighter text-white/90 lg:text-5xl"
+                >
+                  EXCLUSIVE DROP AT <span class="text-primary">BROSPORT</span>
+                </h3>
+              </div>
+              <a
+                th:href="@{/products}"
+                class="flex h-14 items-center justify-center rounded-lg bg-white px-12 text-lg font-black text-black transition-all hover:scale-105 hover:bg-primary hover:text-white shadow-xl"
+              >
+                SHOP COLLECTION
+                <span class="material-symbols-outlined ml-2"
+                  >arrow_forward</span
+                >
+              </a>
             </div>
+          </div>
+          <div
+            class="swiper-slide relative flex min-h-[500px] lg:min-h-[750px] w-full items-center justify-center px-6 py-20 lg:px-20"
+          >
+            <div class="absolute inset-0 z-0">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"
+              ></div>
+              <img
+                alt="Athlete training"
+                class="h-full w-full object-cover object-center"
+                src="https://www.shutterstock.com/image-photo/dynamic-image-muscular-man-athlete-600nw-2464643573.jpg"
+              />
+            </div>
+            <div
+              class="relative z-20 w-full max-w-7xl text-center lg:text-left flex flex-col items-center lg:items-start space-y-8"
+            >
+              <div class="space-y-2">
+                <h2
+                  class="text-4xl font-black uppercase italic leading-none tracking-tighter text-white sm:text-6xl lg:text-8xl"
+                >
+                  ULTIMATE COMFORT
+                </h2>
+                <h3
+                  class="text-2xl font-black uppercase italic tracking-tighter text-white/90 lg:text-5xl"
+                >
+                  NEW SEASON <span class="text-primary">ARRIVALS</span>
+                </h3>
+              </div>
+              <a
+                th:href="@{/products}"
+                class="flex h-14 items-center justify-center rounded-lg bg-white px-12 text-lg font-black text-black transition-all hover:scale-105 hover:bg-primary hover:text-white shadow-xl"
+              >
+                EXPLORE NOW
+                <span class="material-symbols-outlined ml-2"
+                  >arrow_forward</span
+                >
+              </a>
+            </div>
+          </div>
         </div>
         <div class="swiper-pagination !bottom-10"></div>
-    </section>
+      </section>
 
-    <!-- ===================== BRANDS SECTION ===================== -->
-    <!-- API: GET /api/v1/brands -->
-    <section class="border-y border-border-dark bg-surface-dark py-10">
+      <!-- ===================== BRANDS SECTION ===================== -->
+      <!-- API: GET /api/v1/brands -->
+      <section class="border-y border-border-dark bg-surface-dark py-10">
         <div class="mx-auto max-w-7xl px-6">
-            <div class="mb-8 text-center">
-                <h4 class="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase">Authorized Retailer</h4>
-            </div>
-            <!-- Skeleton loader -->
-            <div id="brands-skeleton" class="flex items-center justify-between gap-12 overflow-x-auto no-scrollbar py-2">
-                <div th:each="i : ${#numbers.sequence(1,7)}" class="skeleton h-10 w-24 rounded flex-shrink-0"></div>
-            </div>
-            <!-- Brands list (populated by JS) -->
-            <div id="brands-list" class="hidden flex items-center justify-between gap-12 overflow-x-auto no-scrollbar py-2"></div>
+          <div class="mb-8 text-center">
+            <h4
+              class="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase"
+            >
+              Authorized Retailer
+            </h4>
+          </div>
+          <!-- Skeleton loader -->
+          <div
+            id="brands-skeleton"
+            class="flex items-center justify-between gap-12 overflow-x-auto no-scrollbar py-2"
+          >
+            <div
+              th:each="i : ${#numbers.sequence(1,7)}"
+              class="skeleton h-10 w-24 rounded flex-shrink-0"
+            ></div>
+          </div>
+          <!-- Brands list (populated by JS) -->
+          <div
+            id="brands-list"
+            class="hidden flex items-center justify-between gap-12 overflow-x-auto no-scrollbar py-2"
+          ></div>
         </div>
-    </section>
+      </section>
 
-    <!-- ===================== SALE BANNER ===================== -->
-    <section class="bg-primary py-4 overflow-hidden relative">
+      <!-- ===================== SALE BANNER ===================== -->
+      <section class="bg-primary py-4 overflow-hidden relative">
         <div class="absolute inset-0 bg-black/5"></div>
-        <div class="mx-auto max-w-[95%] px-2 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
-            <div class="flex items-center gap-6">
-                <span class="text-3xl font-black italic text-white uppercase tracking-tighter">MEGA SALE UP TO 70%</span>
-                <span class="hidden lg:block text-white/90 font-bold uppercase text-xs tracking-widest border-l border-white/30 pl-6">Limited time offer on all clearance items</span>
-            </div>
-            <a th:href="@{/products/sales}" class="flex items-center gap-2 bg-black text-white px-8 py-3 rounded-full font-black text-xs uppercase tracking-widest transition-transform hover:scale-105">
-                Shop All Sales <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
+        <div
+          class="mx-auto max-w-[95%] px-2 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10"
+        >
+          <div class="flex items-center gap-6">
+            <span
+              class="text-3xl font-black italic text-white uppercase tracking-tighter"
+              >MEGA SALE UP TO 70%</span
+            >
+            <span
+              class="hidden lg:block text-white/90 font-bold uppercase text-xs tracking-widest border-l border-white/30 pl-6"
+              >Limited time offer on all clearance items</span
+            >
+          </div>
+          <a
+            th:href="@{/products/sales}"
+            class="flex items-center gap-2 bg-black text-white px-8 py-3 rounded-full font-black text-xs uppercase tracking-widest transition-transform hover:scale-105"
+          >
+            Shop All Sales
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
         </div>
-    </section>
+      </section>
 
-    <!-- ===================== FLASH SALE + PRODUCTS ===================== -->
-    <!-- API: GET /api/v1/products?size=10&sort=id,desc -->
-    <section class="bg-white text-black py-20">
+      <!-- ===================== FLASH SALE + PRODUCTS ===================== -->
+      <!-- API: GET /api/v1/products?size=10&sort=id,desc -->
+      <section class="bg-white text-black py-20">
         <div class="mx-auto max-w-[95%] px-2">
-            <!-- Countdown -->
-            <div class="flex flex-col md:flex-row items-center justify-between mb-16 gap-6 border-b border-slate-100 pb-12">
-                <div class="flex items-center gap-4">
-                    <div class="bg-primary text-white p-2 rounded italic font-black px-6 py-2">FLASH SALE</div>
-                    <h3 class="text-3xl font-black uppercase tracking-tighter">ENDS IN:</h3>
-                </div>
-                <div class="flex gap-3 text-white font-black italic text-3xl lg:text-5xl">
-                    <div class="flex flex-col items-center">
-                        <div class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"><span id="days">00</span></div>
-                        <span class="text-[10px] uppercase mt-2 not-italic text-gray-400">Days</span>
-                    </div>
-                    <span class="mt-2 text-[#FF7A00]">:</span>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"><span id="hours">00</span></div>
-                        <span class="text-[10px] uppercase mt-2 not-italic text-gray-400">Hours</span>
-                    </div>
-                    <span class="mt-2 text-[#FF7A00]">:</span>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"><span id="minutes">00</span></div>
-                        <span class="text-[10px] uppercase mt-2 not-italic text-gray-400">Mins</span>
-                    </div>
-                    <span class="mt-2 text-[#FF7A00]">:</span>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"><span id="seconds">00</span></div>
-                        <span class="text-[10px] uppercase mt-2 not-italic text-gray-400">Secs</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Grid -->
-            <div class="container mx-auto px-4">
-                <div id="flash-products-skeleton" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                    <div class="skeleton-light h-80 rounded-2xl" th:each="i : ${#numbers.sequence(1,10)}"></div>
-                </div>
-                <div id="flash-products-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"></div>
-
-                <div id="flash-products-empty" class="hidden text-center py-16 text-slate-400">
-                    <span class="material-symbols-outlined text-6xl">inventory_2</span>
-                    <p class="mt-4 font-bold">No products found</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===================== NEW ARRIVALS ===================== -->
-    <!-- API: GET /api/v1/products?size=8&sort=id,desc -->
-    <section class="py-20 bg-background-dark overflow-hidden border-t border-border-dark">
-        <div class="mx-auto max-w-[95%] px-2">
-            <!-- Header -->
-            <div class="mb-10 flex items-center justify-between">
-                <h3 class="text-3xl font-black uppercase italic tracking-tighter text-white">
-                    NEW <span class="text-primary">ARRIVAL</span>
-                </h3>
-                <a href="http://localhost:8080/products" class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors">
-                    See All
-                    <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
-                </a>
-            </div>
-
-            <!-- Swiper Container -->
-            <div class="swiper arrivals-swiper relative">
-                <!-- Wrapper cho các Slide -->
-                <div id="arrivals-container" class="swiper-wrapper">
-                    <!-- Skeleton Loading: Thay đổi aspect-[2/3] thành aspect-[3/4] để ảnh dài ra -->
-                    <div class="swiper-slide skeleton aspect-[3/4] rounded-sm opacity-20" th:each="i : ${#numbers.sequence(1,5)}"></div>
-                </div>
-
-                <!-- Nút điều hướng: Loại bỏ các class !w-10 !h-10 cũ để sử dụng size từ CSS tùy chỉnh -->
-                <div class="swiper-button-next hidden md:flex"></div>
-                <div class="swiper-button-prev hidden md:flex"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===================== SHOP BY CATEGORY ===================== -->
-    <!-- API: GET /api/v1/categories -->
-    <section class="py-24 bg-surface-dark border-t border-border-dark">
-        <div class="mx-auto max-w-[95%] px-2">
-            <h3 class="mb-16 text-5xl font-black uppercase italic tracking-tighter text-center text-white">
-                SHOP BY <span class="text-primary">CATEGORY</span>
-            </h3>
-
-            <!-- Skeleton: Đảm bảo ID duy nhất là categories-skeleton -->
-            <div id="categories-skeleton" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div th:each="i : ${#numbers.sequence(1,3)}" class="skeleton aspect-square rounded-sm opacity-20"></div>
-            </div>
-
-            <!-- Grid nội dung: Đảm bảo ID duy nhất là categories-grid -->
-            <div id="categories-grid" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Dữ liệu từ hàm loadCategories() sẽ đổ vào đây -->
-            </div>
-        </div>
-    </section>
-
-    <!-- ===================== SHOP BY SPORT ===================== -->
-    <!-- API: GET /api/v1/sports -->
-    <section class="py-24 bg-background-dark overflow-hidden border-t border-border-dark">
-        <div class="mx-auto max-w-[95%] px-2">
-            <div class="mb-10 flex items-center justify-between">
-                <h2 class="text-3xl font-black uppercase italic tracking-tighter text-white">
-                    SHOP BY <span class="text-primary">SPORT</span>
-                </h2>
-                <a href="/products/sports" class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors">
-                    View All
-                    <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
-                </a>
-            </div>
-
-            <div class="swiper sports-swiper relative">
-                <div id="sports-grid" class="swiper-wrapper">
-                    <!-- Skeleton sẽ tự ẩn khi JS chạy -->
-                    <div class="swiper-slide skeleton aspect-[3/4] rounded-sm opacity-20" th:each="i : ${#numbers.sequence(1,5)}"></div>
-                </div>
-
-                <!-- Nút điều hướng -->
-                <div class="swiper-button-next hidden md:flex"></div>
-                <div class="swiper-button-prev hidden md:flex"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===================== ELITE ACCESSORIES ===================== -->
-    <!-- API: GET /api/v1/products?category=accessories&size=4 -->
-    <section class="py-24 bg-background-dark border-t border-border-dark">
-        <div class="mx-auto max-w-[95%] px-2">
-            <div class="mb-14 flex items-end justify-between">
-                <div>
-                    <h3 class="text-5xl font-black uppercase italic tracking-tighter">ELITE <span class="text-primary">ACCESSORIES</span></h3>
-                    <p class="text-slate-400 mt-2 font-medium tracking-wide">Essential components for your performance ecosystem.</p>
-                </div>
-                <a class="group flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-primary" th:href="@{/products/accessories}">
-                    VIEW ALL <span class="material-symbols-outlined transition-transform group-hover:translate-x-2">arrow_forward</span>
-                </a>
-            </div>
-
-            <div id="accessories-skeleton" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-                <div th:each="i : ${#numbers.sequence(1,10)}" class="skeleton h-80 rounded-2xl"></div>
-            </div>
-
-            <div id="accessories-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"></div>
-        </div>
-    </section>
-
-    <!-- ===================== NEWSLETTER ===================== -->
-    <section class="mx-auto max-w-[95%] px-2 py-24">
-        <div class="relative flex min-h-[450px] flex-col items-center justify-center rounded-[2.5rem] bg-primary p-12 text-center overflow-hidden">
-            <div class="absolute inset-0 bg-black/10"></div>
-            <div class="absolute inset-0 opacity-20 pointer-events-none">
-                <svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-                    <defs><pattern height="40" id="grid" patternUnits="userSpaceOnUse" width="40">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"></path>
-                    </pattern></defs>
-                    <rect fill="url(#grid)" height="100%" width="100%"></rect>
-                </svg>
-            </div>
-            <div class="relative z-10 space-y-6">
-                <h2 class="text-5xl font-black uppercase italic tracking-tighter text-white sm:text-8xl">Join the Brotherhood</h2>
-                <p class="mx-auto max-w-xl text-lg font-bold text-white/90">
-                    Get 15% off your first order when you sign up for our newsletter. Stay updated on exclusive drops and athlete workshops.
-                </p>
-                <div class="mx-auto mt-10 flex flex-col sm:flex-row max-w-lg gap-3">
-                    <input id="newsletter-email" class="flex-1 rounded-full border-none bg-white px-8 py-4 text-black font-bold placeholder:text-slate-400 focus:ring-2 focus:ring-black" placeholder="Enter your email" type="email" />
-                    <button id="newsletter-btn" class="rounded-full bg-black px-10 py-4 font-black text-white transition-all hover:bg-slate-900 uppercase tracking-widest text-xs">
-                        Sign Up Now
-                    </button>
-                </div>
-                <p id="newsletter-msg" class="hidden text-white font-bold text-sm mt-2"></p>
-            </div>
-        </div>
-    </section>
-</main>
-
-<!-- ===================== FOOTER ===================== -->
-<div th:replace="~{fragments/footer :: site-footer}"></div>
-
-<!-- ===================== CHAT WIDGET ===================== -->
-<div class="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-5">
-    <input class="hidden peer" id="chat-toggle" type="checkbox" />
-    <div class="hidden flex-col w-[400px] h-[550px] bg-[#121212] border border-border-dark rounded-3xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-2xl" id="chat-window">
-        <div class="bg-primary p-6 flex items-center justify-between text-white">
+          <!-- Countdown -->
+          <div
+            class="flex flex-col md:flex-row items-center justify-between mb-16 gap-6 border-b border-slate-100 pb-12"
+          >
             <div class="flex items-center gap-4">
-                <div class="size-11 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
-                    <span class="material-symbols-outlined text-2xl">sports_score</span>
-                </div>
-                <div>
-                    <h5 class="font-black text-sm uppercase tracking-wider">Coach Alex</h5>
-                    <p class="text-[10px] opacity-70 uppercase font-black tracking-[0.2em]">Elite Performance Support</p>
-                </div>
+              <div
+                class="bg-primary text-white p-2 rounded italic font-black px-6 py-2"
+              >
+                FLASH SALE
+              </div>
+              <h3 class="text-3xl font-black uppercase tracking-tighter">
+                ENDS IN:
+              </h3>
             </div>
-            <label class="cursor-pointer hover:bg-black/10 p-2 rounded-full transition-colors" for="chat-toggle">
-                <span class="material-symbols-outlined">close</span>
-            </label>
+            <div
+              class="flex gap-3 text-white font-black italic text-3xl lg:text-5xl"
+            >
+              <div class="flex flex-col items-center">
+                <div
+                  class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"
+                >
+                  <span id="days">00</span>
+                </div>
+                <span
+                  class="text-[10px] uppercase mt-2 not-italic text-gray-400"
+                  >Days</span
+                >
+              </div>
+              <span class="mt-2 text-[#FF7A00]">:</span>
+              <div class="flex flex-col items-center">
+                <div
+                  class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"
+                >
+                  <span id="hours">00</span>
+                </div>
+                <span
+                  class="text-[10px] uppercase mt-2 not-italic text-gray-400"
+                  >Hours</span
+                >
+              </div>
+              <span class="mt-2 text-[#FF7A00]">:</span>
+              <div class="flex flex-col items-center">
+                <div
+                  class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"
+                >
+                  <span id="minutes">00</span>
+                </div>
+                <span
+                  class="text-[10px] uppercase mt-2 not-italic text-gray-400"
+                  >Mins</span
+                >
+              </div>
+              <span class="mt-2 text-[#FF7A00]">:</span>
+              <div class="flex flex-col items-center">
+                <div
+                  class="bg-orange-box p-3 rounded-xl shadow-2xl min-w-[70px] lg:min-w-[90px] text-center"
+                >
+                  <span id="seconds">00</span>
+                </div>
+                <span
+                  class="text-[10px] uppercase mt-2 not-italic text-gray-400"
+                  >Secs</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="container mx-auto px-4">
+            <div
+              id="flash-products-skeleton"
+              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"
+            >
+              <div
+                class="skeleton-light h-80 rounded-2xl"
+                th:each="i : ${#numbers.sequence(1,10)}"
+              ></div>
+            </div>
+            <div
+              id="flash-products-grid"
+              class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"
+            ></div>
+
+            <div
+              id="flash-products-empty"
+              class="hidden text-center py-16 text-slate-400"
+            >
+              <span class="material-symbols-outlined text-6xl"
+                >inventory_2</span
+              >
+              <p class="mt-4 font-bold">No products found</p>
+            </div>
+          </div>
         </div>
-        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6 bg-[#0a0a0a]/50">
-            <div class="flex gap-4 chat-bubble-ai">
-                <div class="size-9 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white">
-                    <span class="material-symbols-outlined text-sm font-bold">bolt</span>
-                </div>
-                <div class="bg-surface-dark border border-border-dark p-4 rounded-2xl rounded-tl-none max-w-[85%]">
-                    <p class="text-sm leading-relaxed font-medium">Welcome to the inner circle. I'm here to help you gear up for your next victory. What discipline are we focusing on today?</p>
-                </div>
+      </section>
+
+      <!-- ===================== NEW ARRIVALS ===================== -->
+      <!-- API: GET /api/v1/products?size=8&sort=id,desc -->
+      <section
+        class="py-20 bg-background-dark overflow-hidden border-t border-border-dark"
+      >
+        <div class="mx-auto max-w-[95%] px-2">
+          <!-- Header -->
+          <div class="mb-10 flex items-center justify-between">
+            <h3
+              class="text-3xl font-black uppercase italic tracking-tighter text-white"
+            >
+              NEW <span class="text-primary">ARRIVAL</span>
+            </h3>
+            <a
+              href="http://localhost:8080/products"
+              class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
+            >
+              See All
+              <span
+                class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1"
+                >arrow_forward</span
+              >
+            </a>
+          </div>
+
+          <!-- Swiper Container -->
+          <div class="swiper arrivals-swiper relative">
+            <!-- Wrapper cho các Slide -->
+            <div id="arrivals-container" class="swiper-wrapper">
+              <!-- Skeleton Loading: Thay đổi aspect-[2/3] thành aspect-[3/4] để ảnh dài ra -->
+              <div
+                class="swiper-slide skeleton aspect-[3/4] rounded-sm opacity-20"
+                th:each="i : ${#numbers.sequence(1,5)}"
+              ></div>
             </div>
+
+            <!-- Nút điều hướng: Loại bỏ các class !w-10 !h-10 cũ để sử dụng size từ CSS tùy chỉnh -->
+            <div class="swiper-button-next hidden md:flex"></div>
+            <div class="swiper-button-prev hidden md:flex"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SHOP BY CATEGORY ===================== -->
+      <!-- API: GET /api/v1/categories -->
+      <section class="py-24 bg-surface-dark border-t border-border-dark">
+        <div class="mx-auto max-w-[95%] px-2">
+          <h3
+            class="mb-16 text-5xl font-black uppercase italic tracking-tighter text-center text-white"
+          >
+            SHOP BY <span class="text-primary">CATEGORY</span>
+          </h3>
+
+          <!-- Skeleton: Đảm bảo ID duy nhất là categories-skeleton -->
+          <div
+            id="categories-skeleton"
+            class="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            <div
+              th:each="i : ${#numbers.sequence(1,3)}"
+              class="skeleton aspect-square rounded-sm opacity-20"
+            ></div>
+          </div>
+
+          <!-- Grid nội dung: Đảm bảo ID duy nhất là categories-grid -->
+          <div
+            id="categories-grid"
+            class="hidden grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            <!-- Dữ liệu từ hàm loadCategories() sẽ đổ vào đây -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SHOP BY SPORT ===================== -->
+      <!-- API: GET /api/v1/sports -->
+      <section
+        class="py-24 bg-background-dark overflow-hidden border-t border-border-dark"
+      >
+        <div class="mx-auto max-w-[95%] px-2">
+          <div class="mb-10 flex items-center justify-between">
+            <h2
+              class="text-3xl font-black uppercase italic tracking-tighter text-white"
+            >
+              SHOP BY <span class="text-primary">SPORT</span>
+            </h2>
+            <a
+              href="/products/sports"
+              class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
+            >
+              View All
+              <span
+                class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1"
+                >arrow_forward</span
+              >
+            </a>
+          </div>
+
+          <div class="swiper sports-swiper relative">
+            <div id="sports-grid" class="swiper-wrapper">
+              <!-- Skeleton sẽ tự ẩn khi JS chạy -->
+              <div
+                class="swiper-slide skeleton aspect-[3/4] rounded-sm opacity-20"
+                th:each="i : ${#numbers.sequence(1,5)}"
+              ></div>
+            </div>
+
+            <!-- Nút điều hướng -->
+            <div class="swiper-button-next hidden md:flex"></div>
+            <div class="swiper-button-prev hidden md:flex"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ELITE ACCESSORIES ===================== -->
+      <!-- API: GET /api/v1/products?category=accessories&size=4 -->
+      <section class="py-24 bg-background-dark border-t border-border-dark">
+        <div class="mx-auto max-w-[95%] px-2">
+          <div class="mb-14 flex items-end justify-between">
+            <div>
+              <h3 class="text-5xl font-black uppercase italic tracking-tighter">
+                ELITE <span class="text-primary">ACCESSORIES</span>
+              </h3>
+              <p class="text-slate-400 mt-2 font-medium tracking-wide">
+                Essential components for your performance ecosystem.
+              </p>
+            </div>
+            <a
+              class="group flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-primary"
+              th:href="@{/products/accessories}"
+            >
+              VIEW ALL
+              <span
+                class="material-symbols-outlined transition-transform group-hover:translate-x-2"
+                >arrow_forward</span
+              >
+            </a>
+          </div>
+
+          <div
+            id="accessories-skeleton"
+            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"
+          >
+            <div
+              th:each="i : ${#numbers.sequence(1,10)}"
+              class="skeleton h-80 rounded-2xl"
+            ></div>
+          </div>
+
+          <div
+            id="accessories-grid"
+            class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"
+          ></div>
+        </div>
+      </section>
+
+      <!-- ===================== NEWSLETTER ===================== -->
+      <section class="mx-auto max-w-[95%] px-2 py-24">
+        <div
+          class="relative flex min-h-[450px] flex-col items-center justify-center rounded-[2.5rem] bg-primary p-12 text-center overflow-hidden"
+        >
+          <div class="absolute inset-0 bg-black/10"></div>
+          <div class="absolute inset-0 opacity-20 pointer-events-none">
+            <svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern
+                  height="40"
+                  id="grid"
+                  patternUnits="userSpaceOnUse"
+                  width="40"
+                >
+                  <path
+                    d="M 40 0 L 0 0 0 40"
+                    fill="none"
+                    stroke="white"
+                    stroke-width="1"
+                  ></path>
+                </pattern>
+              </defs>
+              <rect fill="url(#grid)" height="100%" width="100%"></rect>
+            </svg>
+          </div>
+          <div class="relative z-10 space-y-6">
+            <h2
+              class="text-5xl font-black uppercase italic tracking-tighter text-white sm:text-8xl"
+            >
+              Join the Brotherhood
+            </h2>
+            <p class="mx-auto max-w-xl text-lg font-bold text-white/90">
+              Get 15% off your first order when you sign up for our newsletter.
+              Stay updated on exclusive drops and athlete workshops.
+            </p>
+            <div class="mx-auto mt-10 flex flex-col sm:flex-row max-w-lg gap-3">
+              <input
+                id="newsletter-email"
+                class="flex-1 rounded-full border-none bg-white px-8 py-4 text-black font-bold placeholder:text-slate-400 focus:ring-2 focus:ring-black"
+                placeholder="Enter your email"
+                type="email"
+              />
+              <button
+                id="newsletter-btn"
+                class="rounded-full bg-black px-10 py-4 font-black text-white transition-all hover:bg-slate-900 uppercase tracking-widest text-xs"
+              >
+                Sign Up Now
+              </button>
+            </div>
+            <p
+              id="newsletter-msg"
+              class="hidden text-white font-bold text-sm mt-2"
+            ></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <div th:replace="~{fragments/footer :: site-footer}"></div>
+
+    <!-- ===================== CHAT WIDGET ===================== -->
+    <div class="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-5">
+      <input class="hidden peer" id="chat-toggle" type="checkbox" />
+      <div
+        class="hidden flex-col w-[400px] h-[550px] bg-[#121212] border border-border-dark rounded-3xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-2xl"
+        id="chat-window"
+      >
+        <div
+          class="bg-primary p-6 flex items-center justify-between text-white"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="size-11 rounded-full bg-white/20 flex items-center justify-center border border-white/30"
+            >
+              <span class="material-symbols-outlined text-2xl"
+                >sports_score</span
+              >
+            </div>
+            <div>
+              <h5 class="font-black text-sm uppercase tracking-wider">
+                Coach Alex
+              </h5>
+              <p
+                class="text-[10px] opacity-70 uppercase font-black tracking-[0.2em]"
+              >
+                Elite Performance Support
+              </p>
+            </div>
+          </div>
+          <label
+            class="cursor-pointer hover:bg-black/10 p-2 rounded-full transition-colors"
+            for="chat-toggle"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </label>
+        </div>
+        <div
+          id="chat-messages"
+          class="flex-1 overflow-y-auto p-6 space-y-6 bg-[#0a0a0a]/50"
+        >
+          <div class="flex gap-4 chat-bubble-ai">
+            <div
+              class="size-9 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined text-sm font-bold"
+                >bolt</span
+              >
+            </div>
+            <div
+              class="bg-surface-dark border border-border-dark p-4 rounded-2xl rounded-tl-none max-w-[85%]"
+            >
+              <p class="text-sm leading-relaxed font-medium">
+                Welcome to the inner circle. I'm here to help you gear up for
+                your next victory. What discipline are we focusing on today?
+              </p>
+            </div>
+          </div>
         </div>
         <div class="p-6 border-t border-border-dark bg-[#0a0a0a]">
-            <div class="relative flex items-center gap-3">
-                <input id="chat-input" class="flex-1 bg-surface-dark border border-border-dark rounded-full text-sm focus:ring-1 focus:ring-primary py-3 px-5 text-white placeholder:text-slate-600" placeholder="Ask your coach..." type="text" />
-                <button id="chat-send" class="bg-primary text-white size-11 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shadow-lg">
-                    <span class="material-symbols-outlined">send</span>
-                </button>
-            </div>
+          <div class="relative flex items-center gap-3">
+            <input
+              id="chat-input"
+              class="flex-1 bg-surface-dark border border-border-dark rounded-full text-sm focus:ring-1 focus:ring-primary py-3 px-5 text-white placeholder:text-slate-600"
+              placeholder="Ask your coach..."
+              type="text"
+            />
+            <button
+              id="chat-send"
+              class="bg-primary text-white size-11 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shadow-lg"
+            >
+              <span class="material-symbols-outlined">send</span>
+            </button>
+          </div>
         </div>
+      </div>
+      <label
+        class="cursor-pointer flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-[0_10px_40px_rgba(255,102,0,0.5)] transition-all hover:scale-110 active:scale-95 group"
+        for="chat-toggle"
+        id="chat-trigger"
+      >
+        <span class="material-symbols-outlined filled text-3xl open-icon"
+          >sports_mma</span
+        >
+        <span class="material-symbols-outlined text-3xl close-icon"
+          >keyboard_arrow_down</span
+        >
+      </label>
     </div>
-    <label class="cursor-pointer flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-[0_10px_40px_rgba(255,102,0,0.5)] transition-all hover:scale-110 active:scale-95 group" for="chat-toggle" id="chat-trigger">
-        <span class="material-symbols-outlined filled text-3xl open-icon">sports_mma</span>
-        <span class="material-symbols-outlined text-3xl close-icon">keyboard_arrow_down</span>
-    </label>
-</div>
 
-<!-- ==================== TOAST NOTIFICATION ==================== -->
-<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] hidden">
-    <div class="bg-[#1a1a1a] border border-border-dark text-white px-6 py-3 rounded-full font-bold text-sm flex items-center gap-3 shadow-2xl">
-        <span id="toast-icon" class="material-symbols-outlined text-primary text-base">check_circle</span>
+    <!-- ==================== TOAST NOTIFICATION ==================== -->
+    <div
+      id="toast"
+      class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] hidden"
+    >
+      <div
+        class="bg-[#1a1a1a] border border-border-dark text-white px-6 py-3 rounded-full font-bold text-sm flex items-center gap-3 shadow-2xl"
+      >
+        <span
+          id="toast-icon"
+          class="material-symbols-outlined text-primary text-base"
+          >check_circle</span
+        >
         <span id="toast-msg">Item added to cart!</span>
+      </div>
     </div>
-</div>
 
-<!-- ==================== JAVASCRIPT ==================== -->
-<script>
-    /* =========================================================
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+      /* =========================================================
        UTILITY FUNCTIONS
        ========================================================= */
-    const API_BASE = '/api/v1';
+      const API_BASE = "/api/v1";
 
-    // Generic fetch with error handling
-    async function apiFetch(endpoint) {
+      // Generic fetch with error handling
+      async function apiFetch(endpoint) {
         try {
-            const res = await fetch(API_BASE + endpoint);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return await res.json();
+          const res = await fetch(API_BASE + endpoint);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
         } catch (err) {
-            console.error(`[API Error] ${endpoint}:`, err.message);
-            return null;
+          console.error(`[API Error] ${endpoint}:`, err.message);
+          return null;
         }
-    }
+      }
 
-    // Show / hide skeleton → content
-    function showContent(skeletonId, contentId) {
+      // Show / hide skeleton → content
+      function showContent(skeletonId, contentId) {
         const skeleton = document.getElementById(skeletonId);
-        const content  = document.getElementById(contentId);
-        if (skeleton) skeleton.classList.add('hidden');
-        if (content)  content.classList.remove('hidden');
-    }
+        const content = document.getElementById(contentId);
+        if (skeleton) skeleton.classList.add("hidden");
+        if (content) content.classList.remove("hidden");
+      }
 
-    // Safely get product image
-    function getProductImage(product) {
+      // Safely get product image
+      function getProductImage(product) {
         if (product.imageUrl) return product.imageUrl;
-        if (product.productImages && product.productImages.length > 0) return product.productImages[0].imageUrl;
-        return 'https://via.placeholder.com/300x300?text=No+Image';
-    }
+        if (product.productImages && product.productImages.length > 0)
+          return product.productImages[0].imageUrl;
+        return "https://via.placeholder.com/300x300?text=No+Image";
+      }
 
-    // Format currency
-    function formatVND(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + ' ₫';
-    }
+      // Format currency
+      function formatVND(amount) {
+        return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
+      }
 
-    // Format USD
-    function formatUSD(amount) {
-        return '$' + parseFloat(amount).toFixed(2);
-    }
+      // Format USD
+      function formatUSD(amount) {
+        return "$" + parseFloat(amount).toFixed(2);
+      }
 
-    // Extract unique colors from productDetails
-    function getUniqueColors(product) {
-    // productDetails chứa danh sách các biến thể
-    const details = product.productDetails || [];
-    if (details.length > 0) {
-        const seen = new Set();
-        return details
-            .map(d => d.color) // d.color lúc này là chuỗi "Đỏ", "Đen"...
-            .filter(colorName => {
-                if (!colorName) return false;
-                const normalized = colorName.trim();
-                if (seen.has(normalized)) return false;
-                seen.add(normalized);
-                return true;
+      // Extract unique colors from productDetails
+      function getUniqueColors(product) {
+        // productDetails chứa danh sách các biến thể
+        const details = product.productDetails || [];
+        if (details.length > 0) {
+          const seen = new Set();
+          return details
+            .map((d) => d.color) // d.color lúc này là chuỗi "Đỏ", "Đen"...
+            .filter((colorName) => {
+              if (!colorName) return false;
+              const normalized = colorName.trim();
+              if (seen.has(normalized)) return false;
+              seen.add(normalized);
+              return true;
             })
-            .map(name => name.trim());
-    }
-    return [];
-}
+            .map((name) => name.trim());
+        }
+        return [];
+      }
 
-    // Color dots HTML
-    function renderColorDots(colors, theme = 'light') {
-    if (!colors || colors.length === 0) return '<span class="text-[10px] text-gray-500 italic">No color</span>';
+      // Color dots HTML
+      function renderColorDots(colors, theme = "light") {
+        if (!colors || colors.length === 0)
+          return '<span class="text-[10px] text-gray-500 italic">No color</span>';
 
-    // Bảng ánh xạ: LUÔN để key là chữ thường
-    const colorMap = {
-        'đỏ': '#FF0000',
-        'đen': '#000000',
-        'trắng': '#FFFFFF',
-        'xanh dương': '#0000FF',
-        'xám': '#808080',
-        'vàng': '#FFFF00',
-        'cam': '#FF6600',
-        'hồng': '#FFC0CB',
-        'tím': '#800080'
-    };
+        // Bảng ánh xạ: LUÔN để key là chữ thường
+        const colorMap = {
+          đỏ: "#FF0000",
+          đen: "#000000",
+          trắng: "#FFFFFF",
+          "xanh dương": "#0000FF",
+          xám: "#808080",
+          vàng: "#FFFF00",
+          cam: "#FF6600",
+          hồng: "#FFC0CB",
+          tím: "#800080",
+        };
 
-    return colors.slice(0, 5).map((colorName, i) => {
-        // colorName lúc này là chuỗi "Đỏ", ta chuyển về "đỏ" để tra cứu
-        const normalizedName = colorName.toLowerCase();
-        const hex = colorMap[normalizedName] || '#888';
+        return colors
+          .slice(0, 5)
+          .map((colorName, i) => {
+            // colorName lúc này là chuỗi "Đỏ", ta chuyển về "đỏ" để tra cứu
+            const normalizedName = colorName.toLowerCase();
+            const hex = colorMap[normalizedName] || "#888";
 
-        const activeClass = i === 0 ? 'outline outline-2 outline-primary outline-offset-2 scale-110' : '';
+            const activeClass =
+              i === 0
+                ? "outline outline-2 outline-primary outline-offset-2 scale-110"
+                : "";
 
-        return `
+            return `
             <div class="color-dot ${activeClass}"
                  style="background-color: ${hex}; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;"
                  title="${colorName}"
                  onclick="selectColorDot(this)">
             </div>`;
-    }).join('');
-}
+          })
+          .join("");
+      }
 
-    // Color dot selection
-    function selectColorDot(el) {
-        const siblings = el.parentElement.querySelectorAll('.color-dot');
-        siblings.forEach(s => { s.style.outline = 'none'; s.style.transform = 'scale(1)'; });
-        el.style.outline = '2px solid #FF7A00';
-        el.style.outlineOffset = '2px';
-        el.style.transform = 'scale(1.1)';
-    }
+      // Color dot selection
+      function selectColorDot(el) {
+        const siblings = el.parentElement.querySelectorAll(".color-dot");
+        siblings.forEach((s) => {
+          s.style.outline = "none";
+          s.style.transform = "scale(1)";
+        });
+        el.style.outline = "2px solid #FF7A00";
+        el.style.outlineOffset = "2px";
+        el.style.transform = "scale(1.1)";
+      }
 
-    // Toast notification
-    function showToast(msg, icon = 'check_circle') {
-        const toast = document.getElementById('toast');
-        document.getElementById('toast-msg').textContent = msg;
-        document.getElementById('toast-icon').textContent = icon;
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3000);
-    }
+      // Toast notification
+      function showToast(msg, icon = "check_circle") {
+        const toast = document.getElementById("toast");
+        document.getElementById("toast-msg").textContent = msg;
+        document.getElementById("toast-icon").textContent = icon;
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 3000);
+      }
 
-    /* =========================================================
+      /* =========================================================
        1. COUNTDOWN TIMER
        ========================================================= */
-    (function initCountdown() {
-        const target = new Date().getTime() + (3 * 24 * 60 * 60 * 1000);
+      (function initCountdown() {
+        const target = new Date().getTime() + 3 * 24 * 60 * 60 * 1000;
         function update() {
-            const now  = new Date().getTime();
-            const diff = target - now;
-            if (diff < 0) { clearInterval(timer); return; }
-            const d = Math.floor(diff / (1000*60*60*24));
-            const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-            const s = Math.floor((diff % (1000*60)) / 1000);
-            document.getElementById('days').innerText    = d < 10 ? '0'+d : d;
-            document.getElementById('hours').innerText   = h < 10 ? '0'+h : h;
-            document.getElementById('minutes').innerText = m < 10 ? '0'+m : m;
-            document.getElementById('seconds').innerText = s < 10 ? '0'+s : s;
+          const now = new Date().getTime();
+          const diff = target - now;
+          if (diff < 0) {
+            clearInterval(timer);
+            return;
+          }
+          const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const h = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          );
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+          document.getElementById("days").innerText = d < 10 ? "0" + d : d;
+          document.getElementById("hours").innerText = h < 10 ? "0" + h : h;
+          document.getElementById("minutes").innerText = m < 10 ? "0" + m : m;
+          document.getElementById("seconds").innerText = s < 10 ? "0" + s : s;
         }
         const timer = setInterval(update, 1000);
         update();
-    })();
+      })();
 
-    /* =========================================================
+      /* =========================================================
        2. BRANDS — GET /api/v1/brands
        ========================================================= */
-    async function loadBrands() {
-        const data = await apiFetch('/brands');
-        const list = document.getElementById('brands-list');
+      async function loadBrands() {
+        const data = await apiFetch("/brands");
+        const list = document.getElementById("brands-list");
 
         if (!data || (Array.isArray(data) && data.length === 0)) {
-            // Keep skeleton, show placeholder message
-            document.getElementById('brands-skeleton').innerHTML =
-                '<p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Authorized Retailers</p>';
-            return;
+          // Keep skeleton, show placeholder message
+          document.getElementById("brands-skeleton").innerHTML =
+            '<p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Authorized Retailers</p>';
+          return;
         }
 
-        const brands = Array.isArray(data) ? data : (data.content || []);
+        const brands = Array.isArray(data) ? data : data.content || [];
 
-        list.innerHTML = brands.map(brand => `
-            <a href="/products/brands/${brand.id || brand.slug || '#'}"
+        list.innerHTML = brands
+          .map(
+            (brand) => `
+            <a href="/products/brands/${brand.id || brand.slug || "#"}"
                class="flex-shrink-0 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all flex items-center gap-2">
-                ${brand.logoUrl
+                ${
+                  brand.logoUrl
                     ? `<img alt="${brand.name}" class="h-10 w-auto invert" src="${brand.logoUrl}" />`
                     : `<span class="font-black text-white uppercase tracking-widest text-sm">${brand.name}</span>`
                 }
             </a>
-        `).join('');
+        `,
+          )
+          .join("");
 
-        showContent('brands-skeleton', 'brands-list');
-    }
+        showContent("brands-skeleton", "brands-list");
+      }
 
-    /* =========================================================
+      /* =========================================================
        3. FLASH SALE PRODUCTS — GET /api/v1/products?size=10&sort=id,desc
        ========================================================= */
-    async function loadFlashProducts() {
-    const data = await apiFetch('/products?size=10&sort=id,desc');
-    const grid  = document.getElementById('flash-products-grid');
-    const empty = document.getElementById('flash-products-empty');
+      async function loadFlashProducts() {
+        const data = await apiFetch("/products?size=10&sort=id,desc");
+        const grid = document.getElementById("flash-products-grid");
+        const empty = document.getElementById("flash-products-empty");
 
-    if (!data) {
-        showContent('flash-products-skeleton', 'flash-products-empty');
-        return;
-    }
+        if (!data) {
+          showContent("flash-products-skeleton", "flash-products-empty");
+          return;
+        }
 
-    const products = Array.isArray(data) ? data : (data.content || []);
+        const products = Array.isArray(data) ? data : data.content || [];
 
-    if (products.length === 0) {
-        showContent('flash-products-skeleton', 'flash-products-empty');
-        return;
-    }
+        if (products.length === 0) {
+          showContent("flash-products-skeleton", "flash-products-empty");
+          return;
+        }
 
-    grid.innerHTML = products.map(product => {
-        const colors = getUniqueColors(product);
-        const colorsHtml = renderColorDots(colors, 'light');
-        const image = getProductImage(product);
-        const price = product.showPrice ? formatVND(product.showPrice) : 'Liên hệ';
-        const brand = product.brand || 'BROSPORT';
-        return `
+        grid.innerHTML = products
+          .map((product) => {
+            const colors = getUniqueColors(product);
+            const colorsHtml = renderColorDots(colors, "light");
+            const image = getProductImage(product);
+            const price = product.showPrice
+              ? formatVND(product.showPrice)
+              : "Liên hệ";
+            const brand = product.brand || "BROSPORT";
+            return `
         <div class="product-card group cursor-pointer flex flex-col"
              onclick="window.location='/products/${product.id}'"
              style="background: transparent; transform: none; box-shadow: none;">
@@ -793,44 +1192,54 @@
                 </p>
             </div>
         </div>`;
-    }).join('');
+          })
+          .join("");
 
-    showContent('flash-products-skeleton', 'flash-products-grid');
-}
+        showContent("flash-products-skeleton", "flash-products-grid");
+      }
 
-    /* =========================================================
+      /* =========================================================
        4. NEW ARRIVALS — GET /api/v1/products?size=8&sort=id,desc
        ========================================================= */
-    const SPORT_ICONS = {
-        'running': 'directions_run', 'football': 'sports_soccer', 'soccer': 'sports_soccer',
-        'tennis': 'sports_tennis', 'basketball': 'sports_basketball', 'gym': 'fitness_center',
-        'yoga': 'self_improvement', 'swimming': 'pool', 'cycling': 'directions_bike',
-        'default': 'sports'
-    };
+      const SPORT_ICONS = {
+        running: "directions_run",
+        football: "sports_soccer",
+        soccer: "sports_soccer",
+        tennis: "sports_tennis",
+        basketball: "sports_basketball",
+        gym: "fitness_center",
+        yoga: "self_improvement",
+        swimming: "pool",
+        cycling: "directions_bike",
+        default: "sports",
+      };
 
-    async function loadNewArrivals() {
-    // 1. Call API lấy 10 sản phẩm để khi kéo có cảm giác nhiều
-    const data = await apiFetch('/products?size=10&sort=id,desc');
-    const container = document.getElementById('arrivals-container');
+      async function loadNewArrivals() {
+        // 1. Call API lấy 10 sản phẩm để khi kéo có cảm giác nhiều
+        const data = await apiFetch("/products?size=10&sort=id,desc");
+        const container = document.getElementById("arrivals-container");
 
-    if (!data) {
-        // Nếu lỗi, ẩn skeleton và hiện thông báo nhẹ
-        container.innerHTML = '<p class="text-gray-500 text-sm p-4">Không thể tải bộ sưu tập.</p>';
-        return;
-    }
+        if (!data) {
+          // Nếu lỗi, ẩn skeleton và hiện thông báo nhẹ
+          container.innerHTML =
+            '<p class="text-gray-500 text-sm p-4">Không thể tải bộ sưu tập.</p>';
+          return;
+        }
 
-    const products = Array.isArray(data) ? data : (data.content || []);
+        const products = Array.isArray(data) ? data : data.content || [];
 
-    if (products.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-sm p-4">Chưa có sản phẩm mới.</p>';
-        return;
-    }
+        if (products.length === 0) {
+          container.innerHTML =
+            '<p class="text-gray-500 text-sm p-4">Chưa có sản phẩm mới.</p>';
+          return;
+        }
 
-    // 2. Tạo khung HTML tối giản cho từng Slide
-    container.innerHTML = products.map(product => {
-        const image = getProductImage(product);
+        // 2. Tạo khung HTML tối giản cho từng Slide
+        container.innerHTML = products
+          .map((product) => {
+            const image = getProductImage(product);
 
-        return `
+            return `
         <div class="swiper-slide group cursor-pointer overflow-hidden rounded-sm" style="background: transparent;">
             <a href="http://localhost:8080/products" class="block w-full h-full">
                 <img src="${image}" alt="${product.name}"
@@ -838,61 +1247,65 @@
                      onerror="this.src='https://via.placeholder.com/400x600?text=Product'">
             </a>
         </div>`;
-    }).join('');
+          })
+          .join("");
 
-    // 3. Khởi tạo Swiper với các thông số tối ưu
-    new Swiper('.arrivals-swiper', {
-        slidesPerView: 1.2, // Trên Mobile hiện 1 cái rưỡi để biết là kéo được
-        spaceBetween: 12,    // Khoảng cách nhỏ giữa các ảnh
-        grabCursor: true,   // Hiện con trỏ bàn tay khi rê vào
-        loop: true,         // Cho phép kéo vô tận
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        // Responsive breakpoints
-        breakpoints: {
-            640:  { slidesPerView: 2.2, spaceBetween: 15 },
-            1024: { slidesPerView: 4,   spaceBetween: 20 }, // Trên Tablet hiện 4 cái
-            1280: { slidesPerView: 5,   spaceBetween: 25 }, // Trên PC lớn hiện 5 cái, ảnh to
-        }
-    });
-}
+        // 3. Khởi tạo Swiper với các thông số tối ưu
+        new Swiper(".arrivals-swiper", {
+          slidesPerView: 1.2, // Trên Mobile hiện 1 cái rưỡi để biết là kéo được
+          spaceBetween: 12, // Khoảng cách nhỏ giữa các ảnh
+          grabCursor: true, // Hiện con trỏ bàn tay khi rê vào
+          loop: true, // Cho phép kéo vô tận
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+          // Responsive breakpoints
+          breakpoints: {
+            640: { slidesPerView: 2.2, spaceBetween: 15 },
+            1024: { slidesPerView: 4, spaceBetween: 20 }, // Trên Tablet hiện 4 cái
+            1280: { slidesPerView: 5, spaceBetween: 25 }, // Trên PC lớn hiện 5 cái, ảnh to
+          },
+        });
+      }
 
-    /* =========================================================
+      /* =========================================================
        5. CATEGORIES — GET /api/v1/categories
        ========================================================= */
-    const CATEGORY_IMAGES = {
-        'men':   'https://lh3.googleusercontent.com/aida-public/AB6AXuDH9bi7QsNJrIAfBJ3jcE5pz7AcoOYVlUjB-p2fUT6R-ei2SQuhIroqG3iqpnhuSAtoL5nWl10IiQZaU2SYldJUmlFmy-YyOyelAQKJcSU2LgQPYWT45GDLwAhBb9AMUkrSPifUBQ0zftulPWvYG9mg534FRL7Eohkl8iSNMfTftZeX3AigZdWXaxjVtSbTylBtXtoyODEfGnNgWsc7i8OlPTwYIRpcrX4QiYqrddWcDw_6dbBtwqObBdFWf3gOaOj009pgRcZerK8',
-        'women': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAUlyK3YXWetdkQpUwaMNYMKBF3AJCUXY0oE8VJo-RXY84dlIJq14FMx_cfZJ0RIfdUcn2Ylz3YaJJ90u9TjRMNL40ovGHOf7kpTWua7wM_WAmemlBYbLU284eg2UEX-lB0D1VzQbpRtY8IMst3ATyRUo0PrODR3dRYbZHRZ-4pHyZi43aSPym5LIayq74MBUmqmOhgV1dvoDDjBW3JRsCwQJfRsP5h0I7V8mQdYCwNybc4hVzaeAQ1uumvK7AiVT27PGQpALnzCgw',
-        'kids':  'https://lh3.googleusercontent.com/aida-public/AB6AXuC4z-skkEOR-qepsqOJUwEmlJGQxPh_JQGlDs5OV2B8hBY9arAmsCyeiLNpDIA7qYDpWTd_tO-bdmUdAXKp5eGsB1TDMvdZviqWieFGCuDo4n__5r4BZ2dEyrDhpCKKCYLv0MY5l6YGJPCs6hIonUp4Z2ZBz7FKrwSNVYS3Y_QrRRPYiHrxG437nGhBiPmWmkcMCAlUaCcg8RVTL8LKCawIZzcdA4X4crRc2h9ErQNp6cymzrExOOsdaYvD7lLroTvingQtYyNHFKo',
-    };
+      const CATEGORY_IMAGES = {
+        men: "https://lh3.googleusercontent.com/aida-public/AB6AXuDH9bi7QsNJrIAfBJ3jcE5pz7AcoOYVlUjB-p2fUT6R-ei2SQuhIroqG3iqpnhuSAtoL5nWl10IiQZaU2SYldJUmlFmy-YyOyelAQKJcSU2LgQPYWT45GDLwAhBb9AMUkrSPifUBQ0zftulPWvYG9mg534FRL7Eohkl8iSNMfTftZeX3AigZdWXaxjVtSbTylBtXtoyODEfGnNgWsc7i8OlPTwYIRpcrX4QiYqrddWcDw_6dbBtwqObBdFWf3gOaOj009pgRcZerK8",
+        women:
+          "https://lh3.googleusercontent.com/aida-public/AB6AXuAUlyK3YXWetdkQpUwaMNYMKBF3AJCUXY0oE8VJo-RXY84dlIJq14FMx_cfZJ0RIfdUcn2Ylz3YaJJ90u9TjRMNL40ovGHOf7kpTWua7wM_WAmemlBYbLU284eg2UEX-lB0D1VzQbpRtY8IMst3ATyRUo0PrODR3dRYbZHRZ-4pHyZi43aSPym5LIayq74MBUmqmOhgV1dvoDDjBW3JRsCwQJfRsP5h0I7V8mQdYCwNybc4hVzaeAQ1uumvK7AiVT27PGQpALnzCgw",
+        kids: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4z-skkEOR-qepsqOJUwEmlJGQxPh_JQGlDs5OV2B8hBY9arAmsCyeiLNpDIA7qYDpWTd_tO-bdmUdAXKp5eGsB1TDMvdZviqWieFGCuDo4n__5r4BZ2dEyrDhpCKKCYLv0MY5l6YGJPCs6hIonUp4Z2ZBz7FKrwSNVYS3Y_QrRRPYiHrxG437nGhBiPmWmkcMCAlUaCcg8RVTL8LKCawIZzcdA4X4crRc2h9ErQNp6cymzrExOOsdaYvD7lLroTvingQtYyNHFKo",
+      };
 
-    async function loadCategories() {
-        const data = await apiFetch('/categories');
-        const grid = document.getElementById('categories-grid');
+      async function loadCategories() {
+        const data = await apiFetch("/categories");
+        const grid = document.getElementById("categories-grid");
 
         let categories = [];
         if (data) {
-            categories = Array.isArray(data) ? data : (data.content || []);
+          categories = Array.isArray(data) ? data : data.content || [];
         }
 
         // Fallback to Men / Women / Kids if API returns nothing or just use first 3
         if (categories.length === 0) {
-            categories = [
-                { id: 'men',   name: 'Men',   slug: 'men' },
-                { id: 'women', name: 'Women', slug: 'women' },
-                { id: 'kids',  name: 'Kids',  slug: 'kids' },
-            ];
+          categories = [
+            { id: "men", name: "Men", slug: "men" },
+            { id: "women", name: "Women", slug: "women" },
+            { id: "kids", name: "Kids", slug: "kids" },
+          ];
         }
 
         const display = categories.slice(0, 3);
 
-        grid.innerHTML = display.map(cat => {
-            const slug  = (cat.slug || cat.name || '').toLowerCase();
-            const img   = cat.imageUrl || CATEGORY_IMAGES[slug] || CATEGORY_IMAGES['men'];
+        grid.innerHTML = display
+          .map((cat) => {
+            const slug = (cat.slug || cat.name || "").toLowerCase();
+            const img =
+              cat.imageUrl || CATEGORY_IMAGES[slug] || CATEGORY_IMAGES["men"];
             const label = cat.name.toUpperCase();
-            const href  = `/products/${slug}`;
+            const href = `/products/${slug}`;
 
             return `
             <div class="group relative aspect-square overflow-hidden rounded-3xl cursor-pointer" onclick="window.location='${href}'">
@@ -906,88 +1319,108 @@
                     <a href="${href}" class="bg-white text-black px-10 py-4 font-black uppercase tracking-widest text-xs hover:bg-primary hover:text-white transition-all shadow-2xl">Discover</a>
                 </div>
             </div>`;
-        }).join('');
+          })
+          .join("");
 
-        showContent('categories-skeleton', 'categories-grid');
-    }
+        showContent("categories-skeleton", "categories-grid");
+      }
 
-    /* =========================================================
+      /* =========================================================
        6. SPORTS — GET /api/v1/sports
        ========================================================= */
-    const SPORT_ICON_MAP = {
-        'soccer': 'sports_soccer', 'football': 'sports_soccer',
-        'running': 'directions_run', 'gym': 'fitness_center', 'fitness': 'fitness_center',
-        'yoga': 'self_improvement', 'basketball': 'sports_basketball',
-        'tennis': 'sports_tennis', 'swimming': 'pool', 'cycling': 'directions_bike',
-        'volleyball': 'sports_volleyball', 'baseball': 'sports_baseball',
-        'golf': 'sports_golf', 'martial arts': 'sports_mma', 'boxing': 'sports_mma',
-    };
+      const SPORT_ICON_MAP = {
+        soccer: "sports_soccer",
+        football: "sports_soccer",
+        running: "directions_run",
+        gym: "fitness_center",
+        fitness: "fitness_center",
+        yoga: "self_improvement",
+        basketball: "sports_basketball",
+        tennis: "sports_tennis",
+        swimming: "pool",
+        cycling: "directions_bike",
+        volleyball: "sports_volleyball",
+        baseball: "sports_baseball",
+        golf: "sports_golf",
+        "martial arts": "sports_mma",
+        boxing: "sports_mma",
+      };
 
-    async function loadSports() {
-    const data = await apiFetch('/sports?size=10');
-    const container = document.getElementById('sports-grid');
+      async function loadSports() {
+        const data = await apiFetch("/sports?size=10");
+        const container = document.getElementById("sports-grid");
 
-    if (!data) return;
-    const sports = (Array.isArray(data) ? data : data.content) || [];
+        if (!data) return;
+        const sports = (Array.isArray(data) ? data : data.content) || [];
 
-    if (sports.length === 0) return;
+        if (sports.length === 0) return;
 
-    container.innerHTML = sports.map(sport => {
-        const image = sport.logoUrl || 'https://via.placeholder.com/400x600?text=Sport';
+        container.innerHTML = sports
+          .map((sport) => {
+            const image =
+              sport.logoUrl || "https://via.placeholder.com/400x600?text=Sport";
 
-        return `
+            return `
         <div class="swiper-slide group cursor-pointer overflow-hidden rounded-sm" style="background: transparent;">
             <a href="/products/sports/${sport.slug || sport.id}" class="block w-full h-full">
-                <img src="${image}" alt="${sport.name || 'Sport'}"
+                <img src="${image}" alt="${sport.name || "Sport"}"
                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                      onerror="this.src='https://via.placeholder.com/400x600?text=Sport'">
             </a>
         </div>`;
-    }).join('');
+          })
+          .join("");
 
-    // Khởi tạo Swiper
-    new Swiper('.sports-swiper', {
-        slidesPerView: 1.2,
-        spaceBetween: 12,
-        loop: true,
-        grabCursor: true,
-        navigation: {
-            nextEl: '.sports-swiper .swiper-button-next',
-            prevEl: '.sports-swiper .swiper-button-prev',
-        },
-        breakpoints: {
-            640:  { slidesPerView: 2.2, spaceBetween: 15 },
-            1024: { slidesPerView: 4,   spaceBetween: 20 },
-            1280: { slidesPerView: 5,   spaceBetween: 25 },
-        }
-    });
-}
+        // Khởi tạo Swiper
+        new Swiper(".sports-swiper", {
+          slidesPerView: 1.2,
+          spaceBetween: 12,
+          loop: true,
+          grabCursor: true,
+          navigation: {
+            nextEl: ".sports-swiper .swiper-button-next",
+            prevEl: ".sports-swiper .swiper-button-prev",
+          },
+          breakpoints: {
+            640: { slidesPerView: 2.2, spaceBetween: 15 },
+            1024: { slidesPerView: 4, spaceBetween: 20 },
+            1280: { slidesPerView: 5, spaceBetween: 25 },
+          },
+        });
+      }
 
-    /* =========================================================
+      /* =========================================================
        7. ACCESSORIES — GET /api/v1/products?category=accessories&size=4
        (fallback to GET /api/v1/products?size=4)
        ========================================================= */
-    async function loadAccessories() {
-    // 1. Gọi API lấy 10 sản phẩm
-    let data = await apiFetch('/products?categorySlug=accessories&size=10');
-    if (!data || (data.content || data).length === 0) {
-        data = await apiFetch('/products?size=10');
-    }
+      async function loadAccessories() {
+        // 1. Gọi API lấy 10 sản phẩm
+        let data = await apiFetch("/products?categorySlug=accessories&size=10");
+        if (!data || (data.content || data).length === 0) {
+          data = await apiFetch("/products?size=10");
+        }
 
-    const grid = document.getElementById('accessories-grid');
-    if (!data) { showContent('accessories-skeleton', 'accessories-grid'); return; }
+        const grid = document.getElementById("accessories-grid");
+        if (!data) {
+          showContent("accessories-skeleton", "accessories-grid");
+          return;
+        }
 
-    const products = Array.isArray(data) ? data : (data.content || []);
+        const products = Array.isArray(data) ? data : data.content || [];
 
-    // 2. Render theo cấu trúc của Flash Sale
-    grid.innerHTML = products.map(product => {
-        const colors = getUniqueColors(product);
-        const colorsHtml = renderColorDots(colors, 'dark'); // Dùng theme dark cho nền đen
-        const image = getProductImage(product);
-        const price = product.price ? formatVND(product.price) : 'Liên hệ';
-        const brand = product.brandName || (product.brand && product.brand.name) || 'BROSPORT';
+        // 2. Render theo cấu trúc của Flash Sale
+        grid.innerHTML = products
+          .map((product) => {
+            const colors = getUniqueColors(product);
+            const colorsHtml = renderColorDots(colors, "dark"); // Dùng theme dark cho nền đen
+            const image = getProductImage(product);
+            const price = product.price ? formatVND(product.price) : "Liên hệ";
+            const brand =
+              product.brandName ||
+              (product.brand && product.brand.name) ||
+              "BROSPORT";
 
-        return `
+            return `
         <div class="product-card group cursor-pointer flex flex-col"
              onclick="window.location='/products/${product.id}'">
 
@@ -1018,138 +1451,159 @@
                 </p>
             </div>
         </div>`;
-    }).join('');
+          })
+          .join("");
 
-    showContent('accessories-skeleton', 'accessories-grid');
-}
+        showContent("accessories-skeleton", "accessories-grid");
+      }
 
-    /* =========================================================
+      /* =========================================================
        8. ADD TO CART — POST /api/v1/cart
        ========================================================= */
-    async function addToCart(productId) {
+      async function addToCart(productId) {
         try {
-            const res = await fetch(API_BASE + '/cart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, quantity: 1 })
-            });
-            if (res.ok) {
-                showToast('Item added to cart!', 'check_circle');
-                // Update cart count badge
-                const badge = document.getElementById('cart-count');
-                if (badge) badge.textContent = parseInt(badge.textContent || '0') + 1;
-            } else {
-                showToast('Could not add to cart', 'error');
-            }
+          const res = await fetch(API_BASE + "/cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId, quantity: 1 }),
+          });
+          if (res.ok) {
+            showToast("Item added to cart!", "check_circle");
+            // Update cart count badge
+            const badge = document.getElementById("cart-count");
+            if (badge)
+              badge.textContent = parseInt(badge.textContent || "0") + 1;
+          } else {
+            showToast("Could not add to cart", "error");
+          }
         } catch (err) {
-            showToast('Could not add to cart', 'error');
+          showToast("Could not add to cart", "error");
         }
-    }
+      }
 
-    /* =========================================================
+      /* =========================================================
        9. SEARCH — GET /api/v1/products?name={query}&size=6
        ========================================================= */
-    (function initSearch() {
-        const input   = document.getElementById('search-input');
-        const results = document.getElementById('search-results');
+      (function initSearch() {
+        const input = document.getElementById("search-input");
+        const results = document.getElementById("search-results");
         if (!input || !results) return;
 
         let debounce;
-        input.addEventListener('input', () => {
-            clearTimeout(debounce);
-            const q = input.value.trim();
-            if (!q) { results.classList.add('hidden'); return; }
-            debounce = setTimeout(() => fetchSearch(q), 350);
+        input.addEventListener("input", () => {
+          clearTimeout(debounce);
+          const q = input.value.trim();
+          if (!q) {
+            results.classList.add("hidden");
+            return;
+          }
+          debounce = setTimeout(() => fetchSearch(q), 350);
         });
 
-        input.addEventListener('blur', () => setTimeout(() => results.classList.add('hidden'), 200));
-        input.addEventListener('focus', () => { if (input.value.trim()) results.classList.remove('hidden'); });
+        input.addEventListener("blur", () =>
+          setTimeout(() => results.classList.add("hidden"), 200),
+        );
+        input.addEventListener("focus", () => {
+          if (input.value.trim()) results.classList.remove("hidden");
+        });
 
         async function fetchSearch(query) {
-            const data = await apiFetch(`/products?name=${encodeURIComponent(query)}&size=6`);
-            if (!data) { results.classList.add('hidden'); return; }
+          const data = await apiFetch(
+            `/products?name=${encodeURIComponent(query)}&size=6`,
+          );
+          if (!data) {
+            results.classList.add("hidden");
+            return;
+          }
 
-            const products = Array.isArray(data) ? data : (data.content || []);
-            if (products.length === 0) {
-                results.innerHTML = '<p class="text-slate-500 text-xs font-bold p-4 text-center">No results found</p>';
-                results.classList.remove('hidden');
-                return;
-            }
+          const products = Array.isArray(data) ? data : data.content || [];
+          if (products.length === 0) {
+            results.innerHTML =
+              '<p class="text-slate-500 text-xs font-bold p-4 text-center">No results found</p>';
+            results.classList.remove("hidden");
+            return;
+          }
 
-            results.innerHTML = products.map(p => `
+          results.innerHTML = products
+            .map(
+              (p) => `
                 <a href="/products/${p.id}" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b border-border-dark last:border-0">
                     <img src="${getProductImage(p)}" class="w-10 h-10 object-contain rounded-lg bg-white/10" alt="${p.name}"
                          onerror="this.src='https://via.placeholder.com/40x40?text=?'">
                     <div class="flex-1 min-w-0">
                         <p class="text-white text-xs font-bold truncate">${p.name}</p>
-                        <p class="text-primary text-xs font-black">${p.price ? formatVND(p.price) : ''}</p>
+                        <p class="text-primary text-xs font-black">${p.price ? formatVND(p.price) : ""}</p>
                     </div>
                 </a>
-            `).join('');
-            results.classList.remove('hidden');
+            `,
+            )
+            .join("");
+          results.classList.remove("hidden");
         }
-    })();
+      })();
 
-    /* =========================================================
+      /* =========================================================
        10. NEWSLETTER SIGNUP — POST /api/v1/newsletter (or users)
        ========================================================= */
-    (function initNewsletter() {
-        const btn = document.getElementById('newsletter-btn');
-        const inp = document.getElementById('newsletter-email');
-        const msg = document.getElementById('newsletter-msg');
+      (function initNewsletter() {
+        const btn = document.getElementById("newsletter-btn");
+        const inp = document.getElementById("newsletter-email");
+        const msg = document.getElementById("newsletter-msg");
         if (!btn) return;
 
-        btn.addEventListener('click', async () => {
-            const email = inp.value.trim();
-            if (!email || !/\S+@\S+\.\S+/.test(email)) {
-                msg.textContent = 'Please enter a valid email.';
-                msg.classList.remove('hidden');
-                return;
-            }
-            btn.textContent = 'Subscribing...';
-            btn.disabled = true;
+        btn.addEventListener("click", async () => {
+          const email = inp.value.trim();
+          if (!email || !/\S+@\S+\.\S+/.test(email)) {
+            msg.textContent = "Please enter a valid email.";
+            msg.classList.remove("hidden");
+            return;
+          }
+          btn.textContent = "Subscribing...";
+          btn.disabled = true;
 
-            try {
-                const res = await fetch(API_BASE + '/newsletter', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                msg.textContent = res.ok ? '🎉 You\'re in! Check your inbox for 15% off.' : 'Something went wrong. Try again.';
-            } catch {
-                msg.textContent = '🎉 Thanks for signing up!';
-            }
+          try {
+            const res = await fetch(API_BASE + "/newsletter", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+            msg.textContent = res.ok
+              ? "🎉 You're in! Check your inbox for 15% off."
+              : "Something went wrong. Try again.";
+          } catch {
+            msg.textContent = "🎉 Thanks for signing up!";
+          }
 
-            msg.classList.remove('hidden');
-            inp.value = '';
-            btn.textContent = 'Sign Up Now';
-            btn.disabled = false;
+          msg.classList.remove("hidden");
+          inp.value = "";
+          btn.textContent = "Sign Up Now";
+          btn.disabled = false;
         });
-    })();
+      })();
 
-    /* =========================================================
+      /* =========================================================
        11. HERO SWIPER INIT
        ========================================================= */
-    document.addEventListener('DOMContentLoaded', function () {
-        new Swiper('.hero-swiper', {
-            loop: true, speed: 800,
-            autoplay: { delay: 4000, disableOnInteraction: false },
-            effect: 'fade',
-            fadeEffect: { crossFade: true },
-            pagination: { el: '.swiper-pagination', clickable: true },
+      document.addEventListener("DOMContentLoaded", function () {
+        new Swiper(".hero-swiper", {
+          loop: true,
+          speed: 800,
+          autoplay: { delay: 4000, disableOnInteraction: false },
+          effect: "fade",
+          fadeEffect: { crossFade: true },
+          pagination: { el: ".swiper-pagination", clickable: true },
         });
 
         // Load all sections in parallel
         Promise.all([
-            loadBrands(),
-            loadFlashProducts(),
-            loadNewArrivals(),
-            loadCategories(),
-            loadSports(),
-            loadAccessories(),
+          loadBrands(),
+          loadFlashProducts(),
+          loadNewArrivals(),
+          loadCategories(),
+          loadSports(),
+          loadAccessories(),
         ]);
-    });
-</script>
-
-</body>
+      });
+    </script>
+  </body>
 </html>
