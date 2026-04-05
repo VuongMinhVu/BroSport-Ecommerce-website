@@ -54,49 +54,67 @@ document.addEventListener("DOMContentLoaded", () => {
         this.filters.page = parseInt(params.get("page")) || 0;
     }
 
-    updateUrl() {
-      const params = new URLSearchParams();
-      if (this.filters.keyword) params.set("keyword", this.filters.keyword);
-      if (this.filters.categoryId)
-        params.set("categoryId", this.filters.categoryId);
-      if (this.filters.brandId) params.set("brandId", this.filters.brandId);
-      if (this.filters.minPrice) params.set("minPrice", this.filters.minPrice);
-      if (this.filters.maxPrice && this.filters.maxPrice < 500)
-        params.set("maxPrice", this.filters.maxPrice);
-      if (this.filters.page > 0) params.set("page", this.filters.page);
+    // --- State & URL Manager ---
+    class StateManager {
+        constructor() {
+            this.filters = {
+                keyword: '',
+                categories: [],
+                brands: [],
+                minPrice: null,
+                maxPrice: null,
+                page: 0,
+                size: 10
+            };
+            this.initFromUrl();
+            this.syncUI();
+        }
 
-      const path = window.location.pathname;
-      const newUrl = `${path}${params.toString() ? "?" + params.toString() : ""}`;
-      window.history.pushState(this.filters, "", newUrl);
-    }
+        initFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('keyword')) this.filters.keyword = params.get('keyword');
+            if (params.has('categories')) this.filters.categories = params.get('categories').split(',').filter(Boolean);
+            if (params.has('brands')) this.filters.brands = params.get('brands').split(',').filter(Boolean);
+            if (params.has('minPrice')) this.filters.minPrice = params.get('minPrice');
+            if (params.has('maxPrice')) this.filters.maxPrice = params.get('maxPrice');
+            if (params.has('page')) this.filters.page = parseInt(params.get('page')) || 0;
+        }
 
-    // update from UI elements
-    syncUI() {
-      if (this.filters.keyword) {
-        const input = document.getElementById("searchInput");
-        if (input) input.value = this.filters.keyword;
-      }
-      if (this.filters.maxPrice) {
-        const range = document.getElementById("priceRange");
-        if (range) range.value = this.filters.maxPrice;
-      }
-      if (this.filters.categoryId) {
-        document.querySelectorAll(".category-filter").forEach((cb) => {
-          cb.checked = cb.value === this.filters.categoryId;
-        });
-      }
-      if (this.filters.brandId) {
-        document.querySelectorAll(".brand-filter").forEach((cb) => {
-          cb.checked = cb.value === this.filters.brandId;
-        });
-      }
-    }
-  }
+        updateUrl() {
+            const params = new URLSearchParams();
+            if (this.filters.keyword) params.set('keyword', this.filters.keyword);
+            if (this.filters.categories && this.filters.categories.length > 0) params.set('categories', this.filters.categories.join(','));
+            if (this.filters.brands && this.filters.brands.length > 0) params.set('brands', this.filters.brands.join(','));
+            if (this.filters.minPrice) params.set('minPrice', this.filters.minPrice);
+            if (this.filters.maxPrice && this.filters.maxPrice < 5000000) params.set('maxPrice', this.filters.maxPrice);
+            if (this.filters.page > 0) params.set('page', this.filters.page);
 
-  // --- API Service ---
-  class ProductService {
-    constructor() {
-      this.abortController = null;
+            const path = window.location.pathname;
+            const newUrl = `${path}${params.toString() ? '?' + params.toString() : ''}`;
+            window.history.pushState(this.filters, '', newUrl);
+        }
+
+        // update from UI elements
+        syncUI() {
+            if (this.filters.keyword) {
+                const input = document.getElementById('searchInput');
+                if (input) input.value = this.filters.keyword;
+            }
+            if (this.filters.maxPrice) {
+                const range = document.getElementById('priceRange');
+                if (range) range.value = this.filters.maxPrice;
+            }
+            if (this.filters.categories) {
+                document.querySelectorAll('.category-filter').forEach(cb => {
+                    cb.checked = this.filters.categories.includes(cb.value);
+                });
+            }
+            if (this.filters.brands) {
+                document.querySelectorAll('.brand-filter').forEach(cb => {
+                    cb.checked = this.filters.brands.includes(cb.value);
+                });
+            }
+        }
     }
 
     async fetchProducts(filters) {
@@ -122,12 +140,42 @@ document.addEventListener("DOMContentLoaded", () => {
           },
         });
 
-        if (!response.ok) throw new Error("Network response was not ok");
-        return await response.json();
-      } catch (error) {
-        if (error.name === "AbortError") {
-          console.log("Fetch aborted");
-          return null; // Ignore aborted requests
+        async fetchProducts(filters) {
+            if (this.abortController) {
+                this.abortController.abort();
+            }
+            this.abortController = new AbortController();
+
+            try {
+                const params = new URLSearchParams();
+                if (filters.keyword) params.append('keyword', filters.keyword);
+                if (filters.categories && filters.categories.length > 0) params.append('categories', filters.categories.join(','));
+                if (filters.brands && filters.brands.length > 0) params.append('brands', filters.brands.join(','));
+                if (filters.maxPrice) {
+                    params.append('minPrice', filters.minPrice || 0);
+                    params.append('maxPrice', filters.maxPrice);
+                } else if (filters.minPrice) {
+                    params.append('minPrice', filters.minPrice);
+                }
+                params.append('page', filters.page);
+                params.append('size', filters.size);
+
+                const response = await fetch(`/api/v1/search/products?${params.toString()}`, {
+                    signal: this.abortController.signal,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Fetch aborted');
+                    return null; // Ignore aborted requests
+                }
+                throw error;
+            }
         }
         throw error;
       }
@@ -192,7 +240,25 @@ document.addEventListener("DOMContentLoaded", () => {
             <button id="clearFiltersBtn" class="mt-4 text-primary hover:underline">Clear all filters</button>
           </div>
        `;
-    }
+        }
+
+        renderProducts(products) {
+            if (!products || products.length === 0) {
+                this.renderEmpty();
+                return;
+            }
+
+            const isList = this.isListView;
+            this.container.className = isList ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+
+            this.container.innerHTML = products.map(product => {
+                let imageUrl = `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`;
+                if (product.thumbnail) {
+                    imageUrl = product.thumbnail;
+                } else if (product.productImages && product.productImages.length > 0) {
+                    imageUrl = product.productImages[0].imageUrl;
+                }
+                const brand = product.brandName || product.brand || 'Brand';
 
     renderProducts(products) {
       if (!products || products.length === 0) {
@@ -245,8 +311,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center">
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <h3 class="font-bold text-white text-lg leading-tight group-hover:text-primary transition-colors">${product.name}</h3>
-                  <p class="text-slate-400 text-sm mt-1">${product.brand || "Brand"}</p>
+                  <h3 class="font-bold text-white text-lg leading-tight">${product.name}</h3>
+                  <p class="text-slate-400 text-sm">${brand}</p>
                 </div>
                 <div class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
@@ -402,12 +468,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         state.filters.page = 0; // reset to first page
         loadProducts();
-      });
-    });
-  };
+    }
 
-  handleCheckboxGroup(categoryCheckboxes, "categoryId");
-  handleCheckboxGroup(brandCheckboxes, "brandId");
+    // Event Listeners Setup
+    const searchInput = document.getElementById('searchInput');
+    const priceRange = document.getElementById('priceRange');
+    const categoryCheckboxes = document.querySelectorAll('.category-filter');
+    const brandCheckboxes = document.querySelectorAll('.brand-filter');
+
+    // Helper for multiple select checkbox group
+    const handleCheckboxGroup = (checkboxes, filterKey) => {
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                if (!state.filters[filterKey]) state.filters[filterKey] = [];
+                if (e.target.checked) {
+                    if (!state.filters[filterKey].includes(e.target.value)) {
+                        state.filters[filterKey].push(e.target.value);
+                    }
+                } else {
+                    state.filters[filterKey] = state.filters[filterKey].filter(val => val !== e.target.value);
+                }
+                state.filters.page = 0; // reset to first page
+                loadProducts();
+            });
+        });
+    };
+
+    handleCheckboxGroup(categoryCheckboxes, 'categories');
+    handleCheckboxGroup(brandCheckboxes, 'brands');
 
   if (searchInput) {
     searchInput.addEventListener(
@@ -423,10 +511,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (priceRange) {
     const priceDisplay = document.getElementById("priceDisplay"); // Lấy element
 
-    // Sự kiện 'input' chạy liên tục khi kéo (không bị debounce để UI mượt)
-    priceRange.addEventListener("input", (e) => {
-      if (priceDisplay) priceDisplay.textContent = `$${e.target.value}`;
-    });
+        // Sự kiện 'input' chạy liên tục khi kéo (không bị debounce để UI mượt)
+        priceRange.addEventListener('input', (e) => {
+            if (priceDisplay) priceDisplay.textContent = new Intl.NumberFormat('en-US').format(e.target.value) + '$';
+        });
 
     // Gọi API thì vẫn giữ debounce
     priceRange.addEventListener(
@@ -453,22 +541,28 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    const clearBtn = e.target.closest("#clearFiltersBtn");
-    if (clearBtn) {
-      state.filters = {
-        keyword: "",
-        categoryId: null,
-        brandId: null,
-        minPrice: null,
-        maxPrice: null,
-        page: 0,
-        size: 10,
-      };
-      state.updateUrl();
-      state.syncUI();
-      isInitialLoad = false;
-      loadProducts();
-    }
+    // Delegation for pagination clicks and clear button
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pagination-btn');
+        if (btn) {
+            e.preventDefault();
+            const page = parseInt(btn.getAttribute('data-page'));
+            if (!isNaN(page)) {
+                state.filters.page = page;
+                isInitialLoad = false; // ensure loader shows
+                loadProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        const clearBtn = e.target.closest('#clearFiltersBtn');
+        if (clearBtn) {
+            state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.updateUrl();
+            state.syncUI();
+            isInitialLoad = false;
+            loadProducts();
+        }
 
     // Add to cart delegation
     const addToCartBtn = e.target.closest(".btn-add-to-cart");
@@ -528,33 +622,86 @@ document.addEventListener("DOMContentLoaded", () => {
               const currentCount = parseInt(cartCountElement.textContent) || 0;
               cartCountElement.textContent = currentCount + 1;
             }
-          } else {
-            alert("Failed to add item to cart. Please try again.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error adding to cart:", error);
-          alert("An error occurred. Please try again later.");
+
+            // Hardcode userId = 1 for testing purposes
+            const userId = 1;
+
+            // 1. Get or create cart for user
+            fetch(`/api/v1/carts/user/${userId}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    // If cart not found (or 500 error from backend throw), create a new one
+                    return fetch('/api/v1/carts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ userId: userId })
+                    }).then(res => {
+                        if (!res.ok) throw new Error('Failed to create cart');
+                        return res.json();
+                    });
+                })
+                .then(cart => {
+                    // 2. Add product to cart details
+                    return fetch('/api/v1/cart-details', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cartId: cart.id,
+                            productDetailId: parseInt(detailId),
+                            quantity: 1
+                        })
+                    });
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showSuccessToast();
+                        // Update cart count in header
+                        const cartCountElement = document.querySelector('a[href="/cart"] span.absolute') || document.querySelector('.cart-count');
+                        if (cartCountElement) {
+                            const currentCount = parseInt(cartCountElement.textContent) || 0;
+                            cartCountElement.textContent = currentCount + 1;
+                        }
+                    } else {
+                        alert('Failed to add item to cart. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding to cart:', error);
+                    alert('An error occurred. Please try again later.');
+                });
+        }
+    });
+
+    const resetBtn = document.getElementById('resetFiltersBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.updateUrl();
+            state.syncUI();
+            isInitialLoad = false;
+            loadProducts();
         });
     }
-  });
 
-  const resetBtn = document.getElementById("resetFiltersBtn");
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      state.filters = {
-        keyword: "",
-        categoryId: null,
-        brandId: null,
-        minPrice: null,
-        maxPrice: null,
-        page: 0,
-        size: 10,
-      };
-      state.updateUrl();
-      state.syncUI();
-      isInitialLoad = false;
-      loadProducts();
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (event) => {
+        if (event.state) {
+            state.filters = event.state;
+        } else {
+            state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+            state.initFromUrl();
+        }
+        state.syncUI();
+        isInitialLoad = false; // back/forw is not initial load
+        loadProducts();
     });
   }
 
