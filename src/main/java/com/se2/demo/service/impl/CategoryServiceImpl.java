@@ -46,6 +46,11 @@ public class CategoryServiceImpl implements CategoryService {
             category.setImageUrl(imageUrl);
         }
 
+        if (request.getSizeGuideFile() != null && !request.getSizeGuideFile().isEmpty()) {
+            String sizeGuideUrl = cloudinaryService.uploadFile(request.getSizeGuideFile(), "categories/size-guides");
+            category.setSizeGuide(sizeGuideUrl);
+        }
+
         // Handle parent category logic
         if (request.getParentId() != null) {
             Category parent = categoryRepository.findById(request.getParentId())
@@ -70,6 +75,11 @@ public class CategoryServiceImpl implements CategoryService {
         if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
             String imageUrl = cloudinaryService.uploadFile(request.getImageFile(), "categories");
             existingCategory.setImageUrl(imageUrl);
+        }
+
+        if (request.getSizeGuideFile() != null && !request.getSizeGuideFile().isEmpty()) {
+            String sizeGuideUrl = cloudinaryService.uploadFile(request.getSizeGuideFile(), "categories/size-guides");
+            existingCategory.setSizeGuide(sizeGuideUrl);
         }
 
         if (request.getParentId() != null) {

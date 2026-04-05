@@ -1,6 +1,7 @@
 package com.se2.demo.controller;
 
 import com.se2.demo.dto.request.ReviewRequest;
+import com.se2.demo.dto.response.ReviewListResponse;
 import com.se2.demo.dto.response.ReviewResponse;
 import com.se2.demo.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,6 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<?> createReview(@RequestBody ReviewRequest request) {
         try {
-            // Usually userId is taken from security context, but using it from request for simplicity
             ReviewResponse response = reviewService.createReview(request.getUserId(), request);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -27,12 +27,13 @@ public class ReviewController {
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<Page<ReviewResponse>> getReviewsByProduct(
+    public ResponseEntity<ReviewListResponse> getReviewsByProduct(
             @PathVariable Integer productId,
+            @RequestParam(required = false) Integer rating,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
-        Page<ReviewResponse> responses = reviewService.getReviewsByProduct(productId, page, size);
+
+        ReviewListResponse responses = reviewService.getReviewsByProduct(productId, rating, page, size);
         return ResponseEntity.ok(responses);
     }
 }

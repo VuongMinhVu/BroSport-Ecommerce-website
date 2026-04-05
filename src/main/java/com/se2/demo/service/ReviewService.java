@@ -4,7 +4,9 @@ import com.se2.demo.dto.request.ReviewRequest;
 import com.se2.demo.dto.response.ReviewResponse;
 import org.springframework.data.domain.Page;
 
+import com.se2.demo.dto.response.ReviewListResponse;
+
 public interface ReviewService {
     ReviewResponse createReview(Integer userId, ReviewRequest request);
-    Page<ReviewResponse> getReviewsByProduct(Integer productId, int page, int size);
+    ReviewListResponse getReviewsByProduct(Integer productId, Integer rating, int page, int size);
 }
