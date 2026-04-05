@@ -37,9 +37,10 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable()) // Tạm thời disable CSRF
         .authenticationProvider(authenticationProvider())
-        .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll() // Cho phép tất cả request
-        )
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/account/**", "/profile/**", "/api/orders/**").authenticated()
+                    .anyRequest().permitAll()
+            )
         .formLogin(form -> form
             .loginPage("/login")
             .loginProcessingUrl("/do-login")
