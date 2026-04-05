@@ -45,7 +45,7 @@ public class DataSeeder {
                 return args -> {
                         log.info("Checking database for seed data...");
 
-                        if (productRepository.count() >= 100) {
+                        if (productRepository.count() >= 40) {
                                 log.info("Database already seeded with enough products.");
                                 List<Product> existingProducts = productRepository.findAll();
                                 boolean needUpdate = false;
@@ -61,7 +61,6 @@ public class DataSeeder {
                                         productRepository.saveAll(existingProducts);
                                         log.info("Scaled down all high product prices to match new format.");
                                 }
-                                return;
                         }
 
                         log.info("Starting to seed database...");
@@ -229,7 +228,7 @@ public class DataSeeder {
                         }
 
                         // 7. Seed Products
-                        if (productRepository.count() < 100) {
+                        if (productRepository.count() < 40) {
                                 log.info("Seeding 30 Products with variations...");
                                 Random random = new Random();
 
@@ -408,14 +407,14 @@ public class DataSeeder {
                                                 .order(order1)
                                                 .productDetail(allProductDetails.get(0))
                                                 .quantity(1)
-                                                .price(allProductDetails.get(0).getProduct().getShowPrice())
+                                                .price(productRepository.findById(allProductDetails.get(0).getProduct().getId()).get().getShowPrice())
                                                 .build();
                                         
                                         OrderItem oi2 = OrderItem.builder()
                                                 .order(order1)
                                                 .productDetail(allProductDetails.get(1))
                                                 .quantity(1)
-                                                .price(allProductDetails.get(1).getProduct().getShowPrice())
+                                                .price(productRepository.findById(allProductDetails.get(1).getProduct().getId()).get().getShowPrice())
                                                 .build();
                                                 
                                         order1.setOrderItems(Arrays.asList(oi1, oi2));
@@ -439,7 +438,7 @@ public class DataSeeder {
                                                 .order(order2)
                                                 .productDetail(allProductDetails.get(2))
                                                 .quantity(1)
-                                                .price(allProductDetails.get(2).getProduct().getShowPrice())
+                                                .price(productRepository.findById(allProductDetails.get(2).getProduct().getId()).get().getShowPrice())
                                                 .build();
                                                 
                                         order2.setOrderItems(Arrays.asList(oi3));
@@ -449,37 +448,67 @@ public class DataSeeder {
                                 // Reviews
                                 if (reviewRepository.count() == 0) {
                                         log.info("Seeding Reviews...");
-                                        Review review1 = Review.builder()
-                                                .user(customer1)
-                                                .product(allProductDetails.get(0).getProduct())
-                                                .rating(5)
-                                                .comment("Great quality! Fits perfectly and very comfortable.")
-                                                .createdAt(LocalDateTime.now())
-                                                .build();
-                                                
-                                        reviewRepository.save(review1);
+                                        java.util.Random random = new java.util.Random();
+                                        List<Review> reviewsToSave = new ArrayList<>();
                                         
-                                        // Admin replies to review
-                                        Review reply1 = Review.builder()
-                                                .user(admin)
-                                                .product(allProductDetails.get(0).getProduct())
-                                                .rating(5) 
-                                                .comment("Thank you for your feedback! We are glad you love it.")
-                                                .parentReview(review1)
-                                                .createdAt(LocalDateTime.now())
-                                                .build();
-                                                
-                                        reviewRepository.save(reply1);
+                                        // Get up to 5 products
+                                        List<Product> productsToReview = productRepository.findAll().stream().limit(5).toList();
+                                        
+                                        String[] comments = {
+                                            "Great quality! Fits perfectly and very comfortable.",
+                                            "Good value for the price.",
+                                            "Excellent service, fast delivery.",
+                                            "Product is exactly as described.",
+                                            "Highly recommended, very durable material.",
+                                            "Will definitely order again.",
+                                            "Looks amazing in person.",
+                                            "Very satisfied with this purchase.",
+                                            "Size fits right, completely matches the guide.",
+                                            "It exceeded my expectations!"
+                                        };
 
-                                        Review review2 = Review.builder()
-                                                .user(customer2)
-                                                .product(allProductDetails.get(2).getProduct())
-                                                .rating(4)
-                                                .comment("Good value for the price.")
-                                                .createdAt(LocalDateTime.now().minusHours(5))
-                                                .build();
-                                                
-                                        reviewRepository.save(review2);
+                                        for (Product p : productsToReview) {
+                                            for (int i = 0; i < 10; i++) {
+                                                User randomUser = users.get(random.nextInt(users.size()));
+                                                int rating = random.nextInt(3) + 3; // 3 to 5 stars
+                                                Review review = Review.builder()
+                                                    .user(randomUser)
+                                                    .product(p)
+                                                    .rating(rating)
+                                                    .comment(comments[i % comments.length])
+                                                    .createdAt(LocalDateTime.now().minusDays(random.nextInt(30)).minusHours(random.nextInt(24)))
+                                                    .build();
+                                                reviewsToSave.add(review);
+                                            }
+                                        }
+                                        reviewRepository.saveAll(reviewsToSave);
+                                        
+                                        if (!reviewsToSave.isEmpty()) {
+                                            List<Review> adminReplies = new ArrayList<>();
+                                            String[] adminComments = {
+                                                    "Thank you for trusting and supporting BroSport!",
+                                                    "We’re glad you’re satisfied with the product, and we hope you’ll continue to support our shop.",
+                                                    "Thank you for your review, we’ll strive to develop even more awesome designs!",
+                                                    "BroSport sincerely thanks you!",
+                                                    "Your feedback is a huge motivation for us!"
+                                            };
+                                            
+                                            // Reply to ~30% of the reviews
+                                            for (Review rev : reviewsToSave) {
+                                                if (random.nextInt(60) < 30) {
+                                                    Review reply = Review.builder()
+                                                            .user(admin)
+                                                            .product(rev.getProduct())
+                                                            .rating(5) 
+                                                            .comment(adminComments[random.nextInt(adminComments.length)])
+                                                            .parentReview(rev)
+                                                            .createdAt(rev.getCreatedAt().plusHours(random.nextInt(48) + 1)) // Reply after 1-48 hours
+                                                            .build();
+                                                    adminReplies.add(reply);
+                                                }
+                                            }
+                                            reviewRepository.saveAll(adminReplies);
+                                        }
                                 }
                         }
 

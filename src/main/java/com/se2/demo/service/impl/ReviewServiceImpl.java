@@ -1,6 +1,7 @@
 package com.se2.demo.service.impl;
 
 import com.se2.demo.dto.request.ReviewRequest;
+import com.se2.demo.dto.response.ReviewListResponse;
 import com.se2.demo.dto.response.ReviewResponse;
 import com.se2.demo.model.entity.Product;
 import com.se2.demo.model.entity.Review;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,12 +77,33 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewResponse> getReviewsByProduct(Integer productId, Integer rating, int page, int size) {
+    public ReviewListResponse getReviewsByProduct(Integer productId, Integer rating, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Review> reviewPage = reviewRepository.findByProductIdAndRatingAndParentReviewIsNull(productId, rating, pageRequest);
 
         Page<ReviewResponse> responsePage = reviewPage.map(this::mapToResponse);
-        return responsePage;
+
+        Double averageRating = reviewRepository.calculateAverageRating(productId);
+        Long totalReviews = reviewRepository.countByProductIdAndParentReviewIsNull(productId);
+        
+        Map<Integer, Long> ratingCounts = new java.util.HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            ratingCounts.put(i, 0L);
+        }
+        
+        List<Object[]> counts = reviewRepository.countReviewsByRating(productId);
+        for (Object[] count : counts) {
+            if (count[0] != null && count[1] != null) {
+                ratingCounts.put(((Number) count[0]).intValue(), ((Number) count[1]).longValue());
+            }
+        }
+
+        return ReviewListResponse.builder()
+                .reviews(responsePage)
+                .averageRating(averageRating)
+                .totalReviews(totalReviews)
+                .ratingCounts(ratingCounts)
+                .build();
     }
 
     private ReviewResponse mapToResponse(Review review) {
