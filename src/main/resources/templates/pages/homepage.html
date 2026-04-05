@@ -231,6 +231,12 @@
     display: block;
     transition: transform 0.5s ease-out;
     }
+
+        .active-dot {
+    outline: 2px solid #ff6600;
+    outline-offset: 2px;
+    transform: scale(1.1);
+}
     </style>
 
 
@@ -637,11 +643,16 @@
     return colors.slice(0, 5).map((colorName, i) => {
         const normalizedName = colorName.toLowerCase();
         const hex = colorMap[normalizedName] || '#888';
-        const activeClass = i === 0 ? 'outline outline-2 outline-primary outline-offset-2 scale-110' : '';
+
+        // i === 0 là chấm đầu tiên mặc định được chọn
+        const activeClass = i === 0 ? 'active-dot' : '';
 
         return `
             <div class="color-dot ${activeClass}"
-                 style="background-color: ${hex}; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.3); transition: all 0.2s;"
+                 style="background-color: ${hex}; width: 16px; height: 16px; border-radius: 50%; cursor: pointer;
+                        border: 1px solid rgba(255,255,255,0.2); /* Viền sáng nhẹ để tách khối */
+                        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); /* Viền trong để màu trắng không bị lẫn nền */
+                        transition: all 0.2s;"
                  title="${colorName}"
                  onclick="event.stopPropagation(); selectColorDot(this)">
             </div>`;
@@ -650,20 +661,20 @@
 
     // Color dot selection
     function selectColorDot(el) {
-    // Tìm tất cả các chấm màu cùng cụm với chấm vừa nhấn
+    // 1. Xóa hết trạng thái của các chấm cùng cụm
     const siblings = el.parentElement.querySelectorAll('.color-dot');
     siblings.forEach(s => {
-        s.classList.remove('outline', 'outline-2', 'outline-primary', 'outline-offset-2', 'scale-110');
         s.style.outline = 'none';
+        s.style.outlineOffset = '0px';
         s.style.transform = 'scale(1)';
     });
 
-    // Thêm hiệu ứng khoanh tròn cho chấm được chọn
-    el.style.outline = '2px solid #FF7A00'; // Màu primary cam
+    // 2. Thêm viền cam rực rỡ và khoanh tròn cho chấm được click
+    el.style.outline = '2px solid #ff6600';
     el.style.outlineOffset = '2px';
     el.style.transform = 'scale(1.1)';
+    el.classList.add('active-dot');
 }
-
     // Toast notification
     function showToast(msg, icon = 'check_circle') {
         const toast = document.getElementById('toast');
