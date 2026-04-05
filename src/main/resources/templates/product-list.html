@@ -292,6 +292,16 @@
               </div>
             </div>
             <div class="details-wrapper p-4 flex-1 flex flex-col justify-center">
+              <div class="mb-3 flex items-center gap-2">
+                <input type="checkbox"
+                       th:id="'comp-' + ${product.id}"
+                       th:attr="data-id=${product.id}, data-name=${product.name}, data-image=${product.productImages != null and !product.productImages.isEmpty() ? product.productImages[0].imageUrl : ''}"
+                       class="compare-checkbox w-4 h-4 rounded border-slate-700 bg-transparent text-primary focus:ring-primary cursor-pointer"
+                       onclick="toggleCompare(this)">
+                <label th:for="'comp-' + ${product.id}" class="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] cursor-pointer hover:text-primary transition-colors">
+                  Compare
+                </label>
+              </div>
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <h3 class="font-bold text-white text-lg leading-tight" th:text="${product.name}">
@@ -519,6 +529,93 @@
     });
   </script>
   <script src="/js/product-list.js"></script>
+  <div id="compare-bar" class="fixed bottom-0 left-0 right-0 bg-[#161616]/95 backdrop-blur-md border-t border-white/10 z-[60] transform translate-y-full transition-all duration-500 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] hidden">
+    <div class="max-w-[1600px] mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <div class="flex flex-col">
+          <span id="compare-count" class="text-2xl font-black text-primary leading-none">0</span>
+          <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Selected</span>
+        </div>
+        <div id="compare-items-preview" class="flex gap-3">
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <button onclick="clearAllCompare()" class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-[0.2em] transition-colors">
+          Remove All
+        </button>
+        <button onclick="goToCompareDetails()" id="btn-compare-now" class="bg-primary text-background-dark px-10 py-3.5 rounded-xl font-black uppercase text-xs tracking-[0.2em] hover:scale-105 active:scale-95 transition-all opacity-50 pointer-events-none shadow-lg shadow-primary/20">
+          Compare Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let compareList = [];
+
+    function toggleCompare(checkbox) {
+        const id = checkbox.getAttribute('data-id');
+        const name = checkbox.getAttribute('data-name');
+        const img = checkbox.getAttribute('data-image');
+
+        if (checkbox.checked) {
+            if (compareList.length >= 4) {
+                alert("Bạn chỉ có thể so sánh tối đa 4 sản phẩm.");
+                checkbox.checked = false;
+                return;
+            }
+            compareList.push({ id, name, img });
+        } else {
+            compareList = compareList.filter(item => item.id !== id);
+        }
+        updateCompareUI();
+    }
+
+    function updateCompareUI() {
+        const bar = document.getElementById('compare-bar');
+        const preview = document.getElementById('compare-items-preview');
+        const btn = document.getElementById('btn-compare-now');
+        const countDisplay = document.getElementById('compare-count');
+
+        countDisplay.innerText = compareList.length;
+
+        if (compareList.length > 0) {
+            bar.classList.remove('hidden');
+            // Delay một chút để hiệu ứng translate-y hoạt động mượt mà
+            setTimeout(() => bar.classList.remove('translate-y-full'), 10);
+        } else {
+            bar.classList.add('translate-y-full');
+            setTimeout(() => bar.classList.add('hidden'), 500);
+        }
+
+        preview.innerHTML = compareList.map(item => `
+            <div class="w-14 h-14 rounded-lg border border-white/10 bg-slate-800 overflow-hidden relative shadow-inner">
+                <img src="${item.img}" class="w-full h-full object-cover">
+            </div>
+        `).join('');
+
+        if (compareList.length >= 2) {
+            btn.classList.remove('opacity-50', 'pointer-events-none');
+        } else {
+            btn.classList.add('opacity-50', 'pointer-events-none');
+        }
+    }
+
+    function goToCompareDetails() {
+    // Chuyển mảng ID thành chuỗi cách nhau bởi dấu phẩy
+    const ids = compareList.map(item => item.id).join(',');
+    if (ids) {
+        window.location.href = `/product-comparison/details?ids=${ids}`;
+    }
+}
+
+    function clearAllCompare() {
+        compareList = [];
+        document.querySelectorAll('.compare-checkbox').forEach(cb => cb.checked = false);
+        updateCompareUI();
+    }
+  </script>
 </body>
 
 </html>
