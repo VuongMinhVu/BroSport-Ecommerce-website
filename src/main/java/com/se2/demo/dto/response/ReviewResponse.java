@@ -13,6 +13,7 @@ public class ReviewResponse {
     private String fullName;
     private String avatarUrl;
     private Integer rating;
+    private String title;
     private String comment;
     private LocalDateTime createdAt;
     private List<ReviewResponse> replies;

@@ -7,6 +7,7 @@ public class ReviewRequest {
     private Integer userId;
     private Integer productId;
     private Integer rating;
+    private String title;
     private String comment;
     private Integer parentReviewId;
 }
