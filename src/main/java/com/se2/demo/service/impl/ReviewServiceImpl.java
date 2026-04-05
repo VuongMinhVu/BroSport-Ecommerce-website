@@ -68,6 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .user(user)
                 .product(product)
                 .rating(request.getRating())
+                .title(request.getTitle())
                 .comment(request.getComment())
                 .parentReview(parentReview)
                 .build();
@@ -120,6 +121,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .fullName(review.getUser().getFullName())
                 .avatarUrl(review.getUser().getAvatarUrl())
                 .rating(review.getRating())
+                .title(review.getTitle())
                 .comment(review.getComment())
                 .createdAt(review.getCreatedAt())
                 .replies(replyResponses)

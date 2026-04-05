@@ -110,18 +110,31 @@ public class DataSeeder {
                                 categoryRepository.saveAll(Arrays.asList(shoes, clothing, accessories));
 
                                 Category runningShoes = Category.builder().name("Running Shoes").slug("running-shoes")
-                                                .parentCategory(shoes).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
-                                Category footballShoes = Category.builder().name("Football Shoes").slug("football-shoes")
-                                                .parentCategory(shoes).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
-                                Category basketballShoes = Category.builder().name("Basketball Shoes").slug("basketball-shoes")
-                                                .parentCategory(shoes).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
+                                                .parentCategory(shoes)
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
+                                                .build();
+                                Category footballShoes = Category.builder().name("Football Shoes")
+                                                .slug("football-shoes")
+                                                .parentCategory(shoes)
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
+                                                .build();
+                                Category basketballShoes = Category.builder().name("Basketball Shoes")
+                                                .slug("basketball-shoes")
+                                                .parentCategory(shoes)
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
+                                                .build();
 
                                 Category tshirts = Category.builder().name("T-Shirts").slug("t-shirts")
-                                                .parentCategory(clothing).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
+                                                .parentCategory(clothing)
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
+                                                .build();
                                 Category pants = Category.builder().name("Pants").slug("pants")
-                                                .parentCategory(clothing).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
+                                                .parentCategory(clothing)
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
+                                                .build();
                                 Category shorts = Category.builder().name("Shorts").slug("shorts")
-                                                .parentCategory(clothing).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
+                                                .parentCategory(clothing)
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
 
                                 categoryRepository
@@ -206,7 +219,7 @@ public class DataSeeder {
                                                 Sport.builder().name("Football").description("King of sports")
                                                                 .logoUrl("https://picsum.photos/seed/football/400/400")
                                                                 .build(),
-                                        Sport.builder().name("Running").description("Fitness conditioning")
+                                                Sport.builder().name("Running").description("Fitness conditioning")
                                                                 .logoUrl("https://picsum.photos/seed/running/400/400")
                                                                 .build(),
                                                 Sport.builder().name("Basketball").description("Team sports")
@@ -220,8 +233,7 @@ public class DataSeeder {
                                                                 .build(),
                                                 Sport.builder().name("Badminton").description("Popular sports")
                                                                 .logoUrl("https://picsum.photos/seed/badminton/400/400")
-                                                                .build()
-                                );
+                                                                .build());
                                 sportRepository.saveAll(sports);
                         } else {
                                 sports = sportRepository.findAll();
@@ -232,9 +244,10 @@ public class DataSeeder {
                                 log.info("Seeding 30 Products with variations...");
                                 Random random = new Random();
 
-                                for (int i = 1; i <= 100; i++) {
+                                for (int i = 1; i <= 40; i++) {
                                         Brand randomBrand = brands.get(random.nextInt(brands.size()));
-                                        Category randomCategory = leafCategories.get(random.nextInt(leafCategories.size()));
+                                        Category randomCategory = leafCategories
+                                                        .get(random.nextInt(leafCategories.size()));
 
                                         Gender randomGender = genders.get(random.nextInt(genders.size()));
                                         Sport randomSport = sports.get(random.nextInt(sports.size()));
@@ -251,7 +264,7 @@ public class DataSeeder {
                                                         + randomBrand.getName().toLowerCase() + "-"
                                                         + i;
 
-                                        BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 100000); 
+                                        BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 100000);
                                         BigDecimal comparePrice = price.multiply(BigDecimal.valueOf(1.2));
 
                                         Product product = Product.builder()
@@ -275,7 +288,7 @@ public class DataSeeder {
                                         Product savedProduct = productRepository.save(product);
 
                                         List<ProductImage> images = new ArrayList<>();
-                                        int numImages = random.nextInt(3) + 1; 
+                                        int numImages = random.nextInt(3) + 1;
                                         for (int imgIdx = 1; imgIdx <= numImages; imgIdx++) {
                                                 ProductImage mainImage = ProductImage.builder()
                                                                 .product(savedProduct)
@@ -291,7 +304,7 @@ public class DataSeeder {
                                         savedProduct.setProductImages(images);
 
                                         List<ProductDetail> details = new ArrayList<>();
-                                        int numVariants = random.nextInt(4) + 2; 
+                                        int numVariants = random.nextInt(4) + 2;
                                         Set<String> generatedCombos = new HashSet<>();
 
                                         for (int v = 0; v < numVariants; v++) {
@@ -300,7 +313,8 @@ public class DataSeeder {
                                                 if (randomCategory.getName().toLowerCase().contains("shoes")) {
                                                         randomSize = shoeSizes.get(random.nextInt(shoeSizes.size()));
                                                 } else {
-                                                        randomSize = clothingSizes.get(random.nextInt(clothingSizes.size()));
+                                                        randomSize = clothingSizes
+                                                                        .get(random.nextInt(clothingSizes.size()));
                                                 }
 
                                                 String comboKey = randomColor.getId() + "-" + randomSize.getId();
@@ -309,7 +323,8 @@ public class DataSeeder {
                                                 }
                                                 generatedCombos.add(comboKey);
 
-                                                String sku = "SKU-" + savedProduct.getId() + "-" + randomColor.getId() + "-"
+                                                String sku = "SKU-" + savedProduct.getId() + "-" + randomColor.getId()
+                                                                + "-"
                                                                 + randomSize.getId();
 
                                                 ProductDetail detail = ProductDetail.builder()
@@ -346,11 +361,16 @@ public class DataSeeder {
                         if (userRepository.count() == 0) {
                                 log.info("Seeding Users...");
                                 String defaultPassword = passwordEncoder.encode("12345");
-                                users.add(User.builder().email("admin@brosport.com").passwordHash(defaultPassword).fullName("Admin User").phone("0123456780").role("ADMIN").build());
-                                users.add(User.builder().email("customer1@brosport.com").passwordHash(defaultPassword).fullName("John Doe").phone("0123456781").role("USER").build());
-                                users.add(User.builder().email("customer2@brosport.com").passwordHash(defaultPassword).fullName("Jane Smith").phone("0123456782").role("USER").build());
-                                users.add(User.builder().email("customer3@brosport.com").passwordHash(defaultPassword).fullName("Mike Johnson").phone("0123456783").role("USER").build());
-                                users.add(User.builder().email("customer4@brosport.com").passwordHash(defaultPassword).fullName("Emily Davis").phone("0123456784").role("USER").build());
+                                users.add(User.builder().email("admin@brosport.com").passwordHash(defaultPassword)
+                                                .fullName("Admin User").phone("0123456780").role("ADMIN").build());
+                                users.add(User.builder().email("customer1@brosport.com").passwordHash(defaultPassword)
+                                                .fullName("John Doe").phone("0123456781").role("USER").build());
+                                users.add(User.builder().email("customer2@brosport.com").passwordHash(defaultPassword)
+                                                .fullName("Jane Smith").phone("0123456782").role("USER").build());
+                                users.add(User.builder().email("customer3@brosport.com").passwordHash(defaultPassword)
+                                                .fullName("Mike Johnson").phone("0123456783").role("USER").build());
+                                users.add(User.builder().email("customer4@brosport.com").passwordHash(defaultPassword)
+                                                .fullName("Emily Davis").phone("0123456784").role("USER").build());
                                 users = userRepository.saveAll(users);
                         } else {
                                 users = userRepository.findAll();
@@ -359,7 +379,8 @@ public class DataSeeder {
                         // 9. Seed Cart, Order, Review
                         List<ProductDetail> allProductDetails = productDetailRepository.findAll();
                         if (!allProductDetails.isEmpty() && users.size() >= 5) {
-                                User admin = users.stream().filter(u -> "ADMIN".equalsIgnoreCase(u.getRole())).findFirst().orElse(users.get(0));
+                                User admin = users.stream().filter(u -> "ADMIN".equalsIgnoreCase(u.getRole()))
+                                                .findFirst().orElse(users.get(0));
                                 User customer1 = users.get(1);
                                 User customer2 = users.get(2);
 
@@ -391,56 +412,62 @@ public class DataSeeder {
                                 if (orderRepository.count() == 0) {
                                         log.info("Seeding Orders...");
                                         Order order1 = Order.builder()
-                                                .orderCode("BS-SEED-" + System.currentTimeMillis())
-                                                .user(customer1)
-                                                .totalPrice(BigDecimal.valueOf(1000000))
-                                                .shippingFee(BigDecimal.valueOf(30000))
-                                                .paymentMethod("COD")
-                                                .paymentStatus("PAID")
-                                                .orderStatus("DELIVERED")
-                                                .createdAt(LocalDateTime.now())
-                                                .fullName(customer1.getFullName())
-                                                .shippingAddressFull("123 Seed Street, City")
-                                                .build();
-                                                
+                                                        .orderCode("BS-SEED-" + System.currentTimeMillis())
+                                                        .user(customer1)
+                                                        .totalPrice(BigDecimal.valueOf(1000000))
+                                                        .shippingFee(BigDecimal.valueOf(30000))
+                                                        .paymentMethod("COD")
+                                                        .paymentStatus("PAID")
+                                                        .orderStatus("DELIVERED")
+                                                        .createdAt(LocalDateTime.now())
+                                                        .fullName(customer1.getFullName())
+                                                        .shippingAddressFull("123 Seed Street, City")
+                                                        .build();
+
                                         OrderItem oi1 = OrderItem.builder()
-                                                .order(order1)
-                                                .productDetail(allProductDetails.get(0))
-                                                .quantity(1)
-                                                .price(productRepository.findById(allProductDetails.get(0).getProduct().getId()).get().getShowPrice())
-                                                .build();
-                                        
+                                                        .order(order1)
+                                                        .productDetail(allProductDetails.get(0))
+                                                        .quantity(1)
+                                                        .price(productRepository.findById(
+                                                                        allProductDetails.get(0).getProduct().getId())
+                                                                        .get().getShowPrice())
+                                                        .build();
+
                                         OrderItem oi2 = OrderItem.builder()
-                                                .order(order1)
-                                                .productDetail(allProductDetails.get(1))
-                                                .quantity(1)
-                                                .price(productRepository.findById(allProductDetails.get(1).getProduct().getId()).get().getShowPrice())
-                                                .build();
-                                                
+                                                        .order(order1)
+                                                        .productDetail(allProductDetails.get(1))
+                                                        .quantity(1)
+                                                        .price(productRepository.findById(
+                                                                        allProductDetails.get(1).getProduct().getId())
+                                                                        .get().getShowPrice())
+                                                        .build();
+
                                         order1.setOrderItems(Arrays.asList(oi1, oi2));
                                         orderRepository.save(order1);
 
                                         // Second order
                                         Order order2 = Order.builder()
-                                                .orderCode("BS-SEED-" + (System.currentTimeMillis() + 1))
-                                                .user(customer2)
-                                                .totalPrice(BigDecimal.valueOf(500000))
-                                                .shippingFee(BigDecimal.valueOf(30000))
-                                                .paymentMethod("VNPAY")
-                                                .paymentStatus("PAID")
-                                                .orderStatus("DELIVERED")
-                                                .createdAt(LocalDateTime.now().minusDays(1))
-                                                .fullName(customer2.getFullName())
-                                                .shippingAddressFull("456 Branch Road, District")
-                                                .build();
-                                                
+                                                        .orderCode("BS-SEED-" + (System.currentTimeMillis() + 1))
+                                                        .user(customer2)
+                                                        .totalPrice(BigDecimal.valueOf(500000))
+                                                        .shippingFee(BigDecimal.valueOf(30000))
+                                                        .paymentMethod("VNPAY")
+                                                        .paymentStatus("PAID")
+                                                        .orderStatus("DELIVERED")
+                                                        .createdAt(LocalDateTime.now().minusDays(1))
+                                                        .fullName(customer2.getFullName())
+                                                        .shippingAddressFull("456 Branch Road, District")
+                                                        .build();
+
                                         OrderItem oi3 = OrderItem.builder()
-                                                .order(order2)
-                                                .productDetail(allProductDetails.get(2))
-                                                .quantity(1)
-                                                .price(productRepository.findById(allProductDetails.get(2).getProduct().getId()).get().getShowPrice())
-                                                .build();
-                                                
+                                                        .order(order2)
+                                                        .productDetail(allProductDetails.get(2))
+                                                        .quantity(1)
+                                                        .price(productRepository.findById(
+                                                                        allProductDetails.get(2).getProduct().getId())
+                                                                        .get().getShowPrice())
+                                                        .build();
+
                                         order2.setOrderItems(Arrays.asList(oi3));
                                         orderRepository.save(order2);
                                 }
@@ -450,64 +477,72 @@ public class DataSeeder {
                                         log.info("Seeding Reviews...");
                                         java.util.Random random = new java.util.Random();
                                         List<Review> reviewsToSave = new ArrayList<>();
-                                        
+
                                         // Get up to 5 products
-                                        List<Product> productsToReview = productRepository.findAll().stream().limit(5).toList();
-                                        
+                                        List<Product> productsToReview = productRepository.findAll().stream().limit(5)
+                                                        .toList();
+
                                         String[] comments = {
-                                            "Great quality! Fits perfectly and very comfortable.",
-                                            "Good value for the price.",
-                                            "Excellent service, fast delivery.",
-                                            "Product is exactly as described.",
-                                            "Highly recommended, very durable material.",
-                                            "Will definitely order again.",
-                                            "Looks amazing in person.",
-                                            "Very satisfied with this purchase.",
-                                            "Size fits right, completely matches the guide.",
-                                            "It exceeded my expectations!"
+                                                        "Great quality! Fits perfectly and very comfortable.",
+                                                        "Good value for the price.",
+                                                        "Excellent service, fast delivery.",
+                                                        "Product is exactly as described.",
+                                                        "Highly recommended, very durable material.",
+                                                        "Will definitely order again.",
+                                                        "Looks amazing in person.",
+                                                        "Very satisfied with this purchase.",
+                                                        "Size fits right, completely matches the guide.",
+                                                        "It exceeded my expectations!"
                                         };
 
                                         for (Product p : productsToReview) {
-                                            for (int i = 0; i < 10; i++) {
-                                                User randomUser = users.get(random.nextInt(users.size()));
-                                                int rating = random.nextInt(3) + 3; // 3 to 5 stars
-                                                Review review = Review.builder()
-                                                    .user(randomUser)
-                                                    .product(p)
-                                                    .rating(rating)
-                                                    .comment(comments[i % comments.length])
-                                                    .createdAt(LocalDateTime.now().minusDays(random.nextInt(30)).minusHours(random.nextInt(24)))
-                                                    .build();
-                                                reviewsToSave.add(review);
-                                            }
+                                                for (int i = 0; i < 10; i++) {
+                                                        User randomUser = users.get(random.nextInt(users.size()));
+                                                        int rating = random.nextInt(3) + 3; // 3 to 5 stars
+                                                        Review review = Review.builder()
+                                                                        .user(randomUser)
+                                                                        .product(p)
+                                                                        .rating(rating)
+                                                                        .comment(comments[i % comments.length])
+                                                                        .createdAt(LocalDateTime.now()
+                                                                                        .minusDays(random.nextInt(30))
+                                                                                        .minusHours(random.nextInt(24)))
+                                                                        .build();
+                                                        reviewsToSave.add(review);
+                                                }
                                         }
                                         reviewRepository.saveAll(reviewsToSave);
-                                        
+
                                         if (!reviewsToSave.isEmpty()) {
-                                            List<Review> adminReplies = new ArrayList<>();
-                                            String[] adminComments = {
-                                                    "Thank you for trusting and supporting BroSport!",
-                                                    "We’re glad you’re satisfied with the product, and we hope you’ll continue to support our shop.",
-                                                    "Thank you for your review, we’ll strive to develop even more awesome designs!",
-                                                    "BroSport sincerely thanks you!",
-                                                    "Your feedback is a huge motivation for us!"
-                                            };
-                                            
-                                            // Reply to ~30% of the reviews
-                                            for (Review rev : reviewsToSave) {
-                                                if (random.nextInt(60) < 30) {
-                                                    Review reply = Review.builder()
-                                                            .user(admin)
-                                                            .product(rev.getProduct())
-                                                            .rating(5) 
-                                                            .comment(adminComments[random.nextInt(adminComments.length)])
-                                                            .parentReview(rev)
-                                                            .createdAt(rev.getCreatedAt().plusHours(random.nextInt(48) + 1)) // Reply after 1-48 hours
-                                                            .build();
-                                                    adminReplies.add(reply);
+                                                List<Review> adminReplies = new ArrayList<>();
+                                                String[] adminComments = {
+                                                                "Thank you for trusting and supporting BroSport!",
+                                                                "We’re glad you’re satisfied with the product, and we hope you’ll continue to support our shop.",
+                                                                "Thank you for your review, we’ll strive to develop even more awesome designs!",
+                                                                "BroSport sincerely thanks you!",
+                                                                "Your feedback is a huge motivation for us!"
+                                                };
+
+                                                // Reply to ~30% of the reviews
+                                                for (Review rev : reviewsToSave) {
+                                                        if (random.nextInt(100) < 30) {
+                                                                Review reply = Review.builder()
+                                                                                .user(admin)
+                                                                                .product(rev.getProduct())
+                                                                                .rating(5)
+                                                                                .comment(adminComments[random.nextInt(
+                                                                                                adminComments.length)])
+                                                                                .parentReview(rev)
+                                                                                .createdAt(rev.getCreatedAt().plusHours(
+                                                                                                random.nextInt(48) + 1)) // Reply
+                                                                                                                         // after
+                                                                                                                         // 1-48
+                                                                                                                         // hours
+                                                                                .build();
+                                                                adminReplies.add(reply);
+                                                        }
                                                 }
-                                            }
-                                            reviewRepository.saveAll(adminReplies);
+                                                reviewRepository.saveAll(adminReplies);
                                         }
                                 }
                         }
