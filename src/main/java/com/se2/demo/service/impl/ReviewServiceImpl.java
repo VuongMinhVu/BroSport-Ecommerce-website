@@ -75,9 +75,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewResponse> getReviewsByProduct(Integer productId, int page, int size) {
+    public Page<ReviewResponse> getReviewsByProduct(Integer productId, Integer rating, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Review> reviewPage = reviewRepository.findByProductIdAndParentReviewIsNull(productId, pageRequest);
+        Page<Review> reviewPage = reviewRepository.findByProductIdAndRatingAndParentReviewIsNull(productId, rating, pageRequest);
 
         Page<ReviewResponse> responsePage = reviewPage.map(this::mapToResponse);
         return responsePage;

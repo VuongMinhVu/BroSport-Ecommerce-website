@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 
 public interface ReviewService {
     ReviewResponse createReview(Integer userId, ReviewRequest request);
-    Page<ReviewResponse> getReviewsByProduct(Integer productId, int page, int size);
+    Page<ReviewResponse> getReviewsByProduct(Integer productId, Integer rating, int page, int size);
 }

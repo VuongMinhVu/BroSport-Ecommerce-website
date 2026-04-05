@@ -45,7 +45,7 @@ public class DataSeeder {
                 return args -> {
                         log.info("Checking database for seed data...");
 
-                        if (productRepository.count() >= 30) {
+                        if (productRepository.count() >= 100) {
                                 log.info("Database already seeded with enough products.");
                                 List<Product> existingProducts = productRepository.findAll();
                                 boolean needUpdate = false;
@@ -98,28 +98,31 @@ public class DataSeeder {
                         if (categoryRepository.count() == 0) {
                                 Category shoes = Category.builder().name("Sports Shoes").slug("sports-shoes")
                                                 .imageUrl("https://picsum.photos/seed/shoes/600/600")
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
                                 Category clothing = Category.builder().name("Apparel").slug("apparel")
                                                 .imageUrl("https://picsum.photos/seed/clothes/600/600")
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
                                 Category accessories = Category.builder().name("Accessories").slug("accessories")
                                                 .imageUrl("https://picsum.photos/seed/accessories/600/600")
+                                                .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
                                 categoryRepository.saveAll(Arrays.asList(shoes, clothing, accessories));
 
                                 Category runningShoes = Category.builder().name("Running Shoes").slug("running-shoes")
-                                                .parentCategory(shoes).build();
+                                                .parentCategory(shoes).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
                                 Category footballShoes = Category.builder().name("Football Shoes").slug("football-shoes")
-                                                .parentCategory(shoes).build();
+                                                .parentCategory(shoes).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
                                 Category basketballShoes = Category.builder().name("Basketball Shoes").slug("basketball-shoes")
-                                                .parentCategory(shoes).build();
+                                                .parentCategory(shoes).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
 
                                 Category tshirts = Category.builder().name("T-Shirts").slug("t-shirts")
-                                                .parentCategory(clothing).build();
+                                                .parentCategory(clothing).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
                                 Category pants = Category.builder().name("Pants").slug("pants")
-                                                .parentCategory(clothing).build();
+                                                .parentCategory(clothing).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg").build();
                                 Category shorts = Category.builder().name("Shorts").slug("shorts")
-                                                .parentCategory(clothing)
+                                                .parentCategory(clothing).sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
 
                                 categoryRepository
@@ -226,11 +229,11 @@ public class DataSeeder {
                         }
 
                         // 7. Seed Products
-                        if (productRepository.count() < 30) {
+                        if (productRepository.count() < 100) {
                                 log.info("Seeding 30 Products with variations...");
                                 Random random = new Random();
 
-                                for (int i = 1; i <= 30; i++) {
+                                for (int i = 1; i <= 100; i++) {
                                         Brand randomBrand = brands.get(random.nextInt(brands.size()));
                                         Category randomCategory = leafCategories.get(random.nextInt(leafCategories.size()));
 

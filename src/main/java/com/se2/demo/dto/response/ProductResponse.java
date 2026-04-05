@@ -22,6 +22,7 @@ public class ProductResponse {
     String gender;
     String sport;
     String name;
+    String sizeGuide;
     String slug;
     String description;
     String feature;

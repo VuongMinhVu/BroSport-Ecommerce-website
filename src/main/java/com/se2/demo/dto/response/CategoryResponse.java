@@ -18,5 +18,6 @@ public class CategoryResponse {
     String name;
     String slug;
     String imageUrl;
+    String sizeGuide;
     List<CategoryResponse> subCategories;
 }

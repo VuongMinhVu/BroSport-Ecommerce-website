@@ -18,7 +18,6 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<?> createReview(@RequestBody ReviewRequest request) {
         try {
-            // Usually userId is taken from security context, but using it from request for simplicity
             ReviewResponse response = reviewService.createReview(request.getUserId(), request);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -29,10 +28,11 @@ public class ReviewController {
     @GetMapping("/product/{productId}")
     public ResponseEntity<Page<ReviewResponse>> getReviewsByProduct(
             @PathVariable Integer productId,
+            @RequestParam(required = false) Integer rating,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
-        Page<ReviewResponse> responses = reviewService.getReviewsByProduct(productId, page, size);
+
+        Page<ReviewResponse> responses = reviewService.getReviewsByProduct(productId, rating, page, size);
         return ResponseEntity.ok(responses);
     }
 }

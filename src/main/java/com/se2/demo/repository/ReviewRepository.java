@@ -11,13 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
     
-    // Fetch parent reviews for a product
-    Page<Review> findByProductIdAndParentReviewIsNull(Integer productId, Pageable pageable);
+    @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.parentReview IS NULL AND (:rating IS NULL OR r.rating = :rating) ORDER BY r.createdAt ASC")
+    Page<Review> findByProductIdAndRatingAndParentReviewIsNull(@Param("productId") Integer productId, @Param("rating") Integer rating, Pageable pageable);
 
-    // Calculate average rating
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :productId AND r.parentReview IS NULL")
     Double calculateAverageRating(@Param("productId") Integer productId);
 
-    // Check if user already reviewed
     boolean existsByUserIdAndProductIdAndParentReviewIsNull(Integer userId, Integer productId);
 }
