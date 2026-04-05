@@ -8,16 +8,22 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
     
-    // Fetch parent reviews for a product
-    Page<Review> findByProductIdAndParentReviewIsNull(Integer productId, Pageable pageable);
+    @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.parentReview IS NULL AND (:rating IS NULL OR r.rating = :rating) ORDER BY r.createdAt ASC")
+    Page<Review> findByProductIdAndRatingAndParentReviewIsNull(@Param("productId") Integer productId, @Param("rating") Integer rating, Pageable pageable);
 
-    // Calculate average rating
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :productId AND r.parentReview IS NULL")
     Double calculateAverageRating(@Param("productId") Integer productId);
 
-    // Check if user already reviewed
+    @Query("SELECT r.rating, COUNT(r) FROM Review r WHERE r.product.id = :productId AND r.parentReview IS NULL GROUP BY r.rating")
+    List<Object[]> countReviewsByRating(@Param("productId") Integer productId);
+
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.product.id = :productId AND r.parentReview IS NULL")
+    Long countByProductIdAndParentReviewIsNull(@Param("productId") Integer productId);
+
     boolean existsByUserIdAndProductIdAndParentReviewIsNull(Integer userId, Integer productId);
 }

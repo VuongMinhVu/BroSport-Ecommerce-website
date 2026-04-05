@@ -32,6 +32,9 @@ public class Review {
     @Column(nullable = false)
     Integer rating; 
 
+    @Column(length = 255)
+    String title;
+
     @Column(columnDefinition = "TEXT")
     String comment;
 
