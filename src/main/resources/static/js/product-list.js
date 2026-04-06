@@ -239,21 +239,21 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <div class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center">
+            <div class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <h3 class="font-bold text-white text-lg leading-tight group-hover:text-primary transition-colors">${product.name}</h3>
-                  <p class="text-slate-400 text-sm mt-1">${brand}</p>
+                  <h3 class="font-bold text-white text-lg leading-tight pointer-events-auto hover:text-primary transition-colors">${product.name}</h3>
+                  <p class="text-slate-400 text-sm mt-1 pointer-events-auto">${brand}</p>
                 </div>
                 <div class="flex items-center gap-1">
-                  <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
-                  <span class="text-slate-400 text-sm">4.5</span>
+                  <span class="material-symbols-outlined text-yellow-400 text-sm pointer-events-auto">star</span>
+                  <span class="text-slate-400 text-sm pointer-events-auto">4.5</span>
                 </div>
               </div>
 
-              <div class="flex items-center justify-between mt-auto pt-4">
+              <div class="flex items-center justify-between mt-auto pt-4 pointer-events-auto">
                               <span class="text-2xl font-black text-primary">${new Intl.NumberFormat('en-US').format(Math.round(product.showPrice))}$</span>
-                              <button data-detail-id="${(product.productDetails && product.productDetails.length > 0) ? product.productDetails[0].id : ''}" class="btn-add-to-cart bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                              <button data-detail-id="${(product.productDetails && product.productDetails.length > 0) ? product.productDetails[0].id : ''}" class="btn-add-to-cart relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
                                 <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                               </button>
                             </div>
@@ -462,8 +462,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Hardcode userId = 1 for testing purposes
-      const userId = 1;
+      // Get dynamic userId or fallback to 1
+      const userInputElement = document.getElementById('currentUserId');
+      const userId = userInputElement ? parseInt(userInputElement.value) || 1 : 1;
 
       // 1. Get or create cart for user
       fetch(`/api/v1/carts/user/${userId}`)

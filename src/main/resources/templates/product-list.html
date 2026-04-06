@@ -334,25 +334,26 @@
               </div>
             </div>
 
-            <div class="details-wrapper p-4 flex-1 flex flex-col justify-center">
+            <div class="details-wrapper p-4 flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <h3 class="font-bold text-white text-lg leading-tight group-hover:text-primary transition-colors"
+                  <h3
+                    class="font-bold text-white text-lg leading-tight pointer-events-auto hover:text-primary transition-colors"
                     th:text="${product.name}">
                     Product Name
                   </h3>
-                  <p class="text-slate-400 text-sm mt-1" th:text="${product.brand ?: 'Brand'}">
+                  <p class="text-slate-400 text-sm mt-1 pointer-events-auto" th:text="${product.brand ?: 'Brand'}">
 
                     Brand
                   </p>
                 </div>
                 <div class="flex items-center gap-1">
-                  <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
-                  <span class="text-slate-400 text-sm">4.5</span>
+                  <span class="material-symbols-outlined text-yellow-400 text-sm pointer-events-auto">star</span>
+                  <span class="text-slate-400 text-sm pointer-events-auto">4.5</span>
                 </div>
               </div>
 
-              <div class="flex items-center justify-between mt-auto pt-4">
+              <div class="flex items-center justify-between mt-auto pt-4 pointer-events-auto">
                 <div class="flex flex-col">
                   <span class="text-2xl font-black text-primary" th:if="${product.showPrice != null}"
                     th:text="${#numbers.formatInteger(product.showPrice, 1, 'POINT')} + 'đ'">0đ</span>
