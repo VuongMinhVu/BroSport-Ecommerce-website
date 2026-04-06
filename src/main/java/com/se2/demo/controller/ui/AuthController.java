@@ -41,7 +41,7 @@ public class AuthController {
 
     @GetMapping("/verify-otp")
     public String verifyOtp(Model model) {
-        model.addAttribute("registerRequest", new RegisterRequest());
+        model.addAttribute("verifyOtpRequest", new VerifyOtpRequest());
         return "auth/verify-otp";
     }
 
