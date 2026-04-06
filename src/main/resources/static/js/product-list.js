@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         keyword: '',
         categories: [],
         brands: [],
+        gender: [],
+        sports: [],
         minPrice: null,
         maxPrice: null,
         page: 0,
@@ -45,6 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (params.has('keyword')) this.filters.keyword = params.get('keyword');
       if (params.has('categories')) this.filters.categories = params.get('categories').split(',').filter(Boolean);
       if (params.has('brands')) this.filters.brands = params.get('brands').split(',').filter(Boolean);
+      if (params.has('gender')) this.filters.gender = params.get('gender').split(',').filter(Boolean);
+      if (params.has('sports')) this.filters.sports = params.get('sports').split(',').filter(Boolean);
       if (params.has('minPrice')) this.filters.minPrice = params.get('minPrice');
       if (params.has('maxPrice')) this.filters.maxPrice = params.get('maxPrice');
       if (params.has('page')) this.filters.page = parseInt(params.get('page')) || 0;
@@ -55,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.filters.keyword) params.set('keyword', this.filters.keyword);
       if (this.filters.categories && this.filters.categories.length > 0) params.set('categories', this.filters.categories.join(','));
       if (this.filters.brands && this.filters.brands.length > 0) params.set('brands', this.filters.brands.join(','));
+      if (this.filters.gender && this.filters.gender.length > 0) params.set('gender', this.filters.gender.join(','));
+      if (this.filters.sports && this.filters.sports.length > 0) params.set('sports', this.filters.sports.join(','));
       if (this.filters.minPrice) params.set('minPrice', this.filters.minPrice);
       if (this.filters.maxPrice && this.filters.maxPrice < 5000000) params.set('maxPrice', this.filters.maxPrice);
       if (this.filters.page > 0) params.set('page', this.filters.page);
@@ -84,6 +90,18 @@ document.addEventListener('DOMContentLoaded', () => {
           cb.checked = this.filters.brands.includes(cb.value);
         });
       }
+
+      if (this.filters.gender) {
+        document.querySelectorAll('.gender-filter').forEach(cb => {
+          cb.checked = this.filters.gender.includes(cb.value);
+        });
+      }
+
+      if (this.filters.sports) {
+        document.querySelectorAll('.sports-filter').forEach(cb => {
+          cb.checked = this.filters.sports.includes(cb.value);
+        });
+      }
     }
   }
 
@@ -104,6 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filters.keyword) params.append('keyword', filters.keyword);
         if (filters.categories && filters.categories.length > 0) params.append('categories', filters.categories.join(','));
         if (filters.brands && filters.brands.length > 0) params.append('brands', filters.brands.join(','));
+        if (filters.gender && filters.gender.length > 0) params.append('gender', filters.gender.join(','));
+        if (filters.sports && filters.sports.length > 0) params.append('sports', filters.sports.join(','));
         if (filters.maxPrice) {
           params.append('minPrice', filters.minPrice || 0);
           params.append('maxPrice', filters.maxPrice);
@@ -143,12 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return document.getElementById('btn-list-view')?.classList.contains('text-primary');
     }
 
-      renderLoading() {
-          const isList = this.isListView;
-          const skeletons = Array(6)
-            .fill("")
-            .map(
-              () => `
+    renderLoading() {
+      const isList = this.isListView;
+      const skeletons = Array(6)
+        .fill("")
+        .map(
+          () => `
             <div class="product-card animate-pulse relative bg-surface rounded-xl overflow-hidden border border-white/5 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
               <div class="img-wrapper relative overflow-hidden shrink-0 w-full ${isList ? "md:w-64 md:h-64 border-b md:border-b-0 md:border-r border-white/5" : "aspect-square bg-slate-800"}"></div>
               <div class="p-4 flex-1 flex flex-col justify-center space-y-3 ${isList ? "md:p-6" : ""}">
@@ -183,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
        `;
     }
- renderProducts(products) {
+    renderProducts(products) {
       if (!products || products.length === 0) {
         this.renderEmpty();
         return;
@@ -197,12 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
       this.container.innerHTML = products
         .map((product) => {
           let imageUrl = `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`;
-                          if (product.thumbnail) {
-                              imageUrl = product.thumbnail;
-                          } else if (product.productImages && product.productImages.length > 0) {
-                              imageUrl = product.productImages[0].imageUrl;
-                          }
-                          const brand = product.brandName || product.brand || 'Brand';
+          if (product.thumbnail) {
+            imageUrl = product.thumbnail;
+          } else if (product.productImages && product.productImages.length > 0) {
+            imageUrl = product.productImages[0].imageUrl;
+          }
+          const brand = product.brandName || product.brand || 'Brand';
 
           return `
           <div class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
@@ -223,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <h3 class="font-bold text-white text-lg leading-tight group-hover:text-primary transition-colors">${product.name}</h3>
-                  <p class="text-slate-400 text-sm mt-1">${product.brand || "Brand"}</p>
+                  <p class="text-slate-400 text-sm mt-1">${brand}</p>
                 </div>
                 <div class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
@@ -358,6 +378,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const priceRange = document.getElementById('priceRange');
   const categoryCheckboxes = document.querySelectorAll('.category-filter');
   const brandCheckboxes = document.querySelectorAll('.brand-filter');
+  const genderCheckboxes = document.querySelectorAll('.gender-filter');
+  const sportsCheckboxes = document.querySelectorAll('.sports-filter');
+
 
   // Helper for multiple select checkbox group
   const handleCheckboxGroup = (checkboxes, filterKey) => {
@@ -379,6 +402,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   handleCheckboxGroup(categoryCheckboxes, 'categories');
   handleCheckboxGroup(brandCheckboxes, 'brands');
+  handleCheckboxGroup(genderCheckboxes, 'gender');
+  handleCheckboxGroup(sportsCheckboxes, 'sports');
 
   if (searchInput) {
     searchInput.addEventListener('input', debounce((e) => {
@@ -420,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clearBtn = e.target.closest('#clearFiltersBtn');
     if (clearBtn) {
-      state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
       state.updateUrl();
       state.syncUI();
       isInitialLoad = false;
@@ -497,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resetBtn = document.getElementById('resetFiltersBtn');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
-      state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
       state.updateUrl();
       state.syncUI();
       isInitialLoad = false;
@@ -510,7 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.state) {
       state.filters = event.state;
     } else {
-      state.filters = { keyword: '', categories: [], brands: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
       state.initFromUrl();
     }
     state.syncUI();
