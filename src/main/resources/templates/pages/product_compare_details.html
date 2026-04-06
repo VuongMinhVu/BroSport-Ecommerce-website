@@ -61,7 +61,7 @@
                         <span class="material-symbols-outlined text-base notranslate">arrow_back</span>
                         <span>Back to shopping</span>
                     </a>
-                    <button class="text-slate-500 hover:text-red-500 text-sm flex items-center gap-2 transition-colors w-fit" onclick="clearAllComparison()">
+                    <button class="text-slate-500 hover:text-red-500 text-sm flex items-center gap-2 transition-colors w-fit" onclick="openModal('all')">
                         <span class="material-symbols-outlined text-base notranslate">delete_sweep</span>
                         <span>Remove all items</span>
                     </button>
@@ -90,7 +90,7 @@
                             <a th:href="@{'/product/' + ${product.slug}}" class="w-full bg-primary hover:bg-orange-600 text-white text-center font-bold py-3 rounded-lg uppercase tracking-wider text-sm transition-colors block">
                                 View Details
                             </a>
-                            <button th:onclick="'removeItem(' + ${product.id} + ')'"
+                            <button th:onclick="'openModal(\'single\', ' + ${product.id} + ')'"
                                     class="w-full border border-border-dark hover:bg-red-500/10 hover:text-red-500 text-slate-400 py-2 rounded-lg text-sm transition-all">
                                 Remove
                             </button>
@@ -144,39 +144,76 @@
     </main>
 
     <div th:replace="~{fragments/footer :: site-footer}"></div>
+    <div id="confirm-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="relative bg-surface-dark border border-border-dark rounded-2xl p-6 w-[90%] max-w-md shadow-2xl transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 shrink-0">
+                    <span class="material-symbols-outlined text-3xl notranslate">warning</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Remove</h3>
+                    <p class="text-slate-400 text-sm mt-1" id="modal-message">Do you want to remove this product?</p>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="closeModal()" class="px-5 py-2.5 rounded-lg border border-border-dark text-slate-300 hover:bg-white/5 hover:text-white transition-colors font-medium text-sm">Cancel</button>
+                <button id="confirm-btn" class="px-5 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold text-sm transition-colors shadow-lg shadow-red-500/20">Confirm</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script th:inline="javascript">
-    /**
-     * Loại bỏ một sản phẩm khỏi danh sách so sánh
-     * Cập nhật URL tham số 'ids' và nạp lại trang để gọi API Controller
-     */
-    function removeItem(productId) {
-        const urlParams = new URLSearchParams(window.location.search);
-        let idsString = urlParams.get('ids');
-        if (!idsString) return;
+    let removeAction = null;
+    let removeTargetId = null;
 
-        // Lọc bỏ ID vừa chọn xóa
-        let ids = idsString.split(',').filter(id => id.trim() !== productId.toString());
+    function openModal(action, id = null) {
+        removeAction = action;
+        removeTargetId = id;
 
-        if (ids.length > 0) {
-            // Cập nhật lại tham số ids trên URL và nhảy trang (Lúc này Network sẽ hiện request lên /product-comparison/details?ids=...)
-            window.location.href = window.location.pathname + "?ids=" + ids.join(',');
+        const modal = document.getElementById('confirm-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalMessage = document.getElementById('modal-message');
+
+        if (action === 'all') {
+            modalMessage.innerText = "Do you want to remove all products?";
         } else {
-            // Nếu không còn ID nào thì quay về trang so sánh trống
-            window.location.href = window.location.pathname;
+            modalMessage.innerText = "Do you want to remove this product?";
         }
+
+        modal.classList.remove('hidden');
+        void modal.offsetWidth;
+        modal.classList.remove('opacity-0');
+        modalContent.classList.remove('scale-95');
     }
 
-    /**
-     * Xóa sạch toàn bộ danh sách so sánh
-     */
-    function clearAllComparison() {
-        if (confirm('Are you sure you want to remove all items from comparison?')) {
-            // Chuyển hướng về trang gốc không kèm tham số ids
-            window.location.href = window.location.pathname;
-        }
+    function closeModal() {
+        const modal = document.getElementById('confirm-modal');
+        const modalContent = document.getElementById('modal-content');
+
+        modal.classList.add('opacity-0');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
+
+    document.getElementById('confirm-btn').addEventListener('click', () => {
+        if (removeAction === 'all') {
+            window.location.href = window.location.pathname;
+        } else if (removeAction === 'single' && removeTargetId) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let idsString = urlParams.get('ids');
+            if (!idsString) return;
+
+            let ids = idsString.split(',').filter(id => id.trim() !== removeTargetId.toString());
+
+            if (ids.length > 0) {
+                window.location.href = window.location.pathname + "?ids=" + ids.join(',');
+            } else {
+                window.location.href = window.location.pathname;
+            }
+        }
+    });
 </script>
 </body>
 </html>

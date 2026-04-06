@@ -13,6 +13,9 @@ public interface ProductService {
 
     ProductResponse getProductBySlug(String slug);
 
+    // Thêm vào file ProductService.java
+    ProductResponse getProductByVariantId(Integer variantId);
+
     ProductResponse createProduct(ProductRequest request);
 
     ProductResponse updateProduct(Integer id, ProductRequest request);

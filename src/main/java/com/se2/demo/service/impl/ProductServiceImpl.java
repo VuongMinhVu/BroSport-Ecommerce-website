@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.se2.demo.repository.ProductDetailRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CloudinaryService cloudinaryService;
     private final ApplicationEventPublisher publisher;
+    private final ProductDetailRepository productDetailRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -96,6 +98,18 @@ public class ProductServiceImpl implements ProductService {
 
         // Chuyển đổi Entity sang DTO để trả về
         return productMapper.toResponse(product);
+    }
+
+    // Thêm vào file ProductServiceImpl.java
+    @Override
+    @Transactional(readOnly = true)
+    public ProductResponse getProductByVariantId(Integer variantId) {
+        // Tìm ProductDetail trước để biết nó thuộc về Product nào
+        ProductDetail detail = productDetailRepository.findById(variantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
+
+        // Trả về ProductResponse (chứa đủ thông tin tên, ảnh, giá)
+        return productMapper.toResponse(detail.getProduct());
     }
 
     @Override

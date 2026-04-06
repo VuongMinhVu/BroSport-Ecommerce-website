@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam; // Để dùng @RequestParam
 import java.util.ArrayList; // Để dùng ArrayList
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.se2.demo.service.CartService;
+import com.se2.demo.service.OrderService;
+import com.se2.demo.service.OrderService;
+import com.se2.demo.dto.response.OrderDetailResponse;
+import com.se2.demo.dto.response.CartResponse;
+import com.se2.demo.dto.response.OrderDetailResponse;
 
 import java.util.List;
 
@@ -19,17 +27,21 @@ import java.util.List;
 public class WebController {
 
     private final ProductService productService;
+    private final CartService cartService;
+    private final OrderService orderService;
 
-    public WebController(ProductService productService) {
+    public WebController(ProductService productService, CartService cartService, OrderService orderService) {
         this.productService = productService;
+        this.cartService = cartService;
+        this.orderService = orderService;
     }
 
-    @GetMapping({"/products", "/products/{categorySlug}"})
+    @GetMapping({ "/products", "/products/{categorySlug}" })
     public String showProductList(
             @PathVariable(name = "categorySlug", required = false) String categorySlug,
             @ModelAttribute ProductFilterRequest filter,
             Model model) {
-        
+
         if (categorySlug != null) {
             switch (categorySlug.toLowerCase()) {
                 case "men":
@@ -68,9 +80,15 @@ public class WebController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("filter", filter);
 
-        model.addAttribute("pageTitle", "Performance Gear");
-        model.addAttribute("pageSubtitle",
-                "Showing " + products.getTotalElements() + " results for high-performance athlete gear");
+        // THÊM LOGIC ĐỔI TIÊU ĐỀ NẾU CÓ TỪ KHÓA TÌM KIẾM
+        if (filter.getKeyword() != null && !filter.getKeyword().trim().isEmpty()) {
+            model.addAttribute("pageTitle", "Kết quả cho: '" + filter.getKeyword() + "'");
+            model.addAttribute("pageSubtitle", "Tìm thấy " + products.getTotalElements() + " sản phẩm phù hợp");
+        } else {
+            model.addAttribute("pageTitle", "Performance Gear");
+            model.addAttribute("pageSubtitle",
+                    "Showing " + products.getTotalElements() + " results for high-performance athlete gear");
+        }
         return "product-list";
     }
 
@@ -86,24 +104,76 @@ public class WebController {
     }
 
     @GetMapping("/checkout")
-    public String showCheckout(Model model) {
-        // Mock User Data
+    public String showCheckout(
+            @RequestParam(required = false) Boolean buyNow,
+            @RequestParam(required = false) Integer variantId,
+            @RequestParam(required = false) Integer qty,
+            Model model) {
+
+        // 1. Giả lập thông tin User (Giữ nguyên logic cũ của bạn)
+        Integer currentUserId = 1;
         MockUser user = new MockUser(
                 "John Doe",
                 "john.doe@example.com",
                 "https://lh3.googleusercontent.com/aida-public/AB6AXuBvfP7XDJdccDTVkPNoBeYDIZ1kZGgVxV_Iv57cDoT7P-XZf4KTfrVagCLjs8mRbU6fNzrmUS0LSTCivXTUOukWwOmZo2tn_rIkolQMMsTGs-nrgo4SL0GQBHmNHGWrgK70hqEzxNmpBJcM9Pzb2rR6ikzl7syfaUL8XCaznhz2XGLnS4TDN7XSoQbXmi9Q6ZJEaIHSTekLu1p6FCMyYthpX2xcDLB4ZFrcujPdKYR9BJiqRDRUgPrv12e-SQdHXGHkdlkz1GHvDXY");
         model.addAttribute("user", user);
 
-        // Mock Cart Items
-        List<MockCartItem> cartItems = List.of(
-                new MockCartItem("Pro Runner X1", "42", "Black/Red", 1, 120.00,
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuC1YAvHhIJi5tr_DsVeOlj7rpA5vaJMsO30cdRP2PK4TyXnyRF24Vxk5PX5fJokz_43zTxwt8aqGPP-EpdGsPL2IyTMao03fsWiTXWg-jTVZJqCNp-fdg4F48WXr9G_G-h6V-xCnRkoR9J2xU-VoL0b3C4DfwQsLnqyK2wGnReH_DbkCbc4716CFPE5SbLn0TH7rtmj7eSu6dwvrjGLgFUMAUnNzHQVGxQUOY4sGugkxxtXd6KbAa1g-kjuxbKykMlblPr12A7kWh0"),
-                new MockCartItem("Elite Compression Tee", "L", "Yellow", 2, 90.00,
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuAgahF5CqJSzVit9W32QypZ0G9qoiFv3OjNzSRPz9OAfHXMXat8DPBhy0skyRC79hsOaxAI_RiY6-1gnYBxMxKUJ6HHGM1Tz_MX8Ug33xaw02suWfMMbiLoQUW6ccdaB07Fce4-ePpu6Hn32quJe0BrwZAjfRtOHPcp1gn6VJ8rTNnIZuks5YXn1xl1cgRtWRw4QdzBajKSyMVQp0C4HSURIGJUm3qaNKXtPcFHXu75uB9LAYYmI88tpqgyDDqgHEKq-_RLBQzzHmg"));
-        model.addAttribute("cartItems", cartItems);
+        List<MockCartItem> displayItems = new java.util.ArrayList<>();
+        double subtotal = 0.0;
 
-        // Calculate subtotal
-        double subtotal = cartItems.stream().mapToDouble(item -> item.price() * item.quantity()).sum();
+        // 2. PHÂN LUỒNG XỬ LÝ DỮ LIỆU
+        if (Boolean.TRUE.equals(buyNow) && variantId != null) {
+            // LUỒNG MUA NGAY: Lấy thông tin sản phẩm trực tiếp từ DB
+            try {
+                // Sử dụng getProductById hoặc một hàm tương tự từ productService để lấy thông
+                // tin variant
+                ProductResponse product = productService.getProductByVariantId(variantId);
+
+                // Lấy thông tin màu sắc/kích thước từ danh sách chi tiết của sản phẩm đó
+                // Ở đây ta tìm đúng VariantId người dùng đã chọn
+                var detail = product.getProductDetails().stream()
+                        .filter(d -> d.getId().equals(variantId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (detail != null) {
+                    MockCartItem item = new MockCartItem(
+                            product.getName(),
+                            detail.getSize(),
+                            detail.getColor(),
+                            qty != null ? qty : 1,
+                            product.getShowPrice().doubleValue(),
+                            product.getProductImages().isEmpty() ? ""
+                                    : product.getProductImages().get(0).getImageUrl());
+                    displayItems.add(item);
+                    subtotal = item.price() * item.quantity();
+                }
+            } catch (Exception e) {
+                // Nếu lỗi, điều hướng về giỏ hàng hoặc trang sản phẩm
+                e.printStackTrace();
+                return "redirect:/products";
+            }
+        } else {
+            // LUỒNG GIỎ HÀNG: Logic cũ lấy từ CartService
+            try {
+                CartResponse cart = cartService.getCartByUserId(currentUserId);
+                displayItems = cart.getCartDetails().stream()
+                        .map(detail -> new MockCartItem(
+                                detail.getProductName(),
+                                detail.getSizeName(),
+                                detail.getColorName(),
+                                detail.getQuantity(),
+                                detail.getUnitPrice(),
+                                detail.getImageUrl()))
+                        .toList();
+                subtotal = displayItems.stream().mapToDouble(item -> item.price() * item.quantity()).sum();
+            } catch (Exception e) {
+                displayItems = List.of();
+            }
+        }
+
+        // 3. Đẩy dữ liệu ra giao diện Checkout.html
+        model.addAttribute("cartItems", displayItems);
         model.addAttribute("subtotal", subtotal);
 
         return "checkout";
@@ -118,11 +188,26 @@ public class WebController {
     public String showHomePage(Model model) {
         return "pages/homepage";
     }
+
     @GetMapping("/order-success")
-    public String showOrderSuccess() {
+    public String showOrderSuccess(@RequestParam(required = false) String orderCode, Model model) {
+        // In ra màn hình console của Spring Boot để kiểm tra
+        System.out.println(">>> MÃ ĐƠN HÀNG TRÊN URL LÀ: " + orderCode);
+
+        if (orderCode != null && !orderCode.isEmpty()) {
+            try {
+                OrderDetailResponse order = orderService.getOrderDetail(orderCode);
+                model.addAttribute("order", order);
+                System.out.println(">>> TÌM THẤY ĐƠN HÀNG: " + order.getOrderNumber());
+            } catch (Exception e) {
+                System.out.println(">>> LỖI KHI TÌM ĐƠN HÀNG TRONG DATABASE: " + e.getMessage());
+                e.printStackTrace(); // In chi tiết lỗi ra console
+            }
+        } else {
+            System.out.println(">>> LỖI: KHÔNG NHẬN ĐƯỢC MÃ ĐƠN HÀNG TỪ TRÌNH DUYỆT!");
+        }
         return "order-success";
     }
-
 
     // Điều hướng đến trang Lịch sử đơn hàng
     @GetMapping("/order-history")

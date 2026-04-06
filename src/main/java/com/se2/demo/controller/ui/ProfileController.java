@@ -64,4 +64,10 @@ public class ProfileController {
 
         return "account/profile-edit";
     }
+
+
+    @GetMapping("/profile/edit")
+    public String showEditProfilePage() {
+        return "account/profile-edit";
+    }
 }

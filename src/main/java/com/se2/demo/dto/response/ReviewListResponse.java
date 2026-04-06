@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryResponse {
-    Integer id;
-    Integer parentId;
-    String name;
-    String slug;
-    String imageUrl;
-    String sizeGuide;
-    List<CategoryResponse> subCategories;
+public class ReviewListResponse {
+    Page<ReviewResponse> reviews;
+    Long totalReviews;
+    Double averageRating;
+    Map<Integer, Long> ratingCounts;
 }
