@@ -37,12 +37,14 @@ public class ProductSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("sport").get("id"), filter.getSportId()));
             }
 
+            // ĐÃ SỬA: Đổi "price" thành "showPrice" cho khớp với Entity Product
             if (filter.getMinPrice() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), filter.getMinPrice()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("showPrice"), filter.getMinPrice()));
             }
 
+            // ĐÃ SỬA: Đổi "price" thành "showPrice" cho khớp với Entity Product
             if (filter.getMaxPrice() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), filter.getMaxPrice()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("showPrice"), filter.getMaxPrice()));
             }
 
             // JOIN with ProductDetail to filter by variations (color, size)

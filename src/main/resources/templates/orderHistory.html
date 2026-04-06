@@ -1,27 +1,23 @@
 <!doctype html>
-
 <html class="dark" lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Apex Pro Runner v2 | Brosport</title>
+    <title>Order History | Brosport</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-      rel="stylesheet"
-    />
+
     <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -31,15 +27,13 @@
               primary: "#f48c25",
               "background-light": "#f8f7f5",
               "background-dark": "#121212",
+              "brand-card-bg": "rgba(255,255,255,0.05)",
+              "brand-border": "rgba(255,255,255,0.1)",
+              "brand-text-muted": "#9ca3af",
+              "brand-accent": "#f48c25",
             },
             fontFamily: {
               display: ["Lexend", "sans-serif"],
-            },
-            borderRadius: {
-              DEFAULT: "0.25rem",
-              lg: "0.5rem",
-              xl: "0.75rem",
-              full: "9999px",
             },
           },
         },
@@ -56,23 +50,32 @@
           "GRAD" 0,
           "opsz" 24;
       }
-      .review-bar-fill {
-        transition: width 0.5s ease-in-out;
+      /* Custom Scrollbar cho Modal */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #4a4a4a;
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #555;
       }
     </style>
   </head>
+
   <body
-    class="font-sans antialiased min-h-screen flex flex-col bg-background-dark dark:bg-background-dark text-white dark:text-white"
+    class="font-sans antialiased min-h-screen flex flex-col bg-background-dark text-white relative"
   >
-    <!-- BEGIN: MainHeader -->
     <div th:replace="~{fragments/header :: site-header}"></div>
-    <!-- END: MainHeader -->
     <div
       class="flex-grow flex w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 gap-8"
     >
-      <!-- BEGIN: Sidebar -->
       <aside class="w-64 flex-shrink-0 hidden lg:block">
-        <!-- User Profile Summary -->
         <div class="flex items-center space-x-4 mb-8">
           <img
             alt="Alex Johnson"
@@ -84,7 +87,6 @@
             <p class="text-gray-500 text-sm">Pro Member</p>
           </div>
         </div>
-        <!-- Sidebar Navigation -->
         <nav class="space-y-2">
           <a
             class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
@@ -105,25 +107,7 @@
             </svg>
             <span class="font-medium">Profile</span>
           </a>
-          <a
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
-            href="#"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewbox="0 0 24 24"
-            >
-              <path
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-              ></path>
-            </svg>
-            <span class="font-medium">My Orders</span>
-          </a>
+
           <a
             class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
             href="#"
@@ -145,7 +129,7 @@
           </a>
           <a
             class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border border-primary/20 transition-colors"
-            href="#"
+            th:href="@{/order-history}"
           >
             <svg
               class="w-5 h-5"
@@ -185,10 +169,7 @@
           </a>
         </div>
       </aside>
-      <!-- END: Sidebar -->
-      <!-- BEGIN: MainContent -->
       <main class="flex-1 min-w-0 flex flex-col gap-6">
-        <!-- Page Header -->
         <div
           class="flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
@@ -201,18 +182,18 @@
           </div>
           <div class="flex items-center gap-3">
             <button
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium text-gray-300"
             >
               <i class="fa-solid fa-filter"></i> Filter
             </button>
             <button
-              class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium text-gray-300"
             >
               <i class="fa-solid fa-download"></i> Export
             </button>
           </div>
         </div>
-        <!-- Order Table -->
+
         <div
           class="bg-slate-900 rounded-xl border border-white/10 overflow-hidden"
         >
@@ -222,190 +203,28 @@
                 class="text-xs text-slate-400 uppercase bg-slate-900 border-b border-white/10"
               >
                 <tr>
-                  <th class="px-6 py-4 font-semibold" scope="col">Order ID</th>
-                  <th class="px-6 py-4 font-semibold" scope="col">Date</th>
-                  <th class="px-6 py-4 font-semibold" scope="col">Total</th>
-                  <th class="px-6 py-4 font-semibold" scope="col">Status</th>
-                  <th class="px-6 py-4 font-semibold text-right" scope="col">
-                    Action
-                  </th>
+                  <th class="px-6 py-4 font-semibold">Order ID</th>
+                  <th class="px-6 py-4 font-semibold">Date</th>
+                  <th class="px-6 py-4 font-semibold">Total</th>
+                  <th class="px-6 py-4 font-semibold">Status</th>
+                  <th class="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-white/10">
-                <!-- Row 1 -->
-                <tr class="hover:bg-brand-card-bg transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="text-white font-medium">#BR-9921</div>
-                    <div class="text-brand-text-muted text-xs mt-1">
-                      2 Items
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-gray-300">Oct 24, 2023</td>
-                  <td class="px-6 py-4 text-white font-medium">$124.00</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-transit text-brand-status-transit-text"
-                    >
-                      <i class="fa-solid fa-truck-fast text-[10px]"></i> In
-                      Transit
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <a
-                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                      href="#"
-                      >View Details</a
-                    >
-                  </td>
-                </tr>
-                <!-- Row 2 -->
-                <tr class="hover:bg-brand-card-bg transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="text-white font-medium">#BR-9845</div>
-                    <div class="text-brand-text-muted text-xs mt-1">1 Item</div>
-                  </td>
-                  <td class="px-6 py-4 text-gray-300">Oct 12, 2023</td>
-                  <td class="px-6 py-4 text-white font-medium">$89.50</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
-                    >
-                      <i class="fa-solid fa-circle-check text-[10px]"></i>
-                      Delivered
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <a
-                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                      href="#"
-                      >View Details</a
-                    >
-                  </td>
-                </tr>
-                <!-- Row 3 -->
-                <tr class="hover:bg-brand-card-bg transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="text-white font-medium">#BR-9712</div>
-                    <div class="text-brand-text-muted text-xs mt-1">
-                      4 Items
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-gray-300">Sep 28, 2023</td>
-                  <td class="px-6 py-4 text-white font-medium">$210.00</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
-                    >
-                      <i class="fa-solid fa-circle-check text-[10px]"></i>
-                      Delivered
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <a
-                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                      href="#"
-                      >View Details</a
-                    >
-                  </td>
-                </tr>
-                <!-- Row 4 -->
-                <tr class="hover:bg-brand-card-bg transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="text-white font-medium">#BR-9601</div>
-                    <div class="text-brand-text-muted text-xs mt-1">1 Item</div>
-                  </td>
-                  <td class="px-6 py-4 text-gray-300">Sep 15, 2023</td>
-                  <td class="px-6 py-4 text-white font-medium">$45.00</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-cancelled text-brand-status-cancelled-text"
-                    >
-                      <i class="fa-solid fa-xmark text-[10px]"></i> Cancelled
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <a
-                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                      href="#"
-                      >View Details</a
-                    >
-                  </td>
-                </tr>
-                <!-- Row 5 -->
-                <tr class="hover:bg-brand-card-bg transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="text-white font-medium">#BR-9588</div>
-                    <div class="text-brand-text-muted text-xs mt-1">
-                      3 Items
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-gray-300">Aug 30, 2023</td>
-                  <td class="px-6 py-4 text-white font-medium">$156.20</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
-                    >
-                      <i class="fa-solid fa-circle-check text-[10px]"></i>
-                      Delivered
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <a
-                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                      href="#"
-                      >View Details</a
-                    >
+              <tbody id="order-table-body" class="divide-y divide-white/10">
+                <tr>
+                  <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                    <i
+                      class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"
+                    ></i>
+                    <p>Loading your orders...</p>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <!-- Pagination -->
-          <div
-            class="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-slate-900"
-          >
-            <span class="text-sm text-slate-400">Showing 5 of 24 orders</span>
-            <nav class="flex items-center gap-1">
-              <button
-                class="w-8 h-8 flex items-center justify-center rounded text-brand-text-muted hover:bg-brand-card-bg hover:text-white transition-colors"
-              >
-                <i class="fa-solid fa-chevron-left text-xs"></i>
-              </button>
-              <button
-                class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white font-medium transition-colors"
-              >
-                1
-              </button>
-              <button
-                class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
-              >
-                2
-              </button>
-              <button
-                class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
-              >
-                3
-              </button>
-              <span
-                class="w-8 h-8 flex items-center justify-center text-slate-400"
-                >...</span
-              >
-              <button
-                class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
-              >
-                5
-              </button>
-              <button
-                class="w-8 h-8 flex items-center justify-center rounded text-brand-text-muted hover:bg-brand-card-bg hover:text-white transition-colors"
-              >
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-              </button>
-            </nav>
-          </div>
         </div>
-        <!-- Bottom Cards Grid -->
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
-          <!-- Support Card -->
           <div
             class="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 border border-primary/20 rounded-xl p-6 flex items-start gap-4"
           >
@@ -429,7 +248,6 @@
               >
             </div>
           </div>
-          <!-- Premium Card -->
           <div
             class="bg-slate-900 border border-white/10 rounded-xl p-6 flex items-start gap-4"
           >
@@ -455,101 +273,465 @@
           </div>
         </div>
       </main>
-      <!-- END: MainContent -->
     </div>
-    <footer class="bg-black/40 border-t border-white/10 py-20">
+
+    <div th:replace="~{fragments/footer :: site-footer}"></div>
+
+    <div
+      id="tracking-modal"
+      class="fixed inset-0 z-[100] hidden items-center justify-center"
+    >
       <div
-        class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12"
-      >
-        <div class="space-y-6">
-          <div class="flex items-center gap-3">
-            <div
-              class="size-8 bg-primary rounded flex items-center justify-center text-white"
-            >
-              <span class="material-symbols-outlined">bolt</span>
-            </div>
-            <h1 class="text-2xl font-black tracking-tighter uppercase italic">
-              Brosport
-            </h1>
-          </div>
-          <p class="text-sm text-slate-500 leading-relaxed">
-            Premium performance gear for the modern athlete. Push your limits
-            with science-backed engineering.
-          </p>
-          <div class="flex gap-4">
-            <a
-              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-              href="#"
-              ><span class="material-symbols-outlined text-sm"
-                >social_leaderboard</span
-              ></a
-            >
-            <a
-              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-              href="#"
-              ><span class="material-symbols-outlined text-sm"
-                >alternate_email</span
-              ></a
-            >
-          </div>
-        </div>
-        <div class="space-y-6">
-          <h6 class="font-black uppercase italic tracking-widest text-sm">
-            Shop
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-400">
-            <li><a class="hover:text-primary" href="#">New Arrivals</a></li>
-            <li><a class="hover:text-primary" href="#">Running Shoes</a></li>
-            <li><a class="hover:text-primary" href="#">Performance Tops</a></li>
-            <li><a class="hover:text-primary" href="#">Training Gear</a></li>
-          </ul>
-        </div>
-        <div class="space-y-6">
-          <h6 class="font-black uppercase italic tracking-widest text-sm">
-            Support
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-400">
-            <li><a class="hover:text-primary" href="#">Order Tracking</a></li>
-            <li>
-              <a class="hover:text-primary" href="#">Returns &amp; Exchanges</a>
-            </li>
-            <li><a class="hover:text-primary" href="#">Sizing Guide</a></li>
-            <li><a class="hover:text-primary" href="#">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="space-y-6">
-          <h6 class="font-black uppercase italic tracking-widest text-sm">
-            Newsletter
-          </h6>
-          <p class="text-sm text-slate-500">
-            Get elite access to new drops and training tips.
-          </p>
-          <div class="flex border-b border-white/20 pb-2">
-            <input
-              class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-600"
-              placeholder="Email Address"
-              type="email"
-            />
-            <button class="text-primary font-bold uppercase text-xs">
-              Join
-            </button>
-          </div>
-        </div>
-      </div>
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onclick="closeModal()"
+      ></div>
+
       <div
-        class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4"
+        class="relative bg-[#121212] w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 shadow-2xl z-10 custom-scrollbar flex flex-col"
       >
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest">
-          © 2023 Brosport International. All Rights Reserved.
-        </p>
-        <div
-          class="flex gap-6 text-[10px] text-slate-600 uppercase tracking-widest"
+        <button
+          onclick="closeModal()"
+          class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full w-10 h-10 flex items-center justify-center z-20"
         >
-          <a class="hover:text-slate-400" href="#">Privacy Policy</a>
-          <a class="hover:text-slate-400" href="#">Terms of Service</a>
-          <a class="hover:text-slate-400" href="#">Cookie Settings</a>
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+
+        <div class="p-8">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2 flex items-center">
+              ORDER
+              <span id="modal-order-code" class="text-primary ml-2"
+                >#LOADING...</span
+              >
+            </h1>
+            <p class="text-gray-400">
+              Placed on
+              <span id="modal-order-date" class="text-white">...</span> • Total:
+              <span id="modal-order-total" class="text-white font-medium"
+                >...</span
+              >
+            </p>
+          </div>
+
+          <section
+            class="bg-slate-900/50 rounded-xl p-6 mb-8 border border-white/10"
+          >
+            <div class="flex items-center justify-between mb-8">
+              <h2 class="text-xl font-semibold text-white">Shipping Status</h2>
+              <span
+                id="modal-status-badge"
+                class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-semibold tracking-wide border border-primary/30"
+              >
+                PROCESSING
+              </span>
+            </div>
+            <div
+              class="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-start space-x-3"
+            >
+              <i class="fa-solid fa-truck-fast w-5 h-5 text-primary mt-0.5"></i>
+              <p
+                id="modal-status-message"
+                class="text-sm text-gray-300 leading-relaxed"
+              >
+                Loading tracking information...
+              </p>
+            </div>
+          </section>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-8">
+              <section
+                class="bg-slate-900/50 rounded-xl p-6 border border-white/10"
+              >
+                <h3 class="text-lg font-semibold text-white mb-6">
+                  Items in your package
+                </h3>
+                <div id="modal-order-items" class="space-y-6"></div>
+              </section>
+            </div>
+
+            <div class="space-y-8">
+              <section
+                class="bg-slate-900/50 rounded-xl p-6 border border-white/10"
+              >
+                <div class="flex items-center space-x-3 mb-6">
+                  <i class="fa-solid fa-location-dot text-primary text-xl"></i>
+                  <h3 class="text-lg font-semibold text-white">
+                    Shipping Info
+                  </h3>
+                </div>
+                <div class="space-y-5">
+                  <div>
+                    <p
+                      class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1"
+                    >
+                      RECIPIENT & PHONE
+                    </p>
+                    <p id="modal-recipient" class="text-gray-200">...</p>
+                    <p id="modal-phone" class="text-gray-400 text-sm mt-1">
+                      ...
+                    </p>
+                  </div>
+                  <div>
+                    <p
+                      class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1"
+                    >
+                      ADDRESS
+                    </p>
+                    <p
+                      id="modal-address"
+                      class="text-gray-200 text-sm leading-relaxed"
+                    >
+                      ...
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                class="bg-slate-900/50 rounded-xl p-6 border border-white/10"
+              >
+                <div class="flex items-center space-x-3 mb-6">
+                  <i class="fa-solid fa-receipt text-primary text-xl"></i>
+                  <h3 class="text-lg font-semibold text-white">
+                    Payment Summary
+                  </h3>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between text-gray-400">
+                    <span>Subtotal</span>
+                    <span id="modal-subtotal" class="text-white">...</span>
+                  </div>
+                  <div class="flex justify-between text-gray-400 mt-2">
+                    <span>Shipping</span>
+                    <span
+                      id="modal-shipping-fee"
+                      class="text-green-500 font-medium"
+                      >FREE</span
+                    >
+                  </div>
+                  <div
+                    class="flex justify-between text-gray-400 mt-2 pb-4 border-b border-white/10"
+                  >
+                    <span>Taxes</span>
+                    <span id="modal-tax" class="text-white">$0.00</span>
+                  </div>
+                  <div class="flex justify-between items-center pt-2">
+                    <span class="text-white font-semibold text-base"
+                      >Total</span
+                    >
+                    <span
+                      id="modal-final-total"
+                      class="text-primary font-bold text-xl"
+                      >...</span
+                    >
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
         </div>
       </div>
-    </footer>
+    </div>
+
+    <script>
+      // MOCK USER ID: Đang gắn cứng là 1 cho đến khi làm xong Login
+      const currentUserId = 1;
+
+      // ==========================================
+      // DỮ LIỆU GIẢ (MOCK DATA) ĐỂ TEST GIAO DIỆN
+      // ==========================================
+      const mockOrderHistory = [
+        {
+          orderId: 1,
+          orderNumber: "BS-SEED-177547",
+          itemCount: 2,
+          date: "April 06, 2026",
+          total: 5310000,
+          status: "DELIVERED",
+        },
+        {
+          orderId: 2,
+          orderNumber: "BS-RUN-884210",
+          itemCount: 1,
+          date: "April 10, 2026",
+          total: 1250000,
+          status: "IN_TRANSIT",
+        },
+        {
+          orderId: 3,
+          orderNumber: "BS-FAIL-999999",
+          itemCount: 3,
+          date: "April 12, 2026",
+          total: 4500000,
+          status: "CANCELLED",
+        },
+      ];
+
+      const mockOrderDetails = {
+        "BS-SEED-177547": {
+          orderNumber: "BS-SEED-177547",
+          createdAt: "April 06, 2026",
+          orderStatus: "DELIVERED",
+          totalPrice: 5310000,
+          recipientName: "John Doe",
+          shippingAddress: "123 Seed Street, City",
+          shippingMethod: "Express Courier (2-3 Days)",
+          paymentMethod: "COD",
+          subtotal: 5280000,
+          shippingFee: 30000,
+          tax: 0,
+          items: [
+            {
+              productName: "Running Shoes Puma Version 1",
+              variantInfo: "Size: 42 | Color: Grey",
+              quantity: 1,
+              price: 2640000,
+              imageUrl: null,
+            },
+            {
+              productName: "Running Shoes Puma Version 1",
+              variantInfo: "Size: 40 | Color: Red",
+              quantity: 1,
+              price: 2640000,
+              imageUrl: null,
+            },
+          ],
+        },
+        "BS-RUN-884210": {
+          orderNumber: "BS-RUN-884210",
+          createdAt: "April 10, 2026",
+          orderStatus: "IN_TRANSIT",
+          totalPrice: 1250000,
+          recipientName: "Alex Johnson",
+          shippingAddress: "4821 North Clark Street, Chicago",
+          shippingMethod: "Standard Shipping",
+          paymentMethod: "Visa ending in 8842",
+          subtotal: 1250000,
+          shippingFee: 0,
+          tax: 0,
+          items: [
+            {
+              productName: "AeroDry Training Tee",
+              variantInfo: "Size: L | Color: Stealth Black",
+              quantity: 1,
+              price: 1250000,
+              imageUrl: "https://placehold.co/200x200?text=Tee",
+            },
+          ],
+        },
+        "BS-FAIL-999999": {
+          orderNumber: "BS-FAIL-999999",
+          createdAt: "April 12, 2026",
+          orderStatus: "CANCELLED",
+          totalPrice: 4500000,
+          recipientName: "Alex Johnson",
+          shippingAddress: "4821 North Clark Street, Chicago",
+          shippingMethod: "Express Courier",
+          paymentMethod: "COD",
+          subtotal: 4500000,
+          shippingFee: 0,
+          tax: 0,
+          items: [
+            {
+              productName: "Elite Runner X-2000",
+              variantInfo: "Size: 10.5 | Color: Ember Red",
+              quantity: 3,
+              price: 1500000,
+              imageUrl: "https://placehold.co/200x200?text=Shoe",
+            },
+          ],
+        },
+      };
+
+      // ==========================================
+      // CÁC HÀM FORMAT VÀ UI
+      // ==========================================
+      const formatMoney = (amount) => {
+        if (!amount) return "0đ";
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(amount);
+      };
+
+      const getStatusUI = (status) => {
+        const s = status ? status.toUpperCase() : "PENDING";
+        if (s.includes("DELIVERED") || s.includes("SUCCESS")) {
+          return {
+            class: "bg-green-500/20 text-green-400 border-green-500/30",
+            icon: "fa-circle-check",
+            text: "Delivered",
+          };
+        }
+        if (s.includes("CANCEL")) {
+          return {
+            class: "bg-red-500/20 text-red-400 border-red-500/30",
+            icon: "fa-xmark",
+            text: "Cancelled",
+          };
+        }
+        return {
+          class: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+          icon: "fa-truck-fast",
+          text: "In Transit",
+        };
+      };
+
+      // 1. GỌI API LẤY LỊCH SỬ ĐƠN HÀNG
+      async function fetchOrders() {
+        try {
+          // ĐANG DÙNG MOCK DATA ĐỂ TEST. KHI CÓ DATA THẬT HÃY BỎ COMMENT 2 DÒNG DƯỚI:
+          // const response = await fetch(`/api/orders/history/${currentUserId}`);
+          // const orders = await response.json();
+
+          const orders = mockOrderHistory; // Dùng mảng dữ liệu giả
+          const tableBody = document.getElementById("order-table-body");
+
+          if (orders.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">You have no orders yet.</td></tr>`;
+            return;
+          }
+
+          tableBody.innerHTML = orders
+            .map((order) => {
+              const ui = getStatusUI(order.status);
+              const itemText = order.itemCount > 1 ? "Items" : "Item";
+
+              return `
+                        <tr class="hover:bg-brand-card-bg transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="text-white font-medium">#${order.orderNumber}</div>
+                                <div class="text-brand-text-muted text-xs mt-1">${order.itemCount} ${itemText}</div>
+                            </td>
+                            <td class="px-6 py-4 text-gray-300">${order.date}</td>
+                            <td class="px-6 py-4 text-white font-medium">${formatMoney(order.total)}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${ui.class}">
+                                    <i class="fa-solid ${ui.icon} text-[10px]"></i> ${ui.text}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <button onclick="openModal('${order.orderNumber}')" class="text-brand-accent hover:text-orange-400 font-medium text-sm">
+                                    View Details
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+            })
+            .join("");
+        } catch (error) {
+          console.error("Lỗi lấy danh:", error);
+          document.getElementById("order-table-body").innerHTML =
+            `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Failed to load orders.</td></tr>`;
+        }
+      }
+
+      // 2. MỞ MODAL & GỌI API CHI TIẾT ĐƠN HÀNG
+      async function openModal(orderCode) {
+        const modal = document.getElementById("tracking-modal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden";
+
+        try {
+          // ĐANG DÙNG MOCK DATA ĐỂ TEST. KHI CÓ DATA THẬT HÃY BỎ COMMENT 2 DÒNG DƯỚI:
+          // const response = await fetch(`/api/orders/${orderCode}`);
+          // const detail = await response.json();
+
+          // Giả lập độ trễ mạng 0.5s để thấy loading spinner
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const detail = mockOrderDetails[orderCode];
+
+          document.getElementById("modal-order-code").innerText =
+            `#${detail.orderNumber}`;
+          document.getElementById("modal-order-date").innerText =
+            detail.createdAt;
+          document.getElementById("modal-order-total").innerText = formatMoney(
+            detail.totalPrice,
+          );
+
+          const ui = getStatusUI(detail.orderStatus);
+          const badge = document.getElementById("modal-status-badge");
+          badge.innerText = ui.text.toUpperCase();
+          badge.className = `px-3 py-1 rounded-full text-sm font-semibold tracking-wide border ${ui.class}`;
+
+          document.getElementById("modal-status-message").innerText =
+            detail.orderStatus === "CANCELLED"
+              ? "This order has been cancelled."
+              : "Your package is currently being processed by our system.";
+
+          document.getElementById("modal-recipient").innerText =
+            detail.recipientName || "Customer";
+          document.getElementById("modal-phone").innerText =
+            detail.phone || "No phone provided";
+          document.getElementById("modal-address").innerText =
+            detail.shippingAddress || "No address provided";
+
+          document.getElementById("modal-subtotal").innerText = formatMoney(
+            detail.subtotal,
+          );
+          document.getElementById("modal-final-total").innerText = formatMoney(
+            detail.totalPrice,
+          );
+
+          const shippingFeeEl = document.getElementById("modal-shipping-fee");
+          if (shippingFeeEl) {
+            if (detail.shippingFee === 0) {
+              shippingFeeEl.innerText = "FREE";
+              shippingFeeEl.className = "text-green-500 font-medium";
+            } else {
+              shippingFeeEl.innerText = formatMoney(detail.shippingFee);
+              shippingFeeEl.className = "text-white";
+            }
+          }
+
+          const taxEl = document.getElementById("modal-tax");
+          if (taxEl) taxEl.innerText = formatMoney(detail.tax);
+
+          const itemsContainer = document.getElementById("modal-order-items");
+          if (detail.items && detail.items.length > 0) {
+            itemsContainer.innerHTML = detail.items
+              .map(
+                (item) => `
+                        <div class="flex items-center space-x-4 pb-6 border-b border-white/10 last:border-0 last:pb-0">
+                            <div class="w-24 h-24 bg-white/5 rounded-lg border border-white/10 p-2 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                <img src="${item.imageUrl || "https://placehold.co/100x100?text=No+Image"}" alt="${item.productName}" class="max-w-full max-h-full object-contain" />
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="text-white font-medium text-lg line-clamp-1">${item.productName}</h4>
+                                <p class="text-gray-400 text-sm mt-1">${item.variantInfo || "N/A"}</p>
+                                <div class="flex items-center mt-3 space-x-4">
+                                    <span class="text-white font-semibold text-lg">${formatMoney(item.price)}</span>
+                                    <span class="text-xs bg-slate-700 text-gray-300 px-2 py-1 rounded">Qty: ${item.quantity}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+              )
+              .join("");
+          } else {
+            itemsContainer.innerHTML = `<p class="text-gray-500">No items found.</p>`;
+          }
+        } catch (error) {
+          console.error("Lỗi khi lấy chi tiết:", error);
+          document.getElementById("modal-order-items").innerHTML =
+            `<p class="text-red-500">Error loading details.</p>`;
+        }
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("tracking-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.style.overflow = "auto";
+
+        document.getElementById("modal-order-code").innerText = "LOADING...";
+        document.getElementById("modal-order-items").innerHTML =
+          `<i class="fa-solid fa-circle-notch fa-spin text-primary"></i>`;
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchOrders);
+    </script>
   </body>
 </html>
