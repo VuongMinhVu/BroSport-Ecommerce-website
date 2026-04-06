@@ -157,10 +157,51 @@ document.addEventListener('DOMContentLoaded', () => {
     constructor() {
       this.container = document.getElementById('product-container');
       this.paginationContainer = document.getElementById('pagination-container');
+      this.gridViewButton = document.getElementById('btn-grid-view');
+      this.listViewButton = document.getElementById('btn-list-view');
+      this.currentProducts = this.readProductsFromDom();
     }
 
     get isListView() {
-      return document.getElementById('btn-list-view')?.classList.contains('text-primary');
+      return this.listViewButton?.classList.contains('text-primary');
+    }
+
+    readProductsFromDom() {
+      if (!this.container) return [];
+
+      return Array.from(this.container.querySelectorAll('[data-product-card]')).map((card) => ({
+        card,
+        imageWrapper: card.querySelector('[data-product-image-wrapper]'),
+        detailsWrapper: card.querySelector('[data-product-details]'),
+      }));
+    }
+
+    setViewMode(isList) {
+      if (!this.container || !this.gridViewButton || !this.listViewButton) return;
+
+      this.gridViewButton.className = isList
+        ? 'p-1.5 text-slate-500 hover:text-white transition-colors rounded'
+        : 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors';
+      this.listViewButton.className = isList
+        ? 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors'
+        : 'p-1.5 text-slate-500 hover:text-white transition-colors rounded';
+
+      this.container.className = isList
+        ? 'grid grid-cols-1 gap-6'
+        : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+
+      this.currentProducts = this.currentProducts.length > 0 ? this.currentProducts : this.readProductsFromDom();
+      this.currentProducts.forEach(({ card, imageWrapper, detailsWrapper }) => {
+        card.className = `product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? 'md:flex-row md:items-center' : ''}`;
+        if (imageWrapper) {
+          imageWrapper.className = isList
+            ? 'img-wrapper relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5 bg-gradient-to-br from-slate-800 to-slate-900'
+            : 'img-wrapper aspect-square bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full';
+        }
+        if (detailsWrapper) {
+          detailsWrapper.className = `details-wrapper p-4 ${isList ? 'md:p-6' : ''} flex-1 flex flex-col justify-center relative z-20 pointer-events-none`;
+        }
+      });
     }
 
     renderLoading() {
@@ -225,11 +266,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const brand = product.brandName || product.brand || 'Brand';
 
           return `
-          <div class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
+          <div data-product-card class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
 
             <a href="/product/${product.slug}" class="absolute inset-0 z-10 cursor-pointer block"></a>
 
-            <div class="img-wrapper ${isList ? "relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5" : "aspect-square"} bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
+            <div data-product-image-wrapper class="img-wrapper ${isList ? "relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5" : "aspect-square"} bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
               <img src="${imageUrl}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 
               <div class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
@@ -239,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <div class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
+            <div data-product-details class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <h3 class="font-bold text-white text-lg leading-tight pointer-events-auto hover:text-primary transition-colors">${product.name}</h3>
@@ -262,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         })
         .join("");
+      this.currentProducts = this.readProductsFromDom();
     }
 
     renderPagination(pageData) {
@@ -529,6 +571,15 @@ document.addEventListener('DOMContentLoaded', () => {
       isInitialLoad = false;
       loadProducts();
     });
+  }
+
+  const gridViewButton = document.getElementById('btn-grid-view');
+  const listViewButton = document.getElementById('btn-list-view');
+
+  if (gridViewButton && listViewButton) {
+    gridViewButton.addEventListener('click', () => ui.setViewMode(false));
+    listViewButton.addEventListener('click', () => ui.setViewMode(true));
+    ui.setViewMode(ui.isListView);
   }
 
   // Handle browser back/forward buttons

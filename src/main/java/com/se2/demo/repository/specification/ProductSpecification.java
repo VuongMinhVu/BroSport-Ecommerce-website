@@ -38,11 +38,11 @@ public class ProductSpecification {
             }
 
             if (filter.getMinPrice() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), filter.getMinPrice()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("showPrice"), filter.getMinPrice()));
             }
 
             if (filter.getMaxPrice() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), filter.getMaxPrice()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("showPrice"), filter.getMaxPrice()));
             }
 
             // JOIN with ProductDetail to filter by variations (color, size)
