@@ -9,4 +9,9 @@ public class OrderRequest {
     private String shippingAddress;
     private String paymentMethod;
     private String voucherCode;
+
+    // THÊM 3 TRƯỜNG NÀY ĐỂ HỖ TRỢ "MUA NGAY"
+    private Boolean isBuyNow;
+    private Integer productDetailId;
+    private Integer quantity;
 }
