@@ -35,9 +35,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderResponse checkout(OrderRequest request, HttpServletRequest httpServletRequest) {
+    public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
         // 1. Lấy giỏ hàng
-        Cart cart = cartRepository.findByUserId(request.getUserId())
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
         // 2. Tính toán

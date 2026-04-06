@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderResponse checkout(OrderRequest request, HttpServletRequest httpServletRequest);
+    OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest);
     OrderDetailResponse getOrderDetail(String orderCode);
     OrderResponse processPaymentCallback(HttpServletRequest request);
     List<OrderHistoryResponse> getOrderHistory(Integer userId);
