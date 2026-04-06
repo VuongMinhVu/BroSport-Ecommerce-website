@@ -16,4 +16,5 @@ public class CategoryRequest {
     String name;
     String slug;
     MultipartFile imageFile;
+    MultipartFile sizeGuideFile;
 }

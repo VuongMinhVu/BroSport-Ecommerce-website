@@ -36,6 +36,9 @@ public class Category {
     @Column(name = "image_url", length = 255)
     String imageUrl;
 
+    @Column(name = "size_guide", length = 255)
+    String sizeGuide;
+
     @OneToMany(mappedBy = "category")
     List<Product> products;
 }

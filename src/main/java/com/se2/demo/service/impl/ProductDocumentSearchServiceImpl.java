@@ -145,7 +145,6 @@ public class ProductDocumentSearchServiceImpl implements ProductDocumentSearchSe
                                                 q -> q.matchPhrasePrefix(
                                                                 matchPhrasePrefix -> matchPhrasePrefix.field("name")
                                                                                 .query(keyword)))
-                                // ĐÃ SỬA: Bổ sung các trường cần thiết để hiển thị ảnh, giá và chuyển trang
                                 .withSourceFilter(new FetchSourceFilter(
                                                 true,
                                                 new String[] { "name", "slug", "thumbnail", "showPrice",

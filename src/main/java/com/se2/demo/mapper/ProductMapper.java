@@ -25,6 +25,7 @@ public interface ProductMapper {
     @Mapping(source = "brand.name", target = "brand")
     @Mapping(source = "gender.name", target = "gender")
     @Mapping(source = "sport.name", target = "sport")
+    @Mapping(source = "category.sizeGuide", target = "sizeGuide")
     ProductResponse toResponse(Product entity);
 
     List<ProductResponse> toProductResponseList(List<Product> entities);
