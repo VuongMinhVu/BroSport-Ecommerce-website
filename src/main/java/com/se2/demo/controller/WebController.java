@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.se2.demo.service.CartService;
 import com.se2.demo.service.OrderService;
-import com.se2.demo.service.OrderService;
 import com.se2.demo.dto.response.OrderDetailResponse;
 import com.se2.demo.dto.response.CartResponse;
-import com.se2.demo.dto.response.OrderDetailResponse;
 
 import java.util.List;
 
@@ -48,33 +46,26 @@ public class WebController {
         if (categorySlug != null) {
             switch (categorySlug.toLowerCase()) {
                 case "men":
-                    filter.setGenderId(1); // MOCK: Thay ID thật của Men
+                    filter.setGenderId(1);
                     break;
                 case "women":
-                    filter.setGenderId(2); // MOCK: Thay ID thật của Women
+                    filter.setGenderId(2);
                     break;
                 case "accessories":
-                    filter.setCategoryId(3); // MOCK: Thay ID thật của Accessories
+                    filter.setCategoryId(3);
                     break;
                 case "sports":
-                    filter.setCategoryId(4); // MOCK: Thay ID thật của Sports
-                    break;
-                case "brands":
-                    // filter logic for brands
-                    break;
-                case "sales":
-                    // filter logic for sales
+                    filter.setCategoryId(4);
                     break;
             }
             model.addAttribute("categorySlug", categorySlug);
         }
 
-        if (filter.getPage() == null || filter.getPage() < 0) {
+        if (filter.getPage() == null || filter.getPage() < 0)
             filter.setPage(0);
-        }
-        if (filter.getSize() == null || filter.getSize() <= 0) {
-            filter.setSize(12); // Show 12 products per page
-        }
+        if (filter.getSize() == null || filter.getSize() <= 0)
+            filter.setSize(12);
+
         var products = productService.getAllProducts(filter);
 
         model.addAttribute("products", products.getContent());
@@ -83,7 +74,6 @@ public class WebController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("filter", filter);
 
-        // THÊM LOGIC ĐỔI TIÊU ĐỀ NẾU CÓ TỪ KHÓA TÌM KIẾM
         if (filter.getKeyword() != null && !filter.getKeyword().trim().isEmpty()) {
             model.addAttribute("pageTitle", "Kết quả cho: '" + filter.getKeyword() + "'");
             model.addAttribute("pageSubtitle", "Tìm thấy " + products.getTotalElements() + " sản phẩm phù hợp");
@@ -96,14 +86,11 @@ public class WebController {
     }
 
     @GetMapping("/cart")
-    public String showCartDetail(Model model) {
+    public String showCartDetail() {
         return "cart-detail";
     }
 
-    public record MockUser(String name, String email, String avatarUrl) {
-    }
-
-    public record MockCartItem(String name, String size, String color, int quantity, double price, String imageUrl) {
+    public record CheckoutItemDTO(String name, String size, String color, int quantity, double price, String imageUrl) {
     }
 
     @GetMapping("/checkout")
@@ -111,89 +98,87 @@ public class WebController {
             @RequestParam(required = false) Boolean buyNow,
             @RequestParam(required = false) Integer variantId,
             @RequestParam(required = false) Integer qty,
-            Model model) {
+            Model model,
+            Principal principal) {
 
-        // 1. Giả lập thông tin User (Giữ nguyên logic cũ của bạn)
-        Integer currentUserId = 1;
-        MockUser user = new MockUser(
-                "John Doe",
-                "john.doe@example.com",
-                "https://lh3.googleusercontent.com/aida-public/AB6AXuBvfP7XDJdccDTVkPNoBeYDIZ1kZGgVxV_Iv57cDoT7P-XZf4KTfrVagCLjs8mRbU6fNzrmUS0LSTCivXTUOukWwOmZo2tn_rIkolQMMsTGs-nrgo4SL0GQBHmNHGWrgK70hqEzxNmpBJcM9Pzb2rR6ikzl7syfaUL8XCaznhz2XGLnS4TDN7XSoQbXmi9Q6ZJEaIHSTekLu1p6FCMyYthpX2xcDLB4ZFrcujPdKYR9BJiqRDRUgPrv12e-SQdHXGHkdlkz1GHvDXY");
-        model.addAttribute("user", user);
+        // 1. Chặn người dùng chưa đăng nhập
+        if (principal == null) {
+            return "redirect:/login";
+        }
 
-        List<MockCartItem> displayItems = new java.util.ArrayList<>();
+        // 2. Lấy User để phục vụ logic nghiệp vụ (tìm Giỏ hàng của đúng người này)
+        // Không cần đẩy vào Model nữa vì GlobalControllerAdvice đã tự động đẩy rồi
+        User currentUser = userService.getUserByEmail(principal.getName());
+
+        List<CheckoutItemDTO> displayItems = new java.util.ArrayList<>();
         double subtotal = 0.0;
 
-        // 2. PHÂN LUỒNG XỬ LÝ DỮ LIỆU
         if (Boolean.TRUE.equals(buyNow) && variantId != null) {
-            // LUỒNG MUA NGAY: Lấy thông tin sản phẩm trực tiếp từ DB
+            // LUỒNG 1: MUA NGAY
             try {
-                // Sử dụng getProductById hoặc một hàm tương tự từ productService để lấy thông
-                // tin variant
                 ProductResponse product = productService.getProductByVariantId(variantId);
 
-                // Lấy thông tin màu sắc/kích thước từ danh sách chi tiết của sản phẩm đó
-                // Ở đây ta tìm đúng VariantId người dùng đã chọn
-                var detail = product.getProductDetails().stream()
-                        .filter(d -> d.getId().equals(variantId))
-                        .findFirst()
-                        .orElse(null);
+                // Lớp bảo vệ chống NullPointerException
+                if (product != null && product.getProductDetails() != null) {
+                    var detail = product.getProductDetails().stream()
+                            .filter(d -> variantId.equals(d.getId()))
+                            .findFirst()
+                            .orElse(null);
 
-                if (detail != null) {
-                    MockCartItem item = new MockCartItem(
-                            product.getName(),
-                            detail.getSize(),
-                            detail.getColor(),
-                            qty != null ? qty : 1,
-                            product.getShowPrice().doubleValue(),
-                            product.getProductImages().isEmpty() ? ""
-                                    : product.getProductImages().get(0).getImageUrl());
-                    displayItems.add(item);
-                    subtotal = item.price() * item.quantity();
+                    if (detail != null) {
+                        String imgUrl = "";
+                        if (product.getProductImages() != null && !product.getProductImages().isEmpty()) {
+                            imgUrl = product.getProductImages().get(0).getImageUrl();
+                        }
+
+                        double itemPrice = product.getShowPrice() != null ? product.getShowPrice().doubleValue() : 0.0;
+
+                        CheckoutItemDTO item = new CheckoutItemDTO(
+                                product.getName(),
+                                detail.getSize(),
+                                detail.getColor(),
+                                qty != null ? qty : 1,
+                                itemPrice,
+                                imgUrl);
+                        displayItems.add(item);
+                        subtotal = item.price() * item.quantity();
+                    }
                 }
             } catch (Exception e) {
-                // Nếu lỗi, điều hướng về giỏ hàng hoặc trang sản phẩm
-                e.printStackTrace();
+                System.err.println(">>> Lỗi Mua Ngay: " + e.getMessage());
                 return "redirect:/products";
             }
         } else {
-            // LUỒNG GIỎ HÀNG: Logic cũ lấy từ CartService
+            // LUỒNG 2: MUA TỪ GIỎ HÀNG
             try {
-                CartResponse cart = cartService.getCartByUserId(currentUserId);
-                displayItems = cart.getCartDetails().stream()
-                        .map(detail -> new MockCartItem(
-                                detail.getProductName(),
-                                detail.getSizeName(),
-                                detail.getColorName(),
-                                detail.getQuantity(),
-                                detail.getUnitPrice(),
-                                detail.getImageUrl()))
-                        .toList();
-                subtotal = displayItems.stream().mapToDouble(item -> item.price() * item.quantity()).sum();
+                CartResponse cart = cartService.getCartByUserId(currentUser.getId());
+
+                // Bảo vệ chống rỗng danh sách giỏ hàng
+                if (cart != null && cart.getCartDetails() != null) {
+                    displayItems = cart.getCartDetails().stream()
+                            .map(detail -> new CheckoutItemDTO(
+                                    detail.getProductName(),
+                                    detail.getSizeName(),
+                                    detail.getColorName(),
+                                    detail.getQuantity(),
+                                    detail.getUnitPrice() != null ? detail.getUnitPrice().doubleValue() : 0.0,
+                                    detail.getImageUrl()))
+                            .toList();
+                    subtotal = displayItems.stream().mapToDouble(item -> item.price() * item.quantity()).sum();
+                }
             } catch (Exception e) {
+                System.err.println(">>> Lỗi Giỏ Hàng: " + e.getMessage());
                 displayItems = List.of();
             }
         }
 
-        // 3. Đẩy dữ liệu ra giao diện Checkout.html
-        model.addAttribute("cartItems", displayItems);
-        model.addAttribute("subtotal", subtotal);
-
-        // Tính toán phí ship (Ví dụ: Đơn dưới 1 triệu thì phí ship 30.000đ, trên 1
-        // triệu thì Freeship)
-        double shippingFee = 0.0;
-        if (subtotal > 0 && subtotal < 1000000) {
-            shippingFee = 30000.0;
-        }
-
-        // Tính tổng tiền = Tạm tính + Phí Ship
+        double shippingFee = (subtotal > 0 && subtotal < 1000000) ? 30000.0 : 0.0;
         double total = subtotal + shippingFee;
 
-        // 3. Đẩy dữ liệu ra giao diện Checkout.html
         model.addAttribute("cartItems", displayItems);
         model.addAttribute("subtotal", subtotal);
-        model.addAttribute("shippingFee", shippingFee); // TRUYỀN PHÍ SHIP
-        model.addAttribute("total", total); // TRUYỀN TỔNG TIỀN
+        model.addAttribute("shippingFee", shippingFee);
+        model.addAttribute("total", total);
 
         return "checkout";
     }
@@ -204,65 +189,38 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String showHomePage(Model model) {
+    public String showHomePage() {
         return "pages/homepage";
     }
 
     @GetMapping("/order-success")
     public String showOrderSuccess(@RequestParam(required = false) String orderCode, Model model) {
-        // In ra màn hình console của Spring Boot để kiểm tra
-        System.out.println(">>> MÃ ĐƠN HÀNG TRÊN URL LÀ: " + orderCode);
-
         if (orderCode != null && !orderCode.isEmpty()) {
             try {
                 OrderDetailResponse order = orderService.getOrderDetail(orderCode);
                 model.addAttribute("order", order);
-                System.out.println(">>> TÌM THẤY ĐƠN HÀNG: " + order.getOrderNumber());
             } catch (Exception e) {
-                System.out.println(">>> LỖI KHI TÌM ĐƠN HÀNG TRONG DATABASE: " + e.getMessage());
-                e.printStackTrace(); // In chi tiết lỗi ra console
+                e.printStackTrace();
             }
-        } else {
-            System.out.println(">>> LỖI: KHÔNG NHẬN ĐƯỢC MÃ ĐƠN HÀNG TỪ TRÌNH DUYỆT!");
         }
         return "order-success";
     }
 
-    // Điều hướng đến trang Lịch sử đơn hàng
     @GetMapping("/order-history")
-    public String orderHistoryPage(Model model, Principal principal) {
-        // 1. Đồng bộ logic lấy User giống hệt trang Profile
-        String email = (principal != null) ? principal.getName() : "mockuser@example.com";
-        User user;
-        try {
-            user = userService.getUserByEmail(email);
-        } catch (Exception e) {
-            user = User.builder()
-                    .email(email)
-                    .fullName("Mock User")
-                    .avatarUrl("") // Nếu DB không có thì tạo Mock
-                    .build();
-        }
-
-        // 2. Truyền đối tượng user xuống cho Sidebar hiển thị
-        model.addAttribute("user", user);
-
+    public String orderHistoryPage(Principal principal) {
+        // Đã xóa hết code thừa. GlobalControllerAdvice sẽ tự động lo việc truyền User.
+        if (principal == null)
+            return "redirect:/login";
         return "orderHistory";
     }
 
     @GetMapping("/product/{slug}")
     public String showProductDetailPage(@PathVariable("slug") String slug, Model model) {
-        // 1. Gọi service lấy dữ liệu sản phẩm dựa trên slug trên thanh địa chỉ
         ProductResponse product = productService.getProductBySlug(slug);
-
-        // 2. Đưa đối tượng 'product' sang giao diện
         model.addAttribute("product", product);
-
-        // 3. Trả về tên file HTML (productDetail.html)
         return "productDetail";
     }
 
-    // Điều hướng đến trang Theo dõi đơn hàng
     @GetMapping("/order-tracking")
     public String orderTrackingPage() {
         return "orderTracking";
@@ -270,6 +228,6 @@ public class WebController {
 
     @GetMapping("/search-result")
     public String searchResultPage() {
-        return "search-result"; // Trả về file search-result.html
+        return "search-result";
     }
 }

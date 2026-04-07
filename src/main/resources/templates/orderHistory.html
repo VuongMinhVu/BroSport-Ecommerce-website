@@ -363,114 +363,9 @@
       </div>
     </div>
 
-    <script>
-      const currentUserId = 1;
-
-      const mockOrderHistory = [
-        {
-          orderId: 1,
-          orderNumber: "BS-SEED-177547",
-          itemCount: 2,
-          date: "April 06, 2026",
-          total: 5310000,
-          status: "DELIVERED",
-        },
-        {
-          orderId: 2,
-          orderNumber: "BS-RUN-884210",
-          itemCount: 1,
-          date: "April 10, 2026",
-          total: 1250000,
-          status: "IN_TRANSIT",
-        },
-        {
-          orderId: 3,
-          orderNumber: "BS-FAIL-999999",
-          itemCount: 3,
-          date: "April 12, 2026",
-          total: 4500000,
-          status: "CANCELLED",
-        },
-      ];
-
-      const mockOrderDetails = {
-        "BS-SEED-177547": {
-          orderNumber: "BS-SEED-177547",
-          createdAt: "April 06, 2026",
-          orderStatus: "DELIVERED",
-          totalPrice: 5310000,
-          recipientName: "John Doe",
-          phone: "0987654321",
-          shippingAddress: "123 Seed Street, City",
-          shippingMethod: "Express Courier (2-3 Days)",
-          paymentMethod: "COD",
-          subtotal: 5280000,
-          shippingFee: 30000,
-          tax: 0,
-          items: [
-            {
-              productName: "Running Shoes Puma Version 1",
-              variantInfo: "Size: 42 | Color: Grey",
-              quantity: 1,
-              price: 2640000,
-              imageUrl: null,
-            },
-            {
-              productName: "Running Shoes Puma Version 1",
-              variantInfo: "Size: 40 | Color: Red",
-              quantity: 1,
-              price: 2640000,
-              imageUrl: null,
-            },
-          ],
-        },
-        "BS-RUN-884210": {
-          orderNumber: "BS-RUN-884210",
-          createdAt: "April 10, 2026",
-          orderStatus: "IN_TRANSIT",
-          totalPrice: 1250000,
-          recipientName: "Alex Johnson",
-          phone: "0123456789",
-          shippingAddress: "4821 North Clark Street, Chicago",
-          shippingMethod: "Standard Shipping",
-          paymentMethod: "Visa ending in 8842",
-          subtotal: 1250000,
-          shippingFee: 0,
-          tax: 0,
-          items: [
-            {
-              productName: "AeroDry Training Tee",
-              variantInfo: "Size: L | Color: Stealth Black",
-              quantity: 1,
-              price: 1250000,
-              imageUrl: "https://placehold.co/200x200?text=Tee",
-            },
-          ],
-        },
-        "BS-FAIL-999999": {
-          orderNumber: "BS-FAIL-999999",
-          createdAt: "April 12, 2026",
-          orderStatus: "CANCELLED",
-          totalPrice: 4500000,
-          recipientName: "Alex Johnson",
-          phone: "0123456789",
-          shippingAddress: "4821 North Clark Street, Chicago",
-          shippingMethod: "Express Courier",
-          paymentMethod: "COD",
-          subtotal: 4500000,
-          shippingFee: 0,
-          tax: 0,
-          items: [
-            {
-              productName: "Elite Runner X-2000",
-              variantInfo: "Size: 10.5 | Color: Ember Red",
-              quantity: 3,
-              price: 1500000,
-              imageUrl: "https://placehold.co/200x200?text=Shoe",
-            },
-          ],
-        },
-      };
+    <script th:inline="javascript">
+      // Lấy ID thật của User đang đăng nhập từ Thymeleaf
+      const currentUserId = /*[[${user.id}]]*/ 1;
 
       const formatMoney = (amount) => {
         if (!amount) return "0đ";
@@ -503,18 +398,23 @@
 
       async function fetchOrders() {
         try {
-          const orders = mockOrderHistory;
+          // GỌI API LẤY LỊCH SỬ THẬT
+          // Gọi đúng endpoint "/my-history", backend sẽ tự động lấy thông tin user qua session (Principal)
+          const response = await fetch(`/api/orders/my-history`);
+          if (!response.ok) throw new Error("Lỗi mạng");
+          const orders = await response.json();
+
           const tableBody = document.getElementById("order-table-body");
 
-          if (orders.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-[#8f949c]">You have no orders yet.</td></tr>`;
+          if (!orders || orders.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-[#8f949c]">Bạn chưa có đơn hàng nào.</td></tr>`;
             return;
           }
 
           tableBody.innerHTML = orders
             .map((order) => {
               const ui = getStatusUI(order.status);
-              const itemText = order.itemCount > 1 ? "Items" : "Item";
+              const itemText = order.itemCount > 1 ? "Sản phẩm" : "Sản phẩm";
 
               return `
               <tr class="hover:bg-white/5 transition-colors group cursor-pointer" onclick="openModal('${order.orderNumber}')">
@@ -531,7 +431,7 @@
                   </td>
                   <td class="px-6 py-4 text-right">
                       <button class="text-[#ff8a1d] hover:text-[#ff6600] font-semibold text-[13px] flex items-center justify-end gap-1.5 w-full">
-                          Details <i class="fa-solid fa-chevron-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                          Chi tiết <i class="fa-solid fa-chevron-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
                       </button>
                   </td>
               </tr>
@@ -540,7 +440,7 @@
             .join("");
         } catch (error) {
           document.getElementById("order-table-body").innerHTML =
-            `<tr><td colspan="5" class="px-6 py-8 text-center text-[#f87171]">Failed to load orders.</td></tr>`;
+            `<tr><td colspan="5" class="px-6 py-8 text-center text-[#f87171]">Lỗi khi tải lịch sử đơn hàng.</td></tr>`;
         }
       }
 
@@ -551,8 +451,10 @@
         document.body.style.overflow = "hidden";
 
         try {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          const detail = mockOrderDetails[orderCode];
+          // GỌI API LẤY CHI TIẾT THẬT
+          const response = await fetch(`/api/orders/${orderCode}`);
+          if (!response.ok) throw new Error("Lỗi mạng");
+          const detail = await response.json();
 
           document.getElementById("modal-order-code").innerText =
             `#${detail.orderNumber}`;
@@ -569,15 +471,15 @@
 
           document.getElementById("modal-status-message").innerText =
             detail.orderStatus === "CANCELLED"
-              ? "This order has been cancelled."
-              : "Your package is currently being processed by our system.";
+              ? "Đơn hàng này đã bị hủy."
+              : "Kiện hàng của bạn đang được hệ thống xử lý.";
 
           document.getElementById("modal-recipient").innerText =
-            detail.recipientName || "Customer";
+            detail.recipientName || "Khách hàng";
           document.getElementById("modal-phone").innerText =
-            detail.phone || "No phone provided";
+            detail.phone || "Không có SĐT";
           document.getElementById("modal-address").innerText =
-            detail.shippingAddress || "No address provided";
+            detail.shippingAddress || "Không có địa chỉ";
 
           document.getElementById("modal-subtotal").innerText = formatMoney(
             detail.subtotal,
@@ -589,7 +491,7 @@
           const shippingFeeEl = document.getElementById("modal-shipping-fee");
           if (shippingFeeEl) {
             if (detail.shippingFee === 0) {
-              shippingFeeEl.innerText = "FREE";
+              shippingFeeEl.innerText = "MIỄN PHÍ";
               shippingFeeEl.className = "text-[#4ade80] font-medium";
             } else {
               shippingFeeEl.innerText = formatMoney(detail.shippingFee);
@@ -614,7 +516,7 @@
                       <p class="text-[#8f949c] text-[13px] mt-0.5">${item.variantInfo || "N/A"}</p>
                       <div class="flex items-center mt-2.5 space-x-4">
                           <span class="text-[#f5f5f5] font-bold text-[15px]">${formatMoney(item.price)}</span>
-                          <span class="text-[12px] bg-[#23252b] text-[#c0c4ca] px-2 py-0.5 rounded-[6px]">Qty: ${item.quantity}</span>
+                          <span class="text-[12px] bg-[#23252b] text-[#c0c4ca] px-2 py-0.5 rounded-[6px]">SL: ${item.quantity}</span>
                       </div>
                   </div>
               </div>
@@ -624,7 +526,7 @@
           }
         } catch (error) {
           document.getElementById("modal-order-items").innerHTML =
-            `<p class="text-[#f87171]">Error loading details.</p>`;
+            `<p class="text-[#f87171]">Lỗi tải chi tiết đơn hàng.</p>`;
         }
       }
 

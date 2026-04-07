@@ -1,9 +1,11 @@
 package com.se2.demo.controller.ui;
 
+import com.se2.demo.dto.request.ChangePasswordRequest;
 import com.se2.demo.dto.request.ProfileUpdateRequest;
 import com.se2.demo.model.entity.User;
 import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -26,29 +29,18 @@ public class ProfileController {
 
     @GetMapping("/profile/edit")
     public String showEditProfilePage(Model model, Principal principal) {
-        String email = (principal != null) ? principal.getName() : "mockuser@example.com";
-        User user;
-        try {
-            user = userService.getUserByEmail(email);
-        } catch (Exception e) {
-            user = User.builder()
-                    .email(email)
-                    .fullName("Mock User")
-                    .phone("0123456789")
-                    .address("123 Mock Street, City") // SỬA Ở ĐÂY: Dùng chuỗi fix cứng thay vì user.getAddress()
-                    .avatarUrl("")
-                    .build();
-        }
+        String email = principal.getName();
+        User user = userService.getUserByEmail(email);
 
         ProfileUpdateRequest form = ProfileUpdateRequest.builder()
                 .fullName(user.getFullName())
                 .phone(user.getPhone())
-                .address(user.getAddress()) // THÊM Ở ĐÂY: Truyền address vào form
+                .address(user.getAddress())
                 .avatarUrl(user.getAvatarUrl())
                 .build();
 
-        model.addAttribute("user", user);
         model.addAttribute("profileForm", form);
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
 
         return "account/profile-edit";
     }
@@ -61,17 +53,11 @@ public class ProfileController {
             Model model,
             Principal principal) {
 
-        String email = (principal != null) ? principal.getName() : "mockuser@example.com";
-        User currentUser;
-        try {
-            currentUser = userService.getUserByEmail(email);
-        } catch (Exception e) {
-            currentUser = User.builder().email(email).fullName("Mock User").address("123 Mock Street").build();
-        }
+        String email = principal.getName();
+        User currentUser = userService.getUserByEmail(email);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", currentUser);
-            return "account/profile-edit";
+            return "account/profile-edit"; // Đã xóa model.addAttribute("user"...)
         }
 
         // --- UPLOAD ẢNH QUA CLOUDINARY ---
@@ -80,37 +66,42 @@ public class ProfileController {
                 String uploadedUrl = cloudinaryService.uploadFile(avatarFile, "brosport/avatars");
                 form.setAvatarUrl(uploadedUrl);
             } catch (Exception e) {
-                model.addAttribute("user", currentUser);
                 model.addAttribute("errorMessage", "Lỗi tải ảnh lên: " + e.getMessage());
-                return "account/profile-edit";
+                return "account/profile-edit"; // Đã xóa model.addAttribute("user"...)
             }
         } else {
             form.setAvatarUrl(currentUser.getAvatarUrl());
         }
 
-        User updatedUser = currentUser;
-        try {
-            if (principal != null) {
-                updatedUser = userService.updateProfile(email, form);
-            } else {
-                updatedUser.setFullName(form.getFullName());
-                updatedUser.setPhone(form.getPhone());
-                updatedUser.setAddress(form.getAddress()); // THÊM Ở ĐÂY: Update mock data
-                updatedUser.setAvatarUrl(form.getAvatarUrl());
-            }
-        } catch (Exception e) {
-            // Bỏ qua nếu là mock data
-        }
+        // Update dữ liệu vào DB
+        User updatedUser = userService.updateProfile(email, form);
 
-        model.addAttribute("user", updatedUser);
+        // Đã xóa model.addAttribute("user", updatedUser)
         model.addAttribute("profileForm", ProfileUpdateRequest.builder()
                 .fullName(updatedUser.getFullName())
                 .phone(updatedUser.getPhone())
-                .address(updatedUser.getAddress()) // THÊM Ở ĐÂY: Load lại address vào form sau khi update thành công
+                .address(updatedUser.getAddress())
                 .avatarUrl(updatedUser.getAvatarUrl())
                 .build());
         model.addAttribute("successMessage", "Cập nhật hồ sơ thành công");
 
         return "account/profile-edit";
+    }
+
+    @PostMapping("/profile/change-password")
+    public String processChangePassword(
+            @ModelAttribute ChangePasswordRequest request,
+            Principal principal,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest httpServletRequest) {
+        try {
+            String email = principal.getName();
+            userService.changePassword(email, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        String referer = httpServletRequest.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/account/profile/edit");
     }
 }

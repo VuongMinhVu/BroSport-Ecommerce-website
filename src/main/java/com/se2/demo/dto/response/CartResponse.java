@@ -27,10 +27,10 @@ public class CartResponse {
     private LocalDateTime updatedAt;
 
     // Additional Product Details
-    private String productName;
-    private Double productPrice;
-    private String productImage;
-    private String color;
-    private String size;
-    private Integer quantity;
+//    private String productName;
+//    private Double productPrice;
+//    private String productImage;
+//    private String color;
+//    private String size;
+//    private Integer quantity;
 }

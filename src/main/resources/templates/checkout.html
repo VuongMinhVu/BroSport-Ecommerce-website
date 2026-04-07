@@ -90,8 +90,8 @@
                       name="fullName"
                       class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
                       required
-                      th:placeholder="${user.name}"
-                      th:value="${user.name}"
+                      th:placeholder="${user.fullName}"
+                      th:value="${user.fullName}"
                       type="text"
                     />
                   </div>
@@ -99,35 +99,28 @@
                     <label
                       class="block text-sm font-medium text-[#cbad90] mb-2"
                       for="streetAddress"
-                      >Street Address</label
+                      >Shipping Address</label
                     >
                     <input
                       id="streetAddress"
                       name="streetAddress"
                       required
-                      minlength="10"
+                      minlength="5"
                       class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                      placeholder="123 Sport Avenue"
+                      placeholder="123 Sport Avenue, City..."
+                      th:value="${user.address}"
                       type="text"
                     />
                   </div>
-                  <div>
-                    <label
-                      class="block text-sm font-medium text-[#cbad90] mb-2"
-                      for="city"
-                      >City</label
-                    >
+                  <div class="hidden">
                     <input
                       id="city"
                       name="city"
-                      required
-                      minlength="2"
-                      class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                      placeholder="New York"
                       type="text"
+                      value="Default City"
                     />
                   </div>
-                  <div>
+                  <div class="md:col-span-2">
                     <label
                       class="block text-sm font-medium text-[#cbad90] mb-2"
                       for="phoneNumber"
@@ -137,10 +130,9 @@
                       id="phoneNumber"
                       name="phoneNumber"
                       required
-                      pattern="(\+?\d{1,4}[\s-])?(?!0+\s+,?$)\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}"
-                      title="Please enter a valid phone number, e.g., +1 (555) 000-0000"
                       class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+84 123 456 789"
+                      th:value="${user.phone}"
                       type="tel"
                     />
                   </div>
