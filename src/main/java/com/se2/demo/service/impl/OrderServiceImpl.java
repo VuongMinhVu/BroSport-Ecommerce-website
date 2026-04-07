@@ -35,9 +35,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
+    public OrderResponse checkout(User user, OrderRequest request, HttpServletRequest httpServletRequest) {
         // 1. Lấy giỏ hàng
-        Cart cart = cartRepository.findByUserId(userId)
+        Cart cart = cartRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
         double subtotalVal = 0;
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(item);
         } else {
             // 2. Luồng MUA TỪ GIỎ HÀNG
-            cartToDelete = cartRepository.findByUserId(request.getUserId())
+            cartToDelete = cartRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
             subtotalVal = cartToDelete.getCartDetails().stream()
