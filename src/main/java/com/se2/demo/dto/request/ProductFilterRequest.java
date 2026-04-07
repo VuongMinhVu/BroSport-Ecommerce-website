@@ -32,7 +32,7 @@ public class ProductFilterRequest {
     Integer page = 0;
 
     @Builder.Default
-    Integer size = 10;
+    Integer size = 12;
 
     String sortBy;
     String sortDir;

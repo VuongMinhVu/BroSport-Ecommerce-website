@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         minPrice: null,
         maxPrice: null,
         page: 0,
-        size: 10
+        size: 12
       };
       this.initFromUrl();
       this.syncUI();
@@ -120,10 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const params = new URLSearchParams();
         if (filters.keyword) params.append('keyword', filters.keyword);
-        if (filters.categories && filters.categories.length > 0) params.append('categories', filters.categories.join(','));
-        if (filters.brands && filters.brands.length > 0) params.append('brands', filters.brands.join(','));
-        if (filters.gender && filters.gender.length > 0) params.append('gender', filters.gender.join(','));
-        if (filters.sports && filters.sports.length > 0) params.append('sports', filters.sports.join(','));
         if (filters.maxPrice) {
           params.append('minPrice', filters.minPrice || 0);
           params.append('maxPrice', filters.maxPrice);
@@ -133,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.append('page', filters.page);
         params.append('size', filters.size);
 
-        const response = await fetch(`/api/v1/search/products?${params.toString()}`, {
+        const response = await fetch(`/api/v1/products?${params.toString()}`, {
           signal: this.abortController.signal,
           headers: {
             'Accept': 'application/json'
@@ -159,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.paginationContainer = document.getElementById('pagination-container');
       this.gridViewButton = document.getElementById('btn-grid-view');
       this.listViewButton = document.getElementById('btn-list-view');
-      this.currentProducts = this.readProductsFromDom();
+      this.currentProducts = [];
     }
 
     get isListView() {
@@ -190,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'grid grid-cols-1 gap-6'
         : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
 
-      this.currentProducts = this.currentProducts.length > 0 ? this.currentProducts : this.readProductsFromDom();
       this.currentProducts.forEach(({ card, imageWrapper, detailsWrapper }) => {
         card.className = `product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? 'md:flex-row md:items-center' : ''}`;
         if (imageWrapper) {
@@ -263,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (product.productImages && product.productImages.length > 0) {
             imageUrl = product.productImages[0].imageUrl;
           }
-          const brand = product.brandName || product.brand || 'Brand';
+          const brand = product.brandName || product.brand?.name || product.brand || 'Brand';
 
           return `
           <div data-product-card class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
@@ -387,11 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isInitialLoad = true;
 
   const loadProducts = async () => {
-    // If it's initial load and there are no specific filters in URL, we could optionally skip fetch,
-    // because Thymeleaf already rendered them. But we must update if URL has filters different than server.
-    if (!isInitialLoad) {
-      ui.renderLoading();
-    }
+    ui.renderLoading();
 
     state.updateUrl();
 
@@ -409,11 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // If there are url query params, fetch immediately to sync state. 
-  // Otherwise, leave the SSR HTML as is until Interaction.
-  if (window.location.search) {
-    loadProducts();
-  }
+  loadProducts();
 
   // Event Listeners Setup
   const searchInput = document.getElementById('searchInput');
@@ -487,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clearBtn = e.target.closest('#clearFiltersBtn');
     if (clearBtn) {
-      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 12 };
       state.updateUrl();
       state.syncUI();
       isInitialLoad = false;
@@ -565,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resetBtn = document.getElementById('resetFiltersBtn');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
-      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 12 };
       state.updateUrl();
       state.syncUI();
       isInitialLoad = false;
@@ -587,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.state) {
       state.filters = event.state;
     } else {
-      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 12 };
       state.initFromUrl();
     }
     state.syncUI();

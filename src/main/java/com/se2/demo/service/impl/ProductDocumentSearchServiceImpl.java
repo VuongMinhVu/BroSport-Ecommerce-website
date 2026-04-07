@@ -48,7 +48,7 @@ public class ProductDocumentSearchServiceImpl implements ProductDocumentSearchSe
                                                 productCriteriaRequest.page() != null ? productCriteriaRequest.page()
                                                                 : 0,
                                                 productCriteriaRequest.size() != null ? productCriteriaRequest.size()
-                                                                : 10));
+                                                                : 12));
 
                 if (StringUtils.isNotBlank(productCriteriaRequest.keyword())) {
                         nativeQuery.withQuery(q -> q
