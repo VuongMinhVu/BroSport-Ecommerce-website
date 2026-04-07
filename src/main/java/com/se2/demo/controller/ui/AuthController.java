@@ -45,6 +45,12 @@ public class AuthController {
         return "auth/verify-otp";
     }
 
+    @GetMapping("/auth/changePasswordAfterOTP")
+    public String showChangePasswordAfterOtpPage(Model model) {
+        model.addAttribute("resetPasswordRequest", new ResetPasswordRequest());
+        return "auth/changePasswordAfterOTP";
+    }
+
     @PostMapping("/register")
     public String register(
             @Valid @ModelAttribute("registerRequest") RegisterRequest request,
@@ -76,6 +82,8 @@ public class AuthController {
     public String handleForgotPassword(@RequestParam("email") String email, HttpSession session, RedirectAttributes redirect) {
         try {
             authService.processForgotPassword(email, session);
+            String maskedEmail = maskEmail(email);
+            redirect.addFlashAttribute("maskedDestination", maskedEmail);
             return "redirect:/verify-otp";
         } catch (RuntimeException e) {
             redirect.addFlashAttribute("errorMessage", e.getMessage());
@@ -86,10 +94,33 @@ public class AuthController {
     @PostMapping("/verify-otp")
     public String handleVerifyOtp(@ModelAttribute VerifyOtpRequest request, HttpSession session, RedirectAttributes redirect) {
         if (authService.verifyOtp(request.getOtpCode(), session)) {
-            return "redirect:/reset-password";
+            return "redirect:/auth/changePasswordAfterOTP";
         }
         redirect.addFlashAttribute("errorMessage", "Mã OTP không chính xác hoặc đã hết hạn.");
         return "redirect:/verify-otp";
+    }
+
+    @PostMapping("/auth/changePasswordAfterOTP")
+    public String handleChangePasswordAfterOtp(@Valid @ModelAttribute("resetPasswordRequest") ResetPasswordRequest request, BindingResult bindingResult, HttpSession session, RedirectAttributes redirect) {
+        if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {
+            bindingResult.rejectValue(
+                    "confirmNewPassword",
+                    "error.confirmNewPassword",
+                    "Mật khẩu nhập lại không khớp"
+            );
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "auth/changePasswordAfterOTP";
+        }
+
+        try {
+            authService.resetPassword(request, session);
+            return "redirect:/login?resetSuccess=true";
+        } catch (RuntimeException e) {
+            redirect.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/auth/changePasswordAfterOTP";
+        }
     }
 
     @PostMapping("/reset-password")
@@ -107,5 +138,18 @@ public class AuthController {
     public String showResetPasswordPage(Model model) {
         model.addAttribute("resetPasswordRequest", new ResetPasswordRequest());
         return "auth/reset-password";
+    }
+
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return email;
+        }
+        String[] parts = email.split("@");
+        String local = parts[0];
+        String domain = parts[1];
+        if (local.length() <= 2) {
+            return local + "***@" + domain;
+        }
+        return local.substring(0, 2) + "***@" + domain;
     }
 }
