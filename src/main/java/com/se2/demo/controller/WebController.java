@@ -1,8 +1,12 @@
 package com.se2.demo.controller;
 
 import com.se2.demo.dto.request.ProductFilterRequest;
+import com.se2.demo.dto.response.CartResponse;
+import com.se2.demo.dto.response.OrderDetailResponse;
 import com.se2.demo.dto.response.ProductResponse;
+import com.se2.demo.model.entity.User;
 import com.se2.demo.service.ProductService;
+import com.se2.demo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.se2.demo.service.CartService;
 import com.se2.demo.service.OrderService;
-import com.se2.demo.service.OrderService;
-import com.se2.demo.dto.response.OrderDetailResponse;
-import com.se2.demo.dto.response.CartResponse;
-import com.se2.demo.dto.response.OrderDetailResponse;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -26,11 +27,13 @@ public class WebController {
     private final ProductService productService;
     private final CartService cartService;
     private final OrderService orderService;
+    private final UserService userService;
 
-    public WebController(ProductService productService, CartService cartService, OrderService orderService) {
+    public WebController(ProductService productService, CartService cartService, OrderService orderService, UserService userService) {
         this.productService = productService;
         this.cartService = cartService;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping({ "/products", "/products/{categorySlug}" })
@@ -105,14 +108,19 @@ public class WebController {
             @RequestParam(required = false) Boolean buyNow,
             @RequestParam(required = false) Integer variantId,
             @RequestParam(required = false) Integer qty,
+            Principal principal,
             Model model) {
 
         // 1. Giả lập thông tin User (Giữ nguyên logic cũ của bạn)
-        Integer currentUserId = 1;
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        User currentUser = userService.getUserByEmail(principal.getName());
         MockUser user = new MockUser(
-                "John Doe",
-                "john.doe@example.com",
-                "https://lh3.googleusercontent.com/aida-public/AB6AXuBvfP7XDJdccDTVkPNoBeYDIZ1kZGgVxV_Iv57cDoT7P-XZf4KTfrVagCLjs8mRbU6fNzrmUS0LSTCivXTUOukWwOmZo2tn_rIkolQMMsTGs-nrgo4SL0GQBHmNHGWrgK70hqEzxNmpBJcM9Pzb2rR6ikzl7syfaUL8XCaznhz2XGLnS4TDN7XSoQbXmi9Q6ZJEaIHSTekLu1p6FCMyYthpX2xcDLB4ZFrcujPdKYR9BJiqRDRUgPrv12e-SQdHXGHkdlkz1GHvDXY");
+                currentUser.getFullName(),
+                currentUser.getEmail(),
+                currentUser.getAvatarUrl());
         model.addAttribute("user", user);
 
         List<MockCartItem> displayItems = new java.util.ArrayList<>();
@@ -153,7 +161,7 @@ public class WebController {
         } else {
             // LUỒNG GIỎ HÀNG: Logic cũ lấy từ CartService
             try {
-                CartResponse cart = cartService.getCartByUserId(currentUserId);
+                CartResponse cart = cartService.getCartByUserId(currentUser.getId());
                 displayItems = cart.getCartDetails().stream()
                         .map(detail -> new MockCartItem(
                                 detail.getProductName(),
