@@ -668,46 +668,69 @@
                 <div class="profile-top">
                     <div class="avatar-wrap">
                         <div class="avatar-large">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" alt="Avatar">
+                            <img id="avatarPreview"
+                                 th:src="${profileForm.avatarUrl != null && !#strings.isEmpty(profileForm.avatarUrl)
+           ? profileForm.avatarUrl
+           : 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'}"
+                                 alt="Avatar">
                         </div>
-                        <label class="edit-avatar-btn">
+
+                        <label class="edit-avatar-btn" for="avatarFile">
                             <i class="fa-solid fa-pen"></i>
                         </label>
                     </div>
 
-                    <h2>Alex Johnson</h2>
-                    <p>Pro Member since 2022</p>
+                    <h2 th:text="${user.fullName}">User Name</h2>
+                    <p th:text="${user.email}">user@email.com</p>
                 </div>
 
-                <form class="profile-form" th:action="@{/account/profile}" method="post">
+                <form class="profile-form"
+                      th:action="@{/account/profile/edit}"
+                      th:object="${profileForm}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div th:if="${successMessage}"
+                         style="margin-bottom:16px; padding:12px; border-radius:8px; background:#153a1f; color:#9be7a7;">
+                        <span th:text="${successMessage}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avatarFile">AVATAR</label>
+                        <div class="input-wrap">
+                            <i class="fa-regular fa-image"></i>
+                            <input id="avatarFile" name="avatarFile" type="file" accept="image/*">
+                        </div>
+                    </div>
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="fullName">FULL NAME</label>
                             <div class="input-wrap">
                                 <i class="fa-regular fa-user"></i>
-                                <input id="fullName" name="fullName" type="text" value="Alex Johnson">
+                                <input id="fullName" th:field="*{fullName}" type="text">
                             </div>
+                            <small th:if="${#fields.hasErrors('fullName')}"
+                                   th:errors="*{fullName}"
+                                   style="color:#ff6b6d;"></small>
                         </div>
 
                         <div class="form-group">
-                            <label for="phoneNumber">PHONE NUMBER</label>
+                            <label for="phone">PHONE NUMBER</label>
                             <div class="input-wrap">
                                 <i class="fa-solid fa-phone"></i>
-                                <input id="phoneNumber" name="phoneNumber" type="text" value="+1 (555) 000-0000">
+                                <input id="phone" th:field="*{phone}" type="text">
                             </div>
+                            <small th:if="${#fields.hasErrors('phone')}"
+                                   th:errors="*{phone}"
+                                   style="color:#ff6b6d;"></small>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="shippingAddress">SHIPPING ADDRESS</label>
-                        <div class="input-wrap textarea-wrap">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <textarea id="shippingAddress" name="shippingAddress" rows="3">123 Performance Way, Silicon Valley, CA 94025</textarea>
-                        </div>
-                    </div>
+                    <input type="hidden" th:field="*{avatarUrl}" />
 
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">Cancel</button>
+                        <a th:href="@{/account/profile/edit}" class="btn btn-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa-regular fa-floppy-disk"></i>
                             Save Changes
@@ -746,5 +769,31 @@
 
     <div th:replace="~{fragments/footer :: site-footer}"></div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const avatarInput = document.getElementById("avatarFile");
+        const avatarPreview = document.getElementById("avatarPreview");
+
+        if (avatarInput && avatarPreview) {
+            avatarInput.addEventListener("change", function (event) {
+                const file = event.target.files && event.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith("image/")) {
+                    alert("Vui lòng chọn file hình ảnh.");
+                    avatarInput.value = "";
+                    return;
+                }
+
+                const previewUrl = URL.createObjectURL(file);
+                avatarPreview.src = previewUrl;
+
+                avatarPreview.onload = function () {
+                    URL.revokeObjectURL(previewUrl);
+                };
+            });
+        }
+    });
+</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.se2.demo.controller.ui;
 
 import com.se2.demo.dto.request.ProfileUpdateRequest;
 import com.se2.demo.model.entity.User;
+import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -19,9 +22,14 @@ import java.security.Principal;
 public class ProfileController {
 
     private final UserService userService;
+    private final CloudinaryService cloudinaryService;
 
     @GetMapping("/account/profile/edit")
     public String showEditProfilePage(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
         String email = principal.getName();
         User user = userService.getUserByEmail(email);
 
@@ -41,15 +49,27 @@ public class ProfileController {
     public String updateProfile(
             @Valid @ModelAttribute("profileForm") ProfileUpdateRequest form,
             BindingResult bindingResult,
+            @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
             Model model,
             Principal principal
     ) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
         String email = principal.getName();
         User currentUser = userService.getUserByEmail(email);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", currentUser);
             return "account/profile-edit";
+        }
+
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String avatarUrl = cloudinaryService.uploadFile(avatarFile, "brosport/avatars");
+            form.setAvatarUrl(avatarUrl);
+        } else {
+            form.setAvatarUrl(currentUser.getAvatarUrl());
         }
 
         User updatedUser = userService.updateProfile(email, form);

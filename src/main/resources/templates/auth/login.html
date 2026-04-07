@@ -2,6 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Brosport</title>
     <link rel="stylesheet"
@@ -502,7 +503,7 @@
                         <p>Log in to track your stats and manage your gear.</p>
                     </div>
 
-                    <form th:action="@{/login}" method="post">
+                    <form th:action="@{/do-login}" method="post">
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <div class="input-wrap">
