@@ -502,6 +502,18 @@
                         <p>Log in to track your stats and manage your gear.</p>
                     </div>
 
+                    <div th:if="${param.error}" class="error-box">
+                        Tài khoản hoặc mật khẩu không chính xác!
+                    </div>
+
+                    <div th:if="${param.success}" class="success-box">
+                        Đăng ký thành công! Vui lòng đăng nhập.
+                    </div>
+
+                    <div th:if="${param.logout}" class="success-box" style="color: #93c5fd; background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.28);">
+                        Bạn đã đăng xuất thành công.
+                    </div>
+
                     <form th:action="@{/login}" method="post">
                         <div class="form-group">
                             <label for="email">Email Address</label>
