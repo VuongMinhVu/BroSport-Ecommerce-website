@@ -547,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const userId = userInputElement ? parseInt(userInputElement.value) || 1 : 1;
 
       // 1. Get or create cart for user
-      fetch(`/api/v1/carts/user/${userId}`)
+      fetch(`/api/v1/carts/my-cart`)
         .then(response => {
           if (response.ok) {
             return response.json();
