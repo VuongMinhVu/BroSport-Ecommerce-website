@@ -28,20 +28,16 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final ProductDetailRepository productDetailRepository;
     private final VoucherRepository voucherRepository;
-    private final UserRepository userRepository; // THÊM REPOSITORY NÀY
+    private final UserRepository userRepository;
     private final VNPayService vnPayService;
     private final EmailService emailService;
     private final OrderMapper orderMapper;
 
     @Override
     @Transactional
-    public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
-        // 1. Lấy thông tin User (Sửa lỗi thiếu biến 'user')
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại!"));
-
-        // 2. Lấy giỏ hàng
-        Cart cart = cartRepository.findByUserId(userId)
+    public OrderResponse checkout(User user, OrderRequest request, HttpServletRequest httpServletRequest) {
+        // 1. Lấy giỏ hàng của User (Dùng user.getId() trực tiếp từ tham số)
+        Cart cart = cartRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
         double subtotalVal = 0;
@@ -50,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 
         // KIỂM TRA LUỒNG MUA HÀNG
         if (Boolean.TRUE.equals(request.getIsBuyNow())) {
-            // Luồng MUA NGAY
+            // Luồng MUA NGAY: Lấy trực tiếp từ sản phẩm chi tiết
             ProductDetail pd = productDetailRepository.findById(request.getProductDetailId())
                     .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại!"));
 
@@ -62,9 +58,8 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderItems.add(item);
         } else {
-            // Luồng MUA TỪ GIỎ HÀNG (Sửa lỗi request.getUserId() -> dùng userId từ tham số)
-            cartToDelete = cartRepository.findByUserId(userId)
-                    .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
+            // Luồng MUA TỪ GIỎ HÀNG
+            cartToDelete = cart; // Sử dụng biến cart đã tìm thấy ở trên
 
             subtotalVal = cartToDelete.getCartDetails().stream()
                     .mapToDouble(d -> d.getProductDetail().getProduct().getShowPrice().doubleValue() * d.getQuantity())
@@ -87,7 +82,6 @@ public class OrderServiceImpl implements OrderService {
 
         String method = request.getPaymentMethod().toUpperCase();
         if ("COD".equals(method)) {
-            // Bây giờ biến 'user' đã tồn tại để truyền vào đây
             return processCODOrder(request, user, orderItems, cartToDelete, finalAmount, shippingFee, discount);
         } else if ("VNPAY".equals(method)) {
             return processVNPayRequest(request, user, orderItems, cartToDelete, finalAmount, shippingFee, discount,
@@ -98,10 +92,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse processCODOrder(OrderRequest request, User user, List<OrderItem> items, Cart cartToDelete,
-            BigDecimal total, BigDecimal ship, BigDecimal discount) {
+                                          BigDecimal total, BigDecimal ship, BigDecimal discount) {
         Order order = createBaseOrder(request, user, total, ship, discount, "COD", "UNPAID");
 
-        // Trừ tồn kho
         items.forEach(item -> {
             item.setOrder(order);
             ProductDetail pd = item.getProductDetail();
@@ -112,7 +105,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(items);
         Order savedOrder = orderRepository.save(order);
 
-        // Chỉ xóa giỏ hàng nếu mua từ giỏ hàng
         if (cartToDelete != null) {
             recreateEmptyCart(user);
             cartRepository.delete(cartToDelete);
@@ -127,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse processVNPayRequest(OrderRequest request, User user, List<OrderItem> items, Cart cartToDelete,
-            BigDecimal total, BigDecimal ship, BigDecimal discount, HttpServletRequest httpServletRequest) {
+                                              BigDecimal total, BigDecimal ship, BigDecimal discount, HttpServletRequest httpServletRequest) {
         Order order = createBaseOrder(request, user, total, ship, discount, "VNPAY", "PENDING");
 
         items.forEach(item -> item.setOrder(order));
@@ -145,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order createBaseOrder(OrderRequest request, User user, BigDecimal total, BigDecimal ship, BigDecimal discount, String method,
-            String paymentStatus) {
+                                  String paymentStatus) {
         return Order.builder()
                 .orderCode("BS" + System.currentTimeMillis())
                 .user(user)
@@ -174,15 +166,12 @@ public class OrderServiceImpl implements OrderService {
 
         order.setPaymentStatus("PAID");
 
-        // Trừ tồn kho khi thanh toán thành công
         order.getOrderItems().forEach(item -> {
             ProductDetail pd = item.getProductDetail();
             pd.setStockQuantity(pd.getStockQuantity() - item.getQuantity());
             productDetailRepository.save(pd);
         });
 
-        // Xóa giỏ hàng nếu đơn hàng này được tạo từ giỏ hàng (check số lượng items
-        // trong giỏ)
         Cart cart = cartRepository.findByUserId(order.getUser().getId()).orElse(null);
         if (cart != null && !cart.getCartDetails().isEmpty()) {
             recreateEmptyCart(order.getUser());
