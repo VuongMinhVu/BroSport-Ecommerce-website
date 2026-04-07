@@ -35,7 +35,7 @@ public interface OrderMapper {
     @Mapping(target = "orderNumber", source = "orderCode")
     @Mapping(target = "total", source = "totalPrice")
     @Mapping(target = "status", source = "orderStatus")
-    @Mapping(target = "itemCount", expression = "java(order.getOrderItems() != null ? order.getOrderItems().size() : 0)")
+    @Mapping(target = "itemCount", expression = "java(order.getOrderItems() != null ? order.getOrderItems().stream().mapToInt(item -> item.getQuantity()).sum() : 0)")
     @Mapping(target = "date", expression = "java(order.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"MMM dd, yyyy\", java.util.Locale.ENGLISH)))")
     OrderHistoryResponse toHistoryResponse(Order order);
 
