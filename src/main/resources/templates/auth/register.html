@@ -6,6 +6,38 @@
     <title>Register - Brosport</title>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+            rel="stylesheet"
+    />
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                primary: "#ff6600",
+                "background-light": "#f8f7f5",
+                "background-dark": "#000000",
+                "surface-dark": "#121212",
+                "border-dark": "#ffffff10",
+              },
+              fontFamily: { display: ["Lexend"] },
+              borderRadius: {
+                DEFAULT: "0.25rem",
+                lg: "0.5rem",
+                xl: "0.75rem",
+                full: "9999px",
+              },
+            },
+          },
+        };
+    </script>
 
     <style>
         :root {

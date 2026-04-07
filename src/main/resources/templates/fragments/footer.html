@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <footer th:fragment="site-footer" class="border-t border-border-dark bg-[#0a0a0a] py-20">
     <div class="mx-auto max-w-7xl px-6">
@@ -7,7 +7,7 @@
             <div class="col-span-2 lg:col-span-1">
                 <div class="mb-8 flex items-center gap-2">
                     <div class="flex size-7 items-center justify-center rounded bg-primary text-white">
-                        <span class="material-symbols-outlined text-sm font-bold">bolt</span>
+                        <span class="material-symbols-outlined text-sm select-none">bolt</span>
                     </div>
                     <h1 class="text-xl font-black tracking-tighter uppercase italic text-white">BROSPORT</h1>
                 </div>
@@ -16,20 +16,26 @@
                     Built for the grind, designed for the win.
                 </p>
                 <div class="mt-8 flex gap-5">
-                    <a class="text-slate-500 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">social_leaderboard</span></a>
-                    <a class="text-slate-500 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">photo_camera</span></a>
-                    <a class="text-slate-500 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">movie</span></a>
+                    <a class="text-slate-500 hover:text-primary transition-colors" href="#">
+                        <span class="material-symbols-outlined select-none">leaderboard</span>
+                    </a>
+                    <a class="text-slate-500 hover:text-primary transition-colors" href="#">
+                        <span class="material-symbols-outlined select-none">photo_camera</span>
+                    </a>
+                    <a class="text-slate-500 hover:text-primary transition-colors" href="#">
+                        <span class="material-symbols-outlined select-none">movie</span>
+                    </a>
                 </div>
             </div>
 
             <div>
                 <h5 class="mb-8 font-black uppercase tracking-[0.3em] text-white text-xs">SHOP</h5>
                 <ul class="space-y-4 text-[13px] font-bold text-slate-400">
-                    <li><a class="hover:text-primary transition-colors" href="#">New Arrivals</a></li>
+                    <li><a class="hover:text-primary transition-colors" th:href="@{/products}">New Arrivals</a></li>
                     <li><a class="hover:text-primary transition-colors" href="#">Best Sellers</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Men's Collection</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Women's Collection</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Accessories</a></li>
+                    <li><a class="hover:text-primary transition-colors" th:href="@{/products/men}">Men's Collection</a></li>
+                    <li><a class="hover:text-primary transition-colors" th:href="@{/products/women}">Women's Collection</a></li>
+                    <li><a class="hover:text-primary transition-colors" th:href="@{/products/accessories}">Accessories</a></li>
                 </ul>
             </div>
 
@@ -47,7 +53,7 @@
                 <h5 class="mb-8 font-black uppercase tracking-[0.3em] text-white text-xs">HELP</h5>
                 <ul class="space-y-4 text-[13px] font-bold text-slate-400">
                     <li><a class="hover:text-primary transition-colors" href="#">Shipping & Returns</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Order Tracking</a></li>
+                    <li><a class="hover:text-primary transition-colors" th:href="@{/order-tracking}">Order Tracking</a></li>
                     <li><a class="hover:text-primary transition-colors" href="#">Size Guide</a></li>
                     <li><a class="hover:text-primary transition-colors" href="#">Contact Us</a></li>
                 </ul>
@@ -55,7 +61,7 @@
         </div>
 
         <div class="mt-20 border-t border-border-dark pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">
-            <p>© 2024 BROSPORT PERFORMANCE INC. ALL RIGHTS RESERVED.</p>
+            <p>© 2026 BROSPORT PERFORMANCE INC. ALL RIGHTS RESERVED.</p>
             <div class="flex gap-10">
                 <a class="hover:text-white transition-colors" href="#">PRIVACY POLICY</a>
                 <a class="hover:text-white transition-colors" href="#">TERMS OF SERVICE</a>

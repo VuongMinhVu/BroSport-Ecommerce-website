@@ -5,6 +5,7 @@ import com.se2.demo.dto.request.ResetPasswordRequest;
 import com.se2.demo.model.entity.User;
 import com.se2.demo.repository.UserRepository;
 import com.se2.demo.service.AuthService;
+import com.se2.demo.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.Random;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CartService cartService;
 
     @Override
     @Transactional
@@ -43,7 +45,8 @@ public class AuthServiceImpl implements AuthService {
                 .avatarUrl(null)
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        cartService.createCart(savedUser.getId());
     }
 
     @Override
