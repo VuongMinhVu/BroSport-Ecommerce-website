@@ -230,7 +230,7 @@
               : 1;
 
             try {
-              const response = await fetch(`/api/v1/carts/user/${userId}`);
+              const response = await fetch(`/api/v1/carts/my-cart`);
               if (!response.ok) throw new Error("Failed to fetch cart");
 
               const cart = await response.json();

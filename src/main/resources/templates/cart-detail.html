@@ -227,7 +227,7 @@
           const userId = userInputElement
             ? parseInt(userInputElement.value) || 1
             : 1;
-          fetch(`/api/v1/carts/user/${userId}`)
+          fetch(`/api/v1/carts/my-cart`)
             .then((response) => {
               if (!response.ok) throw new Error("Failed to fetch cart");
               return response.json();
