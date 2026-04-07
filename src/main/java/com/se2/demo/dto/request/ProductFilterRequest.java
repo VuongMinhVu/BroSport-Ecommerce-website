@@ -22,6 +22,10 @@ public class ProductFilterRequest {
     Integer brandId;
     Integer genderId;
     Integer sportId;
+    String categories;
+    String brands;
+    String gender;
+    String sports;
     Integer colorId;
     Integer sizeId;
     BigDecimal minPrice;

@@ -137,14 +137,6 @@
                       >Calculated at next step</span
                     >
                   </div>
-                  <div
-                    class="flex justify-between text-white/70 pb-4 border-b border-white/10"
-                  >
-                    <span>Tax (8%)</span>
-                    <span id="summary-tax" class="text-white font-medium"
-                      >$0.00</span
-                    >
-                  </div>
                   <div class="flex justify-between items-end pt-2">
                     <span class="text-white font-bold text-lg">Total</span>
                     <div class="text-right">
@@ -318,13 +310,10 @@
             subtotal += (item.unitPrice || 0) * (item.quantity || 1);
           });
 
-          const tax = subtotal * 0.08;
-          const total = subtotal + tax;
+          const total = subtotal;
 
           document.getElementById("summary-subtotal").textContent =
             `$${subtotal.toFixed(2)}`;
-          document.getElementById("summary-tax").textContent =
-            `$${tax.toFixed(2)}`;
           document.getElementById("summary-total").textContent =
             `$${total.toFixed(2)}`;
         }

@@ -365,15 +365,6 @@
                       >FREE</span
                     >
                   </div>
-                  <div class="flex justify-between text-[#cbad90]">
-                    <span>Taxes</span>
-                    <span
-                      id="summary-tax"
-                      th:text="${'$' + #numbers.formatDecimal((subtotal != null ? subtotal : 0) * 0.08, 1, 2)}"
-                      th:data-tax="${(subtotal != null ? subtotal : 0) * 0.08}"
-                      >$0.00</span
-                    >
-                  </div>
                   <div class="flex justify-between text-green-500">
                     <span id="summary-discount-label">Discount</span>
                     <span id="summary-discount">-$0.00</span>
@@ -385,7 +376,7 @@
                     <span
                       id="summary-total"
                       class="text-primary"
-                      th:text="${'$' + #numbers.formatDecimal((subtotal != null ? subtotal : 0) * 1.08, 1, 2)}"
+                      th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}"
                       >$0.00</span
                     >
                   </div>
@@ -643,14 +634,11 @@
 
         function updateTotals(subtotal) {
           const discountEl = document.getElementById("summary-discount");
-          const taxEl = document.getElementById("summary-tax");
           const totalEl = document.getElementById("summary-total");
-          const tax = subtotal * 0.08;
 
-          const total = Math.max(0, subtotal - currentDiscountTotal + tax);
+          const total = Math.max(0, subtotal - currentDiscountTotal);
 
           discountEl.textContent = `-$${currentDiscountTotal.toFixed(2)}`;
-          taxEl.textContent = `$${tax.toFixed(2)}`;
           totalEl.textContent = `$${total.toFixed(2)}`;
         }
       </script>
