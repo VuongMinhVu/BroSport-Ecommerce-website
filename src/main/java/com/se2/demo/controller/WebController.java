@@ -1,5 +1,8 @@
 package com.se2.demo.controller;
 
+import com.se2.demo.service.UserService;
+import com.se2.demo.model.entity.User;
+import java.security.Principal;
 import com.se2.demo.dto.request.ProductFilterRequest;
 import com.se2.demo.dto.response.ProductResponse;
 import com.se2.demo.service.ProductService;
@@ -26,11 +29,14 @@ public class WebController {
     private final ProductService productService;
     private final CartService cartService;
     private final OrderService orderService;
+    private final UserService userService;
 
-    public WebController(ProductService productService, CartService cartService, OrderService orderService) {
+    public WebController(ProductService productService, CartService cartService, OrderService orderService,
+            UserService userService) {
         this.productService = productService;
         this.cartService = cartService;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping({ "/products", "/products/{categorySlug}" })
@@ -173,6 +179,22 @@ public class WebController {
         model.addAttribute("cartItems", displayItems);
         model.addAttribute("subtotal", subtotal);
 
+        // Tính toán phí ship (Ví dụ: Đơn dưới 1 triệu thì phí ship 30.000đ, trên 1
+        // triệu thì Freeship)
+        double shippingFee = 0.0;
+        if (subtotal > 0 && subtotal < 1000000) {
+            shippingFee = 30000.0;
+        }
+
+        // Tính tổng tiền = Tạm tính + Phí Ship
+        double total = subtotal + shippingFee;
+
+        // 3. Đẩy dữ liệu ra giao diện Checkout.html
+        model.addAttribute("cartItems", displayItems);
+        model.addAttribute("subtotal", subtotal);
+        model.addAttribute("shippingFee", shippingFee); // TRUYỀN PHÍ SHIP
+        model.addAttribute("total", total); // TRUYỀN TỔNG TIỀN
+
         return "checkout";
     }
 
@@ -208,7 +230,23 @@ public class WebController {
 
     // Điều hướng đến trang Lịch sử đơn hàng
     @GetMapping("/order-history")
-    public String orderHistoryPage() {
+    public String orderHistoryPage(Model model, Principal principal) {
+        // 1. Đồng bộ logic lấy User giống hệt trang Profile
+        String email = (principal != null) ? principal.getName() : "mockuser@example.com";
+        User user;
+        try {
+            user = userService.getUserByEmail(email);
+        } catch (Exception e) {
+            user = User.builder()
+                    .email(email)
+                    .fullName("Mock User")
+                    .avatarUrl("") // Nếu DB không có thì tạo Mock
+                    .build();
+        }
+
+        // 2. Truyền đối tượng user xuống cho Sidebar hiển thị
+        model.addAttribute("user", user);
+
         return "orderHistory";
     }
 

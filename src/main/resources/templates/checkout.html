@@ -19,13 +19,13 @@
         theme: {
           extend: {
             colors: {
-              primary: "#f48c25",
+              primary: "#ff6600",
               "background-light": "#f8f7f5",
-              "background-dark": "#120d08",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
             },
-            fontFamily: {
-              display: ["Lexend"],
-            },
+            fontFamily: { display: ["Lexend"] },
             borderRadius: {
               DEFAULT: "0.25rem",
               lg: "0.5rem",
@@ -257,9 +257,9 @@
                         </p>
                         <p
                           class="font-bold text-primary"
-                          th:text="${'$' + #numbers.formatDecimal(item.price, 1, 2)}"
+                          th:text="${#numbers.formatInteger(item.price, 1, 'POINT')} + 'đ'"
                         >
-                          $0.00
+                          0đ
                         </p>
                       </div>
                     </div>
@@ -360,34 +360,48 @@
                 </div>
                 <div class="space-y-3 mb-8">
                   <div class="flex justify-between text-[#cbad90]">
-                    <span>Subtotal</span>
+                    <span>Tạm tính</span>
                     <span
                       id="summary-subtotal"
-                      th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}"
+                      th:text="${#numbers.formatInteger(subtotal != null ? subtotal : 0, 1, 'POINT')} + 'đ'"
                       th:data-subtotal="${subtotal != null ? subtotal : 0}"
-                      >$0.00</span
+                      >0đ</span
                     >
                   </div>
+
                   <div class="flex justify-between text-[#cbad90]">
-                    <span>Shipping</span>
+                    <span>Phí vận chuyển</span>
                     <span
+                      id="summary-shipping"
+                      th:if="${shippingFee == null or shippingFee == 0}"
                       class="text-green-500 font-medium text-xs border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10"
+                      th:data-shipping="0"
                       >FREE</span
                     >
+                    <span
+                      id="summary-shipping"
+                      th:unless="${shippingFee == null or shippingFee == 0}"
+                      class="font-medium text-white"
+                      th:text="${#numbers.formatInteger(shippingFee, 1, 'POINT')} + 'đ'"
+                      th:data-shipping="${shippingFee}"
+                      >30.000đ</span
+                    >
                   </div>
+
                   <div class="flex justify-between text-green-500">
-                    <span id="summary-discount-label">Discount</span>
-                    <span id="summary-discount">-$0.00</span>
+                    <span id="summary-discount-label">Voucher giảm giá</span>
+                    <span id="summary-discount">-0đ</span>
                   </div>
+
                   <div
                     class="flex justify-between text-white text-xl font-extrabold pt-2 border-t border-[#493622]"
                   >
-                    <span>Total</span>
+                    <span>Tổng cộng</span>
                     <span
                       id="summary-total"
                       class="text-primary"
-                      th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}"
-                      >$0.00</span
+                      th:text="${#numbers.formatInteger(total != null ? total : 0, 1, 'POINT')} + 'đ'"
+                      >0đ</span
                     >
                   </div>
                 </div>
@@ -571,6 +585,7 @@
         }
 
         let currentDiscountTotal = 0.0;
+        let isFreeShippingVoucher = false;
 
         function applyVoucher() {
           const voucherInput = document.getElementById("voucher-input");
@@ -583,22 +598,27 @@
           const messageEl = document.getElementById("voucher-message");
           const iconEl = document.getElementById("voucher-icon");
 
-          // Simulate fetch request to backend to validate voucher
           const btn = document.getElementById("apply-voucher-btn");
           const originalText = btn.textContent;
-          btn.textContent = "Checking...";
+          btn.textContent = "Đang kiểm tra...";
           btn.disabled = true;
 
-          // Base subtotal from thymeleaf data attribute
           const subtotalEl = document.getElementById("summary-subtotal");
           const subtotal =
             parseFloat(subtotalEl.getAttribute("data-subtotal")) || 0;
 
-          setTimeout(() => {
-            btn.textContent = originalText;
-            btn.disabled = false;
+          // Lấy phí ship gốc từ giao diện
+          const shippingEl = document.getElementById("summary-shipping");
+          const baseShipping =
+            parseFloat(shippingEl.getAttribute("data-shipping")) || 0;
 
+          setTimeout(() => {
+            btn.textContent = "Áp dụng";
+            btn.disabled = false;
             container.classList.remove("hidden");
+
+            isFreeShippingVoucher = false; // Reset cờ freeship
+            currentDiscountTotal = 0; // Reset giảm giá
 
             if (
               voucherCode === "FREESHIP" ||
@@ -606,50 +626,53 @@
               voucherCode === "SUMMER24" ||
               voucherCode === "BROSPORT20"
             ) {
-              // Success simulation
               container.className =
                 "flex items-center gap-2 text-green-500 bg-green-500/10 border border-green-500/20 px-3 py-2 rounded-lg text-sm mb-4";
               iconEl.textContent = "check_circle";
 
               let discountRate = 0;
               if (voucherCode === "FREESHIP") {
-                messageEl.textContent = "Voucher Applied: Free Shipping";
+                isFreeShippingVoucher = true;
+                currentDiscountTotal = baseShipping; // Giảm đúng bằng tiền ship
+                messageEl.textContent = "Áp dụng mã: Miễn phí vận chuyển";
               } else if (voucherCode === "NEWPLAYER") {
-                currentDiscountTotal = Math.min(15.0, subtotal);
-                messageEl.textContent = "Voucher Applied: -$15";
+                currentDiscountTotal = Math.min(150000, subtotal); // Giảm 150k
+                messageEl.textContent = "Áp dụng mã: -150.000đ";
               } else if (voucherCode === "SUMMER24") {
                 discountRate = 0.1;
-                messageEl.textContent = "Voucher Applied: -10%";
+                messageEl.textContent = "Áp dụng mã: Giảm 10%";
               } else if (voucherCode === "BROSPORT20") {
                 discountRate = 0.2;
-                messageEl.textContent = "Voucher Applied: -20%";
+                messageEl.textContent = "Áp dụng mã: Giảm 20%";
               }
 
               if (discountRate > 0) {
                 currentDiscountTotal = subtotal * discountRate;
               }
-
-              updateTotals(subtotal);
+              updateTotals(subtotal, baseShipping);
             } else {
-              // Error fallback
               container.className =
                 "flex items-center gap-2 text-red-500 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg text-sm mb-4";
               iconEl.textContent = "error";
-              messageEl.textContent = "Invalid or expired voucher code";
-              currentDiscountTotal = 0;
-              updateTotals(subtotal);
+              messageEl.textContent = "Mã không hợp lệ hoặc đã hết hạn";
+              updateTotals(subtotal, baseShipping);
             }
           }, 800);
         }
 
-        function updateTotals(subtotal) {
+        function updateTotals(subtotal, baseShipping) {
           const discountEl = document.getElementById("summary-discount");
           const totalEl = document.getElementById("summary-total");
 
-          const total = Math.max(0, subtotal - currentDiscountTotal);
+          // Tổng tiền = Tạm tính + Phí ship - Giảm giá
+          const total = Math.max(
+            0,
+            subtotal + baseShipping - currentDiscountTotal,
+          );
 
-          discountEl.textContent = `-$${currentDiscountTotal.toFixed(2)}`;
-          totalEl.textContent = `$${total.toFixed(2)}`;
+          // Format theo chuẩn VNĐ
+          discountEl.textContent = `-${new Intl.NumberFormat("vi-VN").format(Math.round(currentDiscountTotal))}đ`;
+          totalEl.textContent = `${new Intl.NumberFormat("vi-VN").format(Math.round(total))}đ`;
         }
       </script>
       <footer

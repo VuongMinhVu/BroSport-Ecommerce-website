@@ -15,30 +15,28 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
   <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#f48c25",
-            "background-light": "#f8f7f5",
-            "background-dark": "#120d08", // Darkened version of original theme for better contrast
-            charcoal: "#1e1e1e",
-            surface: "#221910",
-          },
-          fontFamily: {
-            display: ["Lexend", "sans-serif"],
-          },
-          borderRadius: {
-            DEFAULT: "0.25rem",
-            lg: "0.5rem",
-            xl: "0.75rem",
-            full: "9999px",
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ff6600",
+              "background-light": "#f8f7f5",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
+            },
+            fontFamily: { display: ["Lexend"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
           },
         },
-      },
-    };
-  </script>
+      };
+    </script>
   <style type="text/tailwindcss">
     body {
         font-family: "Lexend", sans-serif;

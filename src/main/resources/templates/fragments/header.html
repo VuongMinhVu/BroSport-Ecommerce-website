@@ -99,19 +99,21 @@
 
           <div class="flex items-center gap-2">
             <a
-              th:href="@{/account/profile/edit}"
+              th:href="@{/profile/edit}"
               class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all text-white"
             >
               <div
-                class="h-full w-full bg-cover bg-center"
-                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                th:if="${user != null and user.avatarUrl != null}"
+                class="h-full w-full bg-cover bg-center rounded-full"
+                th:style="'background-image: url(' + ${user.avatarUrl} + ')'"
+                th:if="${user != null and !#strings.isEmpty(user.avatarUrl)}"
               ></div>
+
               <span
-                th:unless="${user != null and user.avatarUrl != null}"
                 class="material-symbols-outlined text-2xl"
-                >person</span
+                th:unless="${user != null and !#strings.isEmpty(user.avatarUrl)}"
               >
+                person
+              </span>
             </a>
             <a
               th:href="@{/cart}"
