@@ -35,9 +35,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderResponse checkout(OrderRequest request, HttpServletRequest httpServletRequest) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy User!"));
+    public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
+        // 1. Lấy giỏ hàng
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
         double subtotalVal = 0;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -76,15 +77,15 @@ public class OrderServiceImpl implements OrderService {
         }
 
         BigDecimal subtotal = new BigDecimal(subtotalVal);
-        BigDecimal shippingFee = new BigDecimal(30000);
+        BigDecimal shippingFee = BigDecimal.ZERO;
         BigDecimal discount = calculateDiscount(request.getVoucherCode(), subtotalVal);
         BigDecimal finalAmount = subtotal.add(shippingFee).subtract(discount);
 
         String method = request.getPaymentMethod().toUpperCase();
         if ("COD".equals(method)) {
-            return processCODOrder(request, user, orderItems, cartToDelete, finalAmount, shippingFee, subtotal);
+            return processCODOrder(request, user, orderItems, cartToDelete, finalAmount, shippingFee, discount);
         } else if ("VNPAY".equals(method)) {
-            return processVNPayRequest(request, user, orderItems, cartToDelete, finalAmount, shippingFee, subtotal,
+            return processVNPayRequest(request, user, orderItems, cartToDelete, finalAmount, shippingFee, discount,
                     httpServletRequest);
         } else {
             throw new RuntimeException("Phương thức thanh toán không hợp lệ!");
@@ -92,8 +93,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse processCODOrder(OrderRequest request, User user, List<OrderItem> items, Cart cartToDelete,
-            BigDecimal total, BigDecimal ship, BigDecimal subtotal) {
-        Order order = createBaseOrder(request, user, total, ship, "COD", "UNPAID");
+            BigDecimal total, BigDecimal ship, BigDecimal discount) {
+        Order order = createBaseOrder(request, user, total, ship, discount, "COD", "UNPAID");
 
         // Trừ tồn kho
         items.forEach(item -> {
@@ -121,8 +122,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse processVNPayRequest(OrderRequest request, User user, List<OrderItem> items, Cart cartToDelete,
-            BigDecimal total, BigDecimal ship, BigDecimal subtotal, HttpServletRequest httpServletRequest) {
-        Order order = createBaseOrder(request, user, total, ship, "VNPAY", "PENDING");
+            BigDecimal total, BigDecimal ship, BigDecimal discount, HttpServletRequest httpServletRequest) {
+        Order order = createBaseOrder(request, user, total, ship, discount, "VNPAY", "PENDING");
 
         items.forEach(item -> item.setOrder(order));
         order.setOrderItems(items);
@@ -138,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
         return response;
     }
 
-    private Order createBaseOrder(OrderRequest request, User user, BigDecimal total, BigDecimal ship, String method,
+    private Order createBaseOrder(OrderRequest request, User user, BigDecimal total, BigDecimal ship, BigDecimal discount, String method,
             String paymentStatus) {
         return Order.builder()
                 .orderCode("BS" + System.currentTimeMillis())
@@ -147,6 +148,7 @@ public class OrderServiceImpl implements OrderService {
                 .shippingAddressFull(request.getShippingAddress())
                 .totalPrice(total)
                 .shippingFee(ship)
+                .discountPrice(discount)
                 .paymentMethod(method)
                 .paymentStatus(paymentStatus)
                 .orderStatus("PENDING")

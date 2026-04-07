@@ -28,21 +28,19 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Override
     @Transactional
-    public CartDetailResponse addItemToCart(CartDetailRequest request) {
-        Cart cart = cartRepository.findById(request.getCartId())
+    public CartDetailResponse addItemToCart(Integer userId, CartDetailRequest request) {
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại!"));
 
+        Integer requestedQty = (request.getQuantity() == null || request.getQuantity() < 1) ? 1 : request.getQuantity();
         Optional<CartDetail> existingItem = cartDetailRepository
-                .findByCartIdAndProductDetailId(request.getCartId(), request.getProductDetailId());
+                .findByCartIdAndProductDetailId(cart.getId(), request.getProductDetailId());
 
         CartDetail itemToSave;
 
         if (existingItem.isPresent()) {
-            // Logic UPDATE
             itemToSave = existingItem.get();
-            //logic +1
-            Integer currentQty = (itemToSave.getQuantity() == null) ? 1 : itemToSave.getQuantity();
-            itemToSave.setQuantity(currentQty + 1);
+            itemToSave.setQuantity(requestedQty);
             itemToSave.setUpdatedAt(LocalDateTime.now());
         } else {
             ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailId())
@@ -51,7 +49,7 @@ public class CartDetailServiceImpl implements CartDetailService {
             itemToSave = new CartDetail();
             itemToSave.setCart(cart);
             itemToSave.setProductDetail(productDetail);
-            itemToSave.setQuantity(1);
+            itemToSave.setQuantity(requestedQty);
             itemToSave.setAddedAt(LocalDateTime.now());
         }
 

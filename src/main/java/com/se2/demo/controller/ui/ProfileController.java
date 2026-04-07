@@ -1,9 +1,11 @@
 package com.se2.demo.controller.ui;
 
+import com.se2.demo.dto.request.ChangePasswordRequest;
 import com.se2.demo.dto.request.ProfileUpdateRequest;
 import com.se2.demo.model.entity.User;
 import com.se2.demo.service.CloudinaryService;
 import com.se2.demo.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,8 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -41,6 +42,7 @@ public class ProfileController {
 
         model.addAttribute("user", user);
         model.addAttribute("profileForm", form);
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
 
         return "account/profile-edit";
     }
@@ -83,5 +85,23 @@ public class ProfileController {
         model.addAttribute("successMessage", "Cập nhật hồ sơ thành công");
 
         return "account/profile-edit";
+    }
+
+    @PostMapping("/profile/change-password")
+    public String processChangePassword(
+            @ModelAttribute ChangePasswordRequest request,
+            Principal principal,
+            RedirectAttributes redirectAttributes,
+            HttpServletRequest httpServletRequest
+    ) {
+        try {
+            String email = principal.getName();
+            userService.changePassword(email, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        String referer = httpServletRequest.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/account/profile/edit");
     }
 }

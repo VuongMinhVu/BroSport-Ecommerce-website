@@ -37,9 +37,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartResponse createCart(CartRequest request) {
+    public CartResponse createCart(Integer userId) {
         Cart cart = new Cart();
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         cart.setUser(user);
         Cart savedCart = cartRepository.save(cart);
@@ -48,10 +48,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartResponse updateCart(Integer id, CartRequest request) {
+    public CartResponse updateCart(Integer id, Integer userId, CartRequest request) {
         Cart cart = cartRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         cart.setUser(user);
 

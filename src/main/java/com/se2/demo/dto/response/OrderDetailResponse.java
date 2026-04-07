@@ -22,6 +22,7 @@ public class OrderDetailResponse {
     private BigDecimal subtotal;
     private BigDecimal shippingFee;
     private BigDecimal tax;
+    private BigDecimal discount;
 
     // Danh sách sản phẩm
     private List<OrderItemResponse> items;

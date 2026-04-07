@@ -34,37 +34,32 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-            .csrf(csrf -> csrf.disable()) // tạm thời, nên bật lại sau
-            .authenticationProvider(authenticationProvider())
+        .csrf(csrf -> csrf.disable()) // Tạm thời disable CSRF
+        .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
-                            "/login",
-                            "/register",
-                            "/forgot-password",
-                            "/css/**",
-                            "/js/**",
-                            "/images/**",
-                            "/webjars/**"
-                    ).permitAll()
-                    .requestMatchers("/account/**").authenticated()
+                            "/account/**",
+                            "/profile/**",
+                            "/api/orders/**",
+                            "/api/v1/carts/**",
+                            "/api/v1/cart-details/**"
+                    ).authenticated()
                     .anyRequest().permitAll()
             )
-            .formLogin(form -> form
-                    .loginPage("/login")
-                    .loginProcessingUrl("/do-login")
-                    .usernameParameter("email")
-                    .passwordParameter("password")
-                    .defaultSuccessUrl("/", true)
-                    .failureUrl("/login?error")
-                    .permitAll()
-            )
-            .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                    .permitAll()
-            );
+        .formLogin(form -> form
+            .loginPage("/login")
+            .loginProcessingUrl("/do-login")
+            .usernameParameter("email")
+            .passwordParameter("password")
+            .defaultSuccessUrl("/", true)
+            .failureUrl("/login?error")
+            .permitAll())
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
+            .permitAll());
 
     return http.build();
   }

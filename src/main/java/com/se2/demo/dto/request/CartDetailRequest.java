@@ -10,10 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartDetailRequest {
-
-    // ID
-    private Integer cartId;
-
     // ID của sản phẩm cụ thể
     private Integer productDetailId;
 

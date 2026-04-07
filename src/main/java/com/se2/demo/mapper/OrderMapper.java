@@ -12,7 +12,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -36,37 +35,53 @@ public interface OrderMapper {
     @Mapping(target = "orderNumber", source = "orderCode")
     @Mapping(target = "total", source = "totalPrice")
     @Mapping(target = "status", source = "orderStatus")
-    @Mapping(target = "itemCount", expression = "java(order.getOrderItems() != null ? order.getOrderItems().size() : 0)")
+    @Mapping(target = "itemCount", expression = "java(order.getOrderItems() != null ? order.getOrderItems().stream().mapToInt(item -> item.getQuantity()).sum() : 0)")
     @Mapping(target = "date", expression = "java(order.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"MMM dd, yyyy\", java.util.Locale.ENGLISH)))")
     OrderHistoryResponse toHistoryResponse(Order order);
 
     List<OrderHistoryResponse> toHistoryResponseList(List<Order> orders);
 
-    // Thêm vào OrderMapper.java
     @Mapping(target = "orderNumber", source = "orderCode")
     @Mapping(target = "createdAt", expression = "java(order.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern(\"MMMM dd, yyyy\", java.util.Locale.ENGLISH)))")
     @Mapping(target = "recipientName", source = "fullName")
     @Mapping(target = "shippingAddress", source = "shippingAddressFull")
-    @Mapping(target = "shippingMethod", constant = "Express Courier (2-3 Days)") // Giá trị mẫu
+    @Mapping(target = "shippingMethod", constant = "Express Courier (2-3 Days)")
     @Mapping(target = "subtotal", expression = "java(calculateSubtotal(order.getOrderItems()))")
     @Mapping(target = "shippingFee", source = "shippingFee")
-    @Mapping(target = "tax", constant = "0") // Tạm để là 0 như Figma
+    @Mapping(target = "tax", constant = "0")
+    @Mapping(target = "discount", expression = "java(order.getDiscountPrice() != null ? order.getDiscountPrice() : java.math.BigDecimal.ZERO)")
     @Mapping(target = "items", source = "orderItems")
     OrderDetailResponse toDetailResponse(Order order);
 
     default BigDecimal calculateSubtotal(List<OrderItem> items) {
-        if (items == null) return BigDecimal.ZERO;
+        if (items == null) {
+            return BigDecimal.ZERO;
+        }
         return items.stream()
-                .map(i -> i.getPrice().multiply(new BigDecimal(i.getQuantity())))
+                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     default String getMainImageUrl(ProductDetail detail) {
-        if (detail == null || detail.getVariantImages() == null || detail.getVariantImages().isEmpty()) return null;
-        return detail.getVariantImages().stream()
-                .filter(img -> img.getIsMain() != null && img.getIsMain())
-                .map(ProductImage::getImageUrl)
-                .findFirst()
-                .orElse(detail.getVariantImages().get(0).getImageUrl());
+        if (detail == null) {
+            return null;
+        }
+        if (detail.getVariantImages() != null && !detail.getVariantImages().isEmpty()) {
+            return detail.getVariantImages().stream()
+                    .filter(img -> img.getIsMain() != null && img.getIsMain())
+                    .map(ProductImage::getImageUrl)
+                    .findFirst()
+                    .orElse(detail.getVariantImages().get(0).getImageUrl());
+        }
+        if (detail.getProduct() != null
+                && detail.getProduct().getProductImages() != null
+                && !detail.getProduct().getProductImages().isEmpty()) {
+            return detail.getProduct().getProductImages().stream()
+                    .filter(img -> img.getIsMain() != null && img.getIsMain())
+                    .map(ProductImage::getImageUrl)
+                    .findFirst()
+                    .orElse(detail.getProduct().getProductImages().get(0).getImageUrl());
+        }
+        return null;
     }
 }
