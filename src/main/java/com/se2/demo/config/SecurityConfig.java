@@ -7,11 +7,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -35,9 +37,16 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable()) // Tạm thời disable CSRF
         .authenticationProvider(authenticationProvider())
-        .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll() // Cho phép tất cả request
-        )
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/account/**",
+                            "/profile/**",
+                            "/api/orders/**",
+                            "/api/v1/carts/**",
+                            "/api/v1/cart-details/**"
+                    ).authenticated()
+                    .anyRequest().permitAll()
+            )
         .formLogin(form -> form
             .loginPage("/login")
             .loginProcessingUrl("/login")
@@ -49,6 +58,8 @@ public class SecurityConfig {
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/login?logout")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
             .permitAll());
 
     return http.build();

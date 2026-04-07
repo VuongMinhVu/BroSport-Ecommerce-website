@@ -41,14 +41,29 @@ public interface CartMapper {
     CartDetailResponse toResponse(CartDetail entity);
 
     default String getMainImageUrl(ProductDetail detail) {
-        if (detail == null || detail.getVariantImages() == null || detail.getVariantImages().isEmpty()) {
+        if (detail == null) {
             return "default_image_url.png";
         }
-        return detail.getVariantImages().stream()
-                .filter(img -> img.getIsMain() != null && img.getIsMain())
-                .map(ProductImage::getImageUrl)
-                .findFirst()
-                .orElse(detail.getVariantImages().get(0).getImageUrl());
+
+        if (detail.getVariantImages() != null && !detail.getVariantImages().isEmpty()) {
+            return detail.getVariantImages().stream()
+                    .filter(img -> img.getIsMain() != null && img.getIsMain())
+                    .map(ProductImage::getImageUrl)
+                    .findFirst()
+                    .orElse(detail.getVariantImages().get(0).getImageUrl());
+        }
+
+        if (detail.getProduct() != null
+                && detail.getProduct().getProductImages() != null
+                && !detail.getProduct().getProductImages().isEmpty()) {
+            return detail.getProduct().getProductImages().stream()
+                    .filter(img -> img.getIsMain() != null && img.getIsMain())
+                    .map(ProductImage::getImageUrl)
+                    .findFirst()
+                    .orElse(detail.getProduct().getProductImages().get(0).getImageUrl());
+        }
+
+        return "default_image_url.png";
     }
 
     default Double calculateSubtotal(List<CartDetail> details) {

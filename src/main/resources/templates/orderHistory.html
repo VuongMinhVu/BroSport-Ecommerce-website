@@ -1,633 +1,555 @@
 <!doctype html>
 
 <html class="dark" lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Apex Pro Runner v2 | Brosport</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
     />
     <link
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
     />
     <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              colors: {
-                primary: "#f48c25",
-                "background-light": "#f8f7f5",
-                "background-dark": "#121212",
-              },
-              fontFamily: {
-                display: ["Lexend", "sans-serif"],
-              },
-              borderRadius: {
-                DEFAULT: "0.25rem",
-                lg: "0.5rem",
-                xl: "0.75rem",
-                full: "9999px",
-              },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#f48c25",
+              "background-light": "#f8f7f5",
+              "background-dark": "#121212",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
             },
           },
-        };
+        },
+      };
     </script>
     <style>
-        body {
-          font-family: "Lexend", sans-serif;
-        }
-        .material-symbols-outlined {
-          font-variation-settings:
-            "FILL" 0,
-            "wght" 400,
-            "GRAD" 0,
-            "opsz" 24;
-        }
-        .review-bar-fill {
-          transition: width 0.5s ease-in-out;
-        }
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .review-bar-fill {
+        transition: width 0.5s ease-in-out;
+      }
     </style>
-</head>
-<body
-        class="font-sans antialiased min-h-screen flex flex-col bg-background-dark dark:bg-background-dark text-white dark:text-white"
->
-<!-- BEGIN: MainHeader -->
-<header
-        class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
->
+  </head>
+  <body
+    class="font-sans antialiased min-h-screen flex flex-col bg-background-dark dark:bg-background-dark text-white dark:text-white"
+  >
+    <!-- BEGIN: MainHeader -->
+    <div th:replace="~{fragments/header :: site-header}"></div>
+    <!-- END: MainHeader -->
     <div
-            class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
+      class="flex-grow flex w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 gap-8"
     >
-        <a class="flex items-center gap-2 group flex-shrink-0" href="/">
-            <div
-                    class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
-            >
-                <span class="material-symbols-outlined font-bold">bolt</span>
-            </div>
-            <h1
-                    class="text-2xl font-black tracking-tighter uppercase italic text-white"
-            >
-                Brosport
-            </h1>
-        </a>
-
-        <nav class="hidden xl:flex items-center gap-8 h-full">
-            <a class="nav-link" href="#">New Arrivals</a>
-            <a class="nav-link" href="#">Men</a>
-            <a class="nav-link" href="#">Women</a>
-            <a class="nav-link" href="#">Accessories</a>
-            <a class="nav-link" href="#">Brands</a>
-            <a class="nav-link" href="#">Sports</a>
-            <a
-                    class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                    href="#"
-            >Sales</a
-            >
-        </nav>
-
-        <div class="flex items-center gap-4">
-            <div class="relative hidden lg:block group">
-            <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
-            >search</span
-            >
-                <input
-                        class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-                        placeholder="Search elite gear..."
-                        type="text"
-                />
-            </div>
-
-            <div class="flex items-center gap-2">
-                <a
-                        href="/profile"
-                        class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all"
-                >
-                    <div
-                            class="h-full w-full bg-cover bg-center"
-                            th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                            th:if="${user != null and user.avatarUrl != null}"
-                    ></div>
-                    <span
-                            th:unless="${user != null and user.avatarUrl != null}"
-                            class="material-symbols-outlined text-2xl"
-                    >person</span
-                    >
-                </a>
-
-                <a
-                        href="/cart"
-                        class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
-                >
-              <span class="material-symbols-outlined text-2xl"
-              >shopping_cart</span
-              >
-                    <span
-                            class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg cart-badge"
-                    >0</span
-                    >
-                </a>
-            </div>
-        </div>
-    </div>
-</header>
-<!-- END: MainHeader -->
-<div
-        class="flex-grow flex w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 gap-8"
->
-    <!-- BEGIN: Sidebar -->
-    <aside class="w-64 flex-shrink-0 hidden lg:block">
+      <!-- BEGIN: Sidebar -->
+      <aside class="w-64 flex-shrink-0 hidden lg:block">
         <!-- User Profile Summary -->
         <div class="flex items-center space-x-4 mb-8">
-            <img
-                    alt="Alex Johnson"
-                    class="w-12 h-12 rounded-full border-2 border-white/10"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuABqhaUBOGtsCbzggHJkojuQ5UArYo3Dh5P-BnrQzXxVj7NDC7ru8O1v3g9mEH15WFz0EM8ORpRNQIi2GqYDjFY6xR7A0JK8hCxxfIlA8UfqiqW_xhtIjxgXMBev0RwBb6-qZujjGw76zwsmnRpZAjmybDsWNx4_NcnHDgci2q6fnrk9IxrI4XqDb5DRvgYHmDn1CNmWFALNFbzrlQV215FHkcj5YumJYSOQd6p69X2myMHyS622QklbTdO5ar4iXFcWDOIqn4Xmls"
-            />
-            <div>
-                <h2 class="text-white font-semibold text-lg">Alex Johnson</h2>
-                <p class="text-gray-500 text-sm">Pro Member</p>
-            </div>
+          <img
+            alt="Alex Johnson"
+            class="w-12 h-12 rounded-full border-2 border-white/10"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuABqhaUBOGtsCbzggHJkojuQ5UArYo3Dh5P-BnrQzXxVj7NDC7ru8O1v3g9mEH15WFz0EM8ORpRNQIi2GqYDjFY6xR7A0JK8hCxxfIlA8UfqiqW_xhtIjxgXMBev0RwBb6-qZujjGw76zwsmnRpZAjmybDsWNx4_NcnHDgci2q6fnrk9IxrI4XqDb5DRvgYHmDn1CNmWFALNFbzrlQV215FHkcj5YumJYSOQd6p69X2myMHyS622QklbTdO5ar4iXFcWDOIqn4Xmls"
+          />
+          <div>
+            <h2 class="text-white font-semibold text-lg">Alex Johnson</h2>
+            <p class="text-gray-500 text-sm">Pro Member</p>
+          </div>
         </div>
         <!-- Sidebar Navigation -->
         <nav class="space-y-2">
-            <a
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
-                    href="#"
+          <a
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
+            href="#"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
             >
-                <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewbox="0 0 24 24"
-                >
-                    <path
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                    ></path>
-                </svg>
-                <span class="font-medium">Profile</span>
-            </a>
-            <a
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
-                    href="#"
+              <path
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="font-medium">Profile</span>
+          </a>
+          <a
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
+            href="#"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
             >
-                <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewbox="0 0 24 24"
-                >
-                    <path
-                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                    ></path>
-                </svg>
-                <span class="font-medium">My Orders</span>
-            </a>
-            <a
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
-                    href="#"
+              <path
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="font-medium">My Orders</span>
+          </a>
+          <a
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
+            href="#"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
             >
-                <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewbox="0 0 24 24"
-                >
-                    <path
-                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                    ></path>
-                </svg>
-                <span class="font-medium">Change Password</span>
-            </a>
-            <a
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border border-primary/20 transition-colors"
-                    href="#"
+              <path
+                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="font-medium">Change Password</span>
+          </a>
+          <a
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border border-primary/20 transition-colors"
+            href="#"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
             >
-                <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewbox="0 0 24 24"
-                >
-                    <path
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                    ></path>
-                </svg>
-                <span class="font-medium">Order History</span>
-            </a>
+              <path
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="font-medium">Order History</span>
+          </a>
         </nav>
         <div class="mt-8 pt-8 border-t border-white/10">
-            <a
-                    class="flex items-center space-x-3 px-4 py-2 text-red-500 hover:text-red-400 transition-colors"
-                    href="#"
+          <a
+            class="flex items-center space-x-3 px-4 py-2 text-red-500 hover:text-red-400 transition-colors"
+            href="#"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
             >
-                <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewbox="0 0 24 24"
-                >
-                    <path
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                    ></path>
-                </svg>
-                <span class="font-medium">Sign Out</span>
-            </a>
+              <path
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="font-medium">Sign Out</span>
+          </a>
         </div>
-    </aside>
-    <!-- END: Sidebar -->
-    <!-- BEGIN: MainContent -->
-    <main class="flex-1 min-w-0 flex flex-col gap-6">
+      </aside>
+      <!-- END: Sidebar -->
+      <!-- BEGIN: MainContent -->
+      <main class="flex-1 min-w-0 flex flex-col gap-6">
         <!-- Page Header -->
         <div
-                class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+          class="flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
-            <div>
-                <h1 class="text-3xl font-bold text-white mb-2">Order History</h1>
-                <p class="text-brand-text-muted">
-                    Check the status of recent orders and manage your sportswear
-                    returns.
-                </p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium"
-                >
-                    <i class="fa-solid fa-filter"></i> Filter
-                </button>
-                <button
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium"
-                >
-                    <i class="fa-solid fa-download"></i> Export
-                </button>
-            </div>
+          <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Order History</h1>
+            <p class="text-brand-text-muted">
+              Check the status of recent orders and manage your sportswear
+              returns.
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium"
+            >
+              <i class="fa-solid fa-filter"></i> Filter
+            </button>
+            <button
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-border text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors text-sm font-medium"
+            >
+              <i class="fa-solid fa-download"></i> Export
+            </button>
+          </div>
         </div>
         <!-- Order Table -->
         <div
-                class="bg-slate-900 rounded-xl border border-white/10 overflow-hidden"
+          class="bg-slate-900 rounded-xl border border-white/10 overflow-hidden"
         >
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm whitespace-nowrap">
-                    <thead
-                            class="text-xs text-slate-400 uppercase bg-slate-900 border-b border-white/10"
-                    >
-                    <tr>
-                        <th class="px-6 py-4 font-semibold" scope="col">Order ID</th>
-                        <th class="px-6 py-4 font-semibold" scope="col">Date</th>
-                        <th class="px-6 py-4 font-semibold" scope="col">Total</th>
-                        <th class="px-6 py-4 font-semibold" scope="col">Status</th>
-                        <th class="px-6 py-4 font-semibold text-right" scope="col">
-                            Action
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/10">
-                    <!-- Row 1 -->
-                    <tr class="hover:bg-brand-card-bg transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="text-white font-medium">#BR-9921</div>
-                            <div class="text-brand-text-muted text-xs mt-1">
-                                2 Items
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-300">Oct 24, 2023</td>
-                        <td class="px-6 py-4 text-white font-medium">$124.00</td>
-                        <td class="px-6 py-4">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+              <thead
+                class="text-xs text-slate-400 uppercase bg-slate-900 border-b border-white/10"
+              >
+                <tr>
+                  <th class="px-6 py-4 font-semibold" scope="col">Order ID</th>
+                  <th class="px-6 py-4 font-semibold" scope="col">Date</th>
+                  <th class="px-6 py-4 font-semibold" scope="col">Total</th>
+                  <th class="px-6 py-4 font-semibold" scope="col">Status</th>
+                  <th class="px-6 py-4 font-semibold text-right" scope="col">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <!-- Row 1 -->
+                <tr class="hover:bg-brand-card-bg transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="text-white font-medium">#BR-9921</div>
+                    <div class="text-brand-text-muted text-xs mt-1">
+                      2 Items
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-gray-300">Oct 24, 2023</td>
+                  <td class="px-6 py-4 text-white font-medium">$124.00</td>
+                  <td class="px-6 py-4">
                     <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-transit text-brand-status-transit-text"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-transit text-brand-status-transit-text"
                     >
                       <i class="fa-solid fa-truck-fast text-[10px]"></i> In
                       Transit
                     </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a
-                                    class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                                    href="#"
-                            >View Details</a
-                            >
-                        </td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-brand-card-bg transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="text-white font-medium">#BR-9845</div>
-                            <div class="text-brand-text-muted text-xs mt-1">1 Item</div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-300">Oct 12, 2023</td>
-                        <td class="px-6 py-4 text-white font-medium">$89.50</td>
-                        <td class="px-6 py-4">
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a
+                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
+                      href="#"
+                      >View Details</a
+                    >
+                  </td>
+                </tr>
+                <!-- Row 2 -->
+                <tr class="hover:bg-brand-card-bg transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="text-white font-medium">#BR-9845</div>
+                    <div class="text-brand-text-muted text-xs mt-1">1 Item</div>
+                  </td>
+                  <td class="px-6 py-4 text-gray-300">Oct 12, 2023</td>
+                  <td class="px-6 py-4 text-white font-medium">$89.50</td>
+                  <td class="px-6 py-4">
                     <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
                     >
                       <i class="fa-solid fa-circle-check text-[10px]"></i>
                       Delivered
                     </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a
-                                    class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                                    href="#"
-                            >View Details</a
-                            >
-                        </td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-brand-card-bg transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="text-white font-medium">#BR-9712</div>
-                            <div class="text-brand-text-muted text-xs mt-1">
-                                4 Items
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-300">Sep 28, 2023</td>
-                        <td class="px-6 py-4 text-white font-medium">$210.00</td>
-                        <td class="px-6 py-4">
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a
+                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
+                      href="#"
+                      >View Details</a
+                    >
+                  </td>
+                </tr>
+                <!-- Row 3 -->
+                <tr class="hover:bg-brand-card-bg transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="text-white font-medium">#BR-9712</div>
+                    <div class="text-brand-text-muted text-xs mt-1">
+                      4 Items
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-gray-300">Sep 28, 2023</td>
+                  <td class="px-6 py-4 text-white font-medium">$210.00</td>
+                  <td class="px-6 py-4">
                     <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
                     >
                       <i class="fa-solid fa-circle-check text-[10px]"></i>
                       Delivered
                     </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a
-                                    class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                                    href="#"
-                            >View Details</a
-                            >
-                        </td>
-                    </tr>
-                    <!-- Row 4 -->
-                    <tr class="hover:bg-brand-card-bg transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="text-white font-medium">#BR-9601</div>
-                            <div class="text-brand-text-muted text-xs mt-1">1 Item</div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-300">Sep 15, 2023</td>
-                        <td class="px-6 py-4 text-white font-medium">$45.00</td>
-                        <td class="px-6 py-4">
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a
+                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
+                      href="#"
+                      >View Details</a
+                    >
+                  </td>
+                </tr>
+                <!-- Row 4 -->
+                <tr class="hover:bg-brand-card-bg transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="text-white font-medium">#BR-9601</div>
+                    <div class="text-brand-text-muted text-xs mt-1">1 Item</div>
+                  </td>
+                  <td class="px-6 py-4 text-gray-300">Sep 15, 2023</td>
+                  <td class="px-6 py-4 text-white font-medium">$45.00</td>
+                  <td class="px-6 py-4">
                     <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-cancelled text-brand-status-cancelled-text"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-cancelled text-brand-status-cancelled-text"
                     >
                       <i class="fa-solid fa-xmark text-[10px]"></i> Cancelled
                     </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a
-                                    class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                                    href="#"
-                            >View Details</a
-                            >
-                        </td>
-                    </tr>
-                    <!-- Row 5 -->
-                    <tr class="hover:bg-brand-card-bg transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="text-white font-medium">#BR-9588</div>
-                            <div class="text-brand-text-muted text-xs mt-1">
-                                3 Items
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-300">Aug 30, 2023</td>
-                        <td class="px-6 py-4 text-white font-medium">$156.20</td>
-                        <td class="px-6 py-4">
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a
+                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
+                      href="#"
+                      >View Details</a
+                    >
+                  </td>
+                </tr>
+                <!-- Row 5 -->
+                <tr class="hover:bg-brand-card-bg transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="text-white font-medium">#BR-9588</div>
+                    <div class="text-brand-text-muted text-xs mt-1">
+                      3 Items
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-gray-300">Aug 30, 2023</td>
+                  <td class="px-6 py-4 text-white font-medium">$156.20</td>
+                  <td class="px-6 py-4">
                     <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-status-delivered text-brand-status-delivered-text"
                     >
                       <i class="fa-solid fa-circle-check text-[10px]"></i>
                       Delivered
                     </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a
-                                    class="text-brand-accent hover:text-orange-400 font-medium text-sm"
-                                    href="#"
-                            >View Details</a
-                            >
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- Pagination -->
-            <div
-                    class="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-slate-900"
-            >
-                <span class="text-sm text-slate-400">Showing 5 of 24 orders</span>
-                <nav class="flex items-center gap-1">
-                    <button
-                            class="w-8 h-8 flex items-center justify-center rounded text-brand-text-muted hover:bg-brand-card-bg hover:text-white transition-colors"
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a
+                      class="text-brand-accent hover:text-orange-400 font-medium text-sm"
+                      href="#"
+                      >View Details</a
                     >
-                        <i class="fa-solid fa-chevron-left text-xs"></i>
-                    </button>
-                    <button
-                            class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white font-medium transition-colors"
-                    >
-                        1
-                    </button>
-                    <button
-                            class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
-                    >
-                        2
-                    </button>
-                    <button
-                            class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
-                    >
-                        3
-                    </button>
-                    <span
-                            class="w-8 h-8 flex items-center justify-center text-slate-400"
-                    >...</span
-                    >
-                    <button
-                            class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
-                    >
-                        5
-                    </button>
-                    <button
-                            class="w-8 h-8 flex items-center justify-center rounded text-brand-text-muted hover:bg-brand-card-bg hover:text-white transition-colors"
-                    >
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                    </button>
-                </nav>
-            </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <div
+            class="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-slate-900"
+          >
+            <span class="text-sm text-slate-400">Showing 5 of 24 orders</span>
+            <nav class="flex items-center gap-1">
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded text-brand-text-muted hover:bg-brand-card-bg hover:text-white transition-colors"
+              >
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white font-medium transition-colors"
+              >
+                1
+              </button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
+              >
+                2
+              </button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
+              >
+                3
+              </button>
+              <span
+                class="w-8 h-8 flex items-center justify-center text-slate-400"
+                >...</span
+              >
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded text-brand-text hover:bg-brand-card-bg hover:text-white transition-colors"
+              >
+                5
+              </button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded text-brand-text-muted hover:bg-brand-card-bg hover:text-white transition-colors"
+              >
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            </nav>
+          </div>
         </div>
         <!-- Bottom Cards Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
-            <!-- Support Card -->
+          <!-- Support Card -->
+          <div
+            class="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 border border-primary/20 rounded-xl p-6 flex items-start gap-4"
+          >
             <div
-                    class="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 border border-primary/20 rounded-xl p-6 flex items-start gap-4"
+              class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0"
             >
-                <div
-                        class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0"
-                >
-                    <i class="fa-solid fa-headset text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold text-lg mb-1">
-                        Need help with an order?
-                    </h3>
-                    <p class="text-brand-text-muted text-sm mb-4 leading-relaxed">
-                        Our support team is available 24/7 to help you with returns,
-                        sizes, or shipping issues.
-                    </p>
-                    <a
-                            class="text-primary hover:text-orange-300 font-medium text-sm transition-colors"
-                            href="#"
-                    >Contact Support</a
-                    >
-                </div>
+              <i class="fa-solid fa-headset text-xl"></i>
             </div>
-            <!-- Premium Card -->
+            <div>
+              <h3 class="text-white font-semibold text-lg mb-1">
+                Need help with an order?
+              </h3>
+              <p class="text-brand-text-muted text-sm mb-4 leading-relaxed">
+                Our support team is available 24/7 to help you with returns,
+                sizes, or shipping issues.
+              </p>
+              <a
+                class="text-primary hover:text-orange-300 font-medium text-sm transition-colors"
+                href="#"
+                >Contact Support</a
+              >
+            </div>
+          </div>
+          <!-- Premium Card -->
+          <div
+            class="bg-slate-900 border border-white/10 rounded-xl p-6 flex items-start gap-4"
+          >
             <div
-                    class="bg-slate-900 border border-white/10 rounded-xl p-6 flex items-start gap-4"
+              class="w-12 h-12 rounded-full bg-background-dark text-slate-400 flex items-center justify-center flex-shrink-0 border border-white/10"
             >
-                <div
-                        class="w-12 h-12 rounded-full bg-background-dark text-slate-400 flex items-center justify-center flex-shrink-0 border border-white/10"
-                >
-                    <i class="fa-solid fa-crown"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold text-lg mb-1">
-                        Upgrade to Premium
-                    </h3>
-                    <p class="text-brand-text-muted text-sm mb-4 leading-relaxed">
-                        Get free 2-day shipping on all orders and early access to new
-                        collections.
-                    </p>
-                    <a
-                            class="text-white hover:text-gray-300 font-medium text-sm transition-colors"
-                            href="#"
-                    >Learn More</a
-                    >
-                </div>
+              <i class="fa-solid fa-crown"></i>
             </div>
-        </div>
-    </main>
-    <!-- END: MainContent -->
-</div>
-<footer class="bg-black/40 border-t border-white/10 py-20">
-    <div
-            class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12"
-    >
-        <div class="space-y-6">
-            <div class="flex items-center gap-3">
-                <div
-                        class="size-8 bg-primary rounded flex items-center justify-center text-white"
-                >
-                    <span class="material-symbols-outlined">bolt</span>
-                </div>
-                <h1 class="text-2xl font-black tracking-tighter uppercase italic">
-                    Brosport
-                </h1>
+            <div>
+              <h3 class="text-white font-semibold text-lg mb-1">
+                Upgrade to Premium
+              </h3>
+              <p class="text-brand-text-muted text-sm mb-4 leading-relaxed">
+                Get free 2-day shipping on all orders and early access to new
+                collections.
+              </p>
+              <a
+                class="text-white hover:text-gray-300 font-medium text-sm transition-colors"
+                href="#"
+                >Learn More</a
+              >
             </div>
-            <p class="text-sm text-slate-500 leading-relaxed">
-                Premium performance gear for the modern athlete. Push your limits
-                with science-backed engineering.
-            </p>
-            <div class="flex gap-4">
-                <a
-                        class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-                        href="#"
-                ><span class="material-symbols-outlined text-sm"
-                >social_leaderboard</span
-                ></a
-                >
-                <a
-                        class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-                        href="#"
-                ><span class="material-symbols-outlined text-sm"
-                >alternate_email</span
-                ></a
-                >
-            </div>
+          </div>
         </div>
-        <div class="space-y-6">
-            <h6 class="font-black uppercase italic tracking-widest text-sm">
-                Shop
-            </h6>
-            <ul class="space-y-4 text-sm text-slate-400">
-                <li><a class="hover:text-primary" href="#">New Arrivals</a></li>
-                <li><a class="hover:text-primary" href="#">Running Shoes</a></li>
-                <li><a class="hover:text-primary" href="#">Performance Tops</a></li>
-                <li><a class="hover:text-primary" href="#">Training Gear</a></li>
-            </ul>
-        </div>
-        <div class="space-y-6">
-            <h6 class="font-black uppercase italic tracking-widest text-sm">
-                Support
-            </h6>
-            <ul class="space-y-4 text-sm text-slate-400">
-                <li><a class="hover:text-primary" href="#">Order Tracking</a></li>
-                <li>
-                    <a class="hover:text-primary" href="#">Returns &amp; Exchanges</a>
-                </li>
-                <li><a class="hover:text-primary" href="#">Sizing Guide</a></li>
-                <li><a class="hover:text-primary" href="#">Contact Us</a></li>
-            </ul>
-        </div>
-        <div class="space-y-6">
-            <h6 class="font-black uppercase italic tracking-widest text-sm">
-                Newsletter
-            </h6>
-            <p class="text-sm text-slate-500">
-                Get elite access to new drops and training tips.
-            </p>
-            <div class="flex border-b border-white/20 pb-2">
-                <input
-                        class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-600"
-                        placeholder="Email Address"
-                        type="email"
-                />
-                <button class="text-primary font-bold uppercase text-xs">
-                    Join
-                </button>
-            </div>
-        </div>
+      </main>
+      <!-- END: MainContent -->
     </div>
-    <div
-            class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4"
-    >
+    <footer class="bg-black/40 border-t border-white/10 py-20">
+      <div
+        class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12"
+      >
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <div
+              class="size-8 bg-primary rounded flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <h1 class="text-2xl font-black tracking-tighter uppercase italic">
+              Brosport
+            </h1>
+          </div>
+          <p class="text-sm text-slate-500 leading-relaxed">
+            Premium performance gear for the modern athlete. Push your limits
+            with science-backed engineering.
+          </p>
+          <div class="flex gap-4">
+            <a
+              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"
+              ><span class="material-symbols-outlined text-sm"
+                >social_leaderboard</span
+              ></a
+            >
+            <a
+              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+              href="#"
+              ><span class="material-symbols-outlined text-sm"
+                >alternate_email</span
+              ></a
+            >
+          </div>
+        </div>
+        <div class="space-y-6">
+          <h6 class="font-black uppercase italic tracking-widest text-sm">
+            Shop
+          </h6>
+          <ul class="space-y-4 text-sm text-slate-400">
+            <li><a class="hover:text-primary" href="#">New Arrivals</a></li>
+            <li><a class="hover:text-primary" href="#">Running Shoes</a></li>
+            <li><a class="hover:text-primary" href="#">Performance Tops</a></li>
+            <li><a class="hover:text-primary" href="#">Training Gear</a></li>
+          </ul>
+        </div>
+        <div class="space-y-6">
+          <h6 class="font-black uppercase italic tracking-widest text-sm">
+            Support
+          </h6>
+          <ul class="space-y-4 text-sm text-slate-400">
+            <li><a class="hover:text-primary" href="#">Order Tracking</a></li>
+            <li>
+              <a class="hover:text-primary" href="#">Returns &amp; Exchanges</a>
+            </li>
+            <li><a class="hover:text-primary" href="#">Sizing Guide</a></li>
+            <li><a class="hover:text-primary" href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="space-y-6">
+          <h6 class="font-black uppercase italic tracking-widest text-sm">
+            Newsletter
+          </h6>
+          <p class="text-sm text-slate-500">
+            Get elite access to new drops and training tips.
+          </p>
+          <div class="flex border-b border-white/20 pb-2">
+            <input
+              class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-600"
+              placeholder="Email Address"
+              type="email"
+            />
+            <button class="text-primary font-bold uppercase text-xs">
+              Join
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4"
+      >
         <p class="text-[10px] text-slate-600 uppercase tracking-widest">
-            © 2023 Brosport International. All Rights Reserved.
+          © 2023 Brosport International. All Rights Reserved.
         </p>
         <div
-                class="flex gap-6 text-[10px] text-slate-600 uppercase tracking-widest"
+          class="flex gap-6 text-[10px] text-slate-600 uppercase tracking-widest"
         >
-            <a class="hover:text-slate-400" href="#">Privacy Policy</a>
-            <a class="hover:text-slate-400" href="#">Terms of Service</a>
-            <a class="hover:text-slate-400" href="#">Cookie Settings</a>
+          <a class="hover:text-slate-400" href="#">Privacy Policy</a>
+          <a class="hover:text-slate-400" href="#">Terms of Service</a>
+          <a class="hover:text-slate-400" href="#">Cookie Settings</a>
         </div>
-    </div>
-</footer>
-</body>
+      </div>
+    </footer>
+  </body>
 </html>

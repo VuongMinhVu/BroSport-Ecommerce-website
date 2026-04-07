@@ -22,6 +22,10 @@ public class ProductFilterRequest {
     Integer brandId;
     Integer genderId;
     Integer sportId;
+    String categories;
+    String brands;
+    String gender;
+    String sports;
     Integer colorId;
     Integer sizeId;
     BigDecimal minPrice;
@@ -32,7 +36,7 @@ public class ProductFilterRequest {
     Integer page = 0;
 
     @Builder.Default
-    Integer size = 10;
+    Integer size = 12;
 
     String sortBy;
     String sortDir;
