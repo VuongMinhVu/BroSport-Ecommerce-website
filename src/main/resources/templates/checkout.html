@@ -553,9 +553,12 @@
                   }
                 } else {
                   const errorData = await response.json();
+                  // Đổi chữ "message" thành "Message" (viết hoa chữ M) để bắt đúng dữ liệu Backend trả về
                   alert(
                     "Lỗi đặt hàng: " +
-                      (errorData.message || "Vui lòng kiểm tra lại thông tin!"),
+                      (errorData.Message ||
+                        errorData.message ||
+                        "Vui lòng kiểm tra lại thông tin!"),
                   );
                   resetButton();
                 }

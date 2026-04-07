@@ -37,13 +37,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
 
-        // SỬA LỖI 1: TÌM VÀ TẠO BIẾN `user` TỪ DATABASE THÔNG QUA `userId`
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại!"));
 
-        // 1. Lấy giỏ hàng
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
+        // ĐÃ XÓA ĐOẠN TÌM GIỎ HÀNG BỊ THỪA Ở ĐÂY
 
         double subtotalVal = 0;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -51,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 
         // KIỂM TRA LUỒNG MUA HÀNG
         if (Boolean.TRUE.equals(request.getIsBuyNow())) {
-            // 1. Luồng MUA NGAY (Chỉ lấy 1 sản phẩm)
+            // 1. Luồng MUA NGAY (Không quan tâm đến giỏ hàng)
             ProductDetail pd = productDetailRepository.findById(request.getProductDetailId())
                     .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại!"));
 
@@ -63,10 +60,14 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderItems.add(item);
         } else {
-            // 2. Luồng MUA TỪ GIỎ HÀNG
-            // SỬA LỖI 2: Dùng trực tiếp tham số `userId` thay vì gọi `request.getUserId()`
+            // 2. Luồng MUA TỪ GIỎ HÀNG (Chỉ tìm giỏ hàng khi rơi vào luồng này)
             cartToDelete = cartRepository.findByUserId(userId)
-                    .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng!"));
+
+            // Bổ sung lớp bảo vệ: Nếu có giỏ hàng nhưng bên trong không có sản phẩm nào
+            if (cartToDelete.getCartDetails() == null || cartToDelete.getCartDetails().isEmpty()) {
+                throw new RuntimeException("Giỏ hàng của bạn đang trống!");
+            }
 
             subtotalVal = cartToDelete.getCartDetails().stream()
                     .mapToDouble(d -> d.getProductDetail().getProduct().getShowPrice().doubleValue() * d.getQuantity())
@@ -83,8 +84,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         BigDecimal subtotal = new BigDecimal(subtotalVal);
-        BigDecimal shippingFee = BigDecimal.ZERO;
+
+        // Tính phí ship (Miễn phí nếu tổng > 1.000.000đ)
+        BigDecimal shippingFee = (subtotalVal > 0 && subtotalVal < 1000000)
+                ? new BigDecimal(30000)
+                : BigDecimal.ZERO;
+
         BigDecimal discount = calculateDiscount(request.getVoucherCode(), subtotalVal);
+
         BigDecimal finalAmount = subtotal.add(shippingFee).subtract(discount);
 
         String method = request.getPaymentMethod().toUpperCase();
