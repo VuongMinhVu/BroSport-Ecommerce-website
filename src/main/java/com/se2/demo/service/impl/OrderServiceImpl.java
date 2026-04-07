@@ -36,7 +36,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
-        // 1. Lấy giỏ hàng
+        // 1. Lấy thông tin User (Sửa lỗi thiếu biến 'user')
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại!"));
+
+        // 2. Lấy giỏ hàng
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
@@ -46,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
 
         // KIỂM TRA LUỒNG MUA HÀNG
         if (Boolean.TRUE.equals(request.getIsBuyNow())) {
-            // 1. Luồng MUA NGAY (Chỉ lấy 1 sản phẩm)
+            // Luồng MUA NGAY
             ProductDetail pd = productDetailRepository.findById(request.getProductDetailId())
                     .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại!"));
 
@@ -58,8 +62,8 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderItems.add(item);
         } else {
-            // 2. Luồng MUA TỪ GIỎ HÀNG
-            cartToDelete = cartRepository.findByUserId(request.getUserId())
+            // Luồng MUA TỪ GIỎ HÀNG (Sửa lỗi request.getUserId() -> dùng userId từ tham số)
+            cartToDelete = cartRepository.findByUserId(userId)
                     .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
             subtotalVal = cartToDelete.getCartDetails().stream()
@@ -83,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
 
         String method = request.getPaymentMethod().toUpperCase();
         if ("COD".equals(method)) {
+            // Bây giờ biến 'user' đã tồn tại để truyền vào đây
             return processCODOrder(request, user, orderItems, cartToDelete, finalAmount, shippingFee, discount);
         } else if ("VNPAY".equals(method)) {
             return processVNPayRequest(request, user, orderItems, cartToDelete, finalAmount, shippingFee, discount,

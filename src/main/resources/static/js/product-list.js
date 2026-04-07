@@ -267,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
        `;
     }
+
     renderProducts(products) {
       if (!products || products.length === 0) {
         this.renderEmpty();
@@ -315,12 +316,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
 
-              <div class="flex items-center justify-between mt-auto pt-4 pointer-events-auto">
-                              <span class="text-2xl font-black text-primary">${new Intl.NumberFormat('en-US').format(Math.round(product.showPrice))}$</span>
-                              <button data-detail-id="${(product.productDetails && product.productDetails.length > 0) ? product.productDetails[0].id : ''}" class="btn-add-to-cart relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
-                                <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
-                              </button>
-                            </div>
+              <div class="mt-auto pt-4 flex flex-col gap-3 pointer-events-auto">
+                <div class="flex items-center justify-between">
+                  <span class="text-2xl font-black text-primary">${new Intl.NumberFormat('en-US').format(Math.round(product.showPrice))}$</span>
+                  <button data-detail-id="${(product.productDetails && product.productDetails.length > 0) ? product.productDetails[0].id : ''}" class="btn-add-to-cart relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                  </button>
+                </div>
+
+                <button data-id="${product.id}" data-name="${product.name}" data-image="${imageUrl}"
+                        class="compare-btn w-full py-2 rounded-lg border border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
+                        onclick="toggleCompareBtn(this)">
+                  <span class="material-symbols-outlined text-[16px]">compare_arrows</span> Compare
+                </button>
+              </div>
+
             </div>
           </div>
         `;
@@ -330,8 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderPagination(pageData) {
-      // If we don't have container initialized, we need to create it inside an adjacent parent.
-      // Easiest is to search dynamically.
       let container = document.getElementById('pagination-container');
       if (!container) {
         const main = document.querySelector('main .flex-1');
@@ -419,6 +427,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data) { // null if aborted
         ui.renderProducts(data.content);
         ui.renderPagination(data);
+
+        // --- QUAN TRỌNG: Đồng bộ lại nút Compare sau khi render HTML mới ---
+        if (typeof window.syncCompareButtons === 'function') {
+            window.syncCompareButtons();
+        } else if (typeof syncCompareButtons === 'function') {
+            syncCompareButtons();
+        }
       }
     } catch (error) {
       console.error('Failed to load products:', error);

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam; // Để dùng @RequestParam
+import java.util.ArrayList; // Để dùng ArrayList
+import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.se2.demo.service.CartService;
@@ -233,5 +236,40 @@ public class WebController {
     @GetMapping("/search-result")
     public String searchResultPage() {
         return "search-result"; // Trả về file search-result.html
+    }
+
+
+    // so sánh sp
+    @GetMapping("/product-comparison/details")
+    public String showComparisonDetails(
+            @RequestParam(value = "ids", required = false) String ids,
+            Model model) {
+
+        List<ProductResponse> compareList = new ArrayList<>();
+
+        if (ids != null && !ids.isEmpty()) {
+            try {
+                // Tách chuỗi "1,2" và chuyển thành List<Integer> an toàn
+                List<Integer> idList = java.util.Arrays.stream(ids.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .map(Integer::parseInt)
+                        .limit(4) // Giới hạn tối đa 4 sản phẩm để giao diện đẹp
+                        .toList();
+
+                for (Integer id : idList) {
+                    ProductResponse product = productService.getProductById(id);
+                    if (product != null) {
+                        compareList.add(product);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                // Nếu ID không phải là số, chỉ cần log và không làm sập trang
+                System.err.println("Invalid ID format: " + e.getMessage());
+            }
+        }
+
+        model.addAttribute("compareList", compareList);
+        return "pages/product_compare_details";
     }
 }
