@@ -137,14 +137,6 @@
                       >Calculated at next step</span
                     >
                   </div>
-                  <div
-                    class="flex justify-between text-white/70 pb-4 border-b border-white/10"
-                  >
-                    <span>Tax (8%)</span>
-                    <span id="summary-tax" class="text-white font-medium"
-                      >$0.00</span
-                    >
-                  </div>
                   <div class="flex justify-between items-end pt-2">
                     <span class="text-white font-bold text-lg">Total</span>
                     <div class="text-right">
@@ -297,10 +289,10 @@
             </div>
         </div>
         <div class="flex items-center gap-6">
-            <div class="flex items-center bg-[#1a110b] rounded-lg border border-white/10 p-1">
-                <button onclick="updateQty(${item.id}, -1, ${item.productDetailId}, ${cartId})" class="w-8 h-8 text-white">-</button>
-                <input type="number" id="qty-${item.id}" value="${quantity}" readonly class="w-12 bg-transparent text-center text-white border-none">
-                <button onclick="updateQty(${item.id}, 1, ${item.productDetailId}, ${cartId})" class="w-8 h-8 text-white">+</button>
+            <div class="flex items-center bg-[#1a110b] rounded-lg border border-white/10 p-1 min-w-[140px]">
+                <button onclick="updateQty(${item.id}, -1, ${item.productDetailId}, ${cartId})" class="w-9 h-9 text-white text-lg leading-none rounded-md hover:bg-white/10 transition-colors">-</button>
+                <input type="number" id="qty-${item.id}" value="${quantity}" readonly class="w-14 min-w-[3.5rem] bg-transparent text-center text-white font-semibold border-none focus:outline-none [appearance:textfield]">
+                <button onclick="updateQty(${item.id}, 1, ${item.productDetailId}, ${cartId})" class="w-9 h-9 text-white text-lg leading-none rounded-md hover:bg-white/10 transition-colors">+</button>
             </div>
             <p class="text-white font-bold text-lg">$${price}</p>
             <button onclick="deleteItem(${item.id})" class="text-white/30 hover:text-red-500">
@@ -318,13 +310,10 @@
             subtotal += (item.unitPrice || 0) * (item.quantity || 1);
           });
 
-          const tax = subtotal * 0.08;
-          const total = subtotal + tax;
+          const total = subtotal;
 
           document.getElementById("summary-subtotal").textContent =
             `$${subtotal.toFixed(2)}`;
-          document.getElementById("summary-tax").textContent =
-            `$${tax.toFixed(2)}`;
           document.getElementById("summary-total").textContent =
             `$${total.toFixed(2)}`;
         }

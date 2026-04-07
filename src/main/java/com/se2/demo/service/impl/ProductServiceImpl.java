@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         int page = (filterRequest.getPage() != null) ? filterRequest.getPage() : 0;
-        int size = (filterRequest.getSize() != null && filterRequest.getSize() > 0) ? filterRequest.getSize() : 10;
+        int size = (filterRequest.getSize() != null && filterRequest.getSize() > 0) ? filterRequest.getSize() : 12;
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<Product> spec = ProductSpecification.filterProducts(filterRequest);

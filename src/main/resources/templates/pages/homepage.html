@@ -512,7 +512,7 @@
       </section>
 
       <!-- ===================== FLASH SALE + PRODUCTS ===================== -->
-      <!-- API: GET /api/v1/products?size=10&sort=id,desc -->
+      <!-- API: GET /api/v1/products?size=12&sort=id,desc -->
       <section class="bg-white text-black py-20">
         <div class="mx-auto max-w-[95%] px-2">
           <!-- Countdown -->
@@ -1123,10 +1123,10 @@
       }
 
       /* =========================================================
-       3. FLASH SALE PRODUCTS — GET /api/v1/products?size=10&sort=id,desc
+       3. FLASH SALE PRODUCTS — GET /api/v1/products?size=12&sort=id,desc
        ========================================================= */
       async function loadFlashProducts() {
-        const data = await apiFetch("/products?size=10&sort=id,desc");
+        const data = await apiFetch("/products?size=12&sort=id,desc");
         const grid = document.getElementById("flash-products-grid");
         const empty = document.getElementById("flash-products-empty");
 
@@ -1216,7 +1216,7 @@
 
       async function loadNewArrivals() {
         // 1. Call API lấy 10 sản phẩm để khi kéo có cảm giác nhiều
-        const data = await apiFetch("/products?size=10&sort=id,desc");
+        const data = await apiFetch("/products?size=12&sort=id,desc");
         const container = document.getElementById("arrivals-container");
 
         if (!data) {
@@ -1395,9 +1395,9 @@
        ========================================================= */
       async function loadAccessories() {
         // 1. Gọi API lấy 10 sản phẩm
-        let data = await apiFetch("/products?categorySlug=accessories&size=10");
+        let data = await apiFetch("/products?categorySlug=accessories&size=12");
         if (!data || (data.content || data).length === 0) {
-          data = await apiFetch("/products?size=10");
+          data = await apiFetch("/products?size=12");
         }
 
         const grid = document.getElementById("accessories-grid");

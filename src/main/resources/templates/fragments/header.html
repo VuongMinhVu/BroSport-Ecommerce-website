@@ -141,6 +141,9 @@
             "global-dropdown-content",
           );
           const emptyState = document.getElementById("global-empty-state");
+          const cartCountBadge = document.getElementById("cart-count");
+
+          syncCartCount();
 
           if (!searchInput) return;
 
@@ -216,6 +219,29 @@
               searchDropdown.classList.remove("hidden");
             }
           });
+
+          async function syncCartCount() {
+            if (!cartCountBadge) return;
+
+            const userInputElement = document.getElementById("currentUserId");
+            const userId = userInputElement
+              ? parseInt(userInputElement.value, 10) || 1
+              : 1;
+
+            try {
+              const response = await fetch(`/api/v1/carts/user/${userId}`);
+              if (!response.ok) throw new Error("Failed to fetch cart");
+
+              const cart = await response.json();
+              const cartItems = Array.isArray(cart.cartDetails)
+                ? cart.cartDetails
+                : [];
+
+              cartCountBadge.textContent = String(cartItems.length);
+            } catch (error) {
+              cartCountBadge.textContent = "0";
+            }
+          }
         });
       </script>
     </header>

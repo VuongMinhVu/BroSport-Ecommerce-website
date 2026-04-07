@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const PRICE_MAX = 500;
   // Utility: Debounce
   function debounce(func, wait) {
     let timeout;
@@ -27,7 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- State & URL Manager ---
   class StateManager {
     constructor() {
-      this.filters = {
+      this.filters = this.createDefaultFilters();
+      this.initFromUrl();
+      this.initFromPath();
+      this.syncUI();
+    }
+
+    createDefaultFilters() {
+      return {
         keyword: '',
         categories: [],
         brands: [],
@@ -36,10 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         minPrice: null,
         maxPrice: null,
         page: 0,
-        size: 10
+        size: 12
       };
-      this.initFromUrl();
-      this.syncUI();
     }
 
     initFromUrl() {
@@ -54,6 +60,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (params.has('page')) this.filters.page = parseInt(params.get('page')) || 0;
     }
 
+    initFromPath() {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      const categorySlug = pathParts.length >= 2 && pathParts[0] === 'products' ? pathParts[1].toLowerCase() : null;
+
+      if (!categorySlug) return;
+
+      if (categorySlug === 'men' && this.filters.gender.length === 0) {
+        this.filters.gender = ['Men'];
+      } else if (categorySlug === 'women' && this.filters.gender.length === 0) {
+        this.filters.gender = ['Women'];
+      } else if (categorySlug === 'kids' && this.filters.gender.length === 0) {
+        this.filters.gender = ['Kids'];
+      } else if (categorySlug === 'accessories' && this.filters.categories.length === 0) {
+        this.filters.categories = ['Accessories'];
+      }
+    }
+
     updateUrl() {
       const params = new URLSearchParams();
       if (this.filters.keyword) params.set('keyword', this.filters.keyword);
@@ -62,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.filters.gender && this.filters.gender.length > 0) params.set('gender', this.filters.gender.join(','));
       if (this.filters.sports && this.filters.sports.length > 0) params.set('sports', this.filters.sports.join(','));
       if (this.filters.minPrice) params.set('minPrice', this.filters.minPrice);
-      if (this.filters.maxPrice && this.filters.maxPrice < 5000000) params.set('maxPrice', this.filters.maxPrice);
+      if (this.filters.maxPrice && Number(this.filters.maxPrice) < PRICE_MAX) params.set('maxPrice', this.filters.maxPrice);
       if (this.filters.page > 0) params.set('page', this.filters.page);
 
       const path = window.location.pathname;
@@ -76,10 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = document.getElementById('searchInput');
         if (input) input.value = this.filters.keyword;
       }
-      if (this.filters.maxPrice) {
-        const range = document.getElementById('priceRange');
-        if (range) range.value = this.filters.maxPrice;
-      }
+      const range = document.getElementById('priceRange');
+      const priceDisplay = document.getElementById('priceDisplay');
+      const currentMaxPrice = this.filters.maxPrice || PRICE_MAX;
+      if (range) range.value = currentMaxPrice;
+      if (priceDisplay) priceDisplay.textContent = `${new Intl.NumberFormat('en-US').format(currentMaxPrice)}$`;
       if (this.filters.categories) {
         document.querySelectorAll('.category-filter').forEach(cb => {
           cb.checked = this.filters.categories.includes(cb.value);
@@ -124,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filters.brands && filters.brands.length > 0) params.append('brands', filters.brands.join(','));
         if (filters.gender && filters.gender.length > 0) params.append('gender', filters.gender.join(','));
         if (filters.sports && filters.sports.length > 0) params.append('sports', filters.sports.join(','));
-        if (filters.maxPrice) {
+        if (filters.maxPrice && Number(filters.maxPrice) < PRICE_MAX) {
           params.append('minPrice', filters.minPrice || 0);
           params.append('maxPrice', filters.maxPrice);
         } else if (filters.minPrice) {
@@ -133,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         params.append('page', filters.page);
         params.append('size', filters.size);
 
-        const response = await fetch(`/api/v1/search/products?${params.toString()}`, {
+        const response = await fetch(`/api/v1/products?${params.toString()}`, {
           signal: this.abortController.signal,
           headers: {
             'Accept': 'application/json'
@@ -157,10 +181,50 @@ document.addEventListener('DOMContentLoaded', () => {
     constructor() {
       this.container = document.getElementById('product-container');
       this.paginationContainer = document.getElementById('pagination-container');
+      this.gridViewButton = document.getElementById('btn-grid-view');
+      this.listViewButton = document.getElementById('btn-list-view');
+      this.currentProducts = [];
     }
 
     get isListView() {
-      return document.getElementById('btn-list-view')?.classList.contains('text-primary');
+      return this.listViewButton?.classList.contains('text-primary');
+    }
+
+    readProductsFromDom() {
+      if (!this.container) return [];
+
+      return Array.from(this.container.querySelectorAll('[data-product-card]')).map((card) => ({
+        card,
+        imageWrapper: card.querySelector('[data-product-image-wrapper]'),
+        detailsWrapper: card.querySelector('[data-product-details]'),
+      }));
+    }
+
+    setViewMode(isList) {
+      if (!this.container || !this.gridViewButton || !this.listViewButton) return;
+
+      this.gridViewButton.className = isList
+        ? 'p-1.5 text-slate-500 hover:text-white transition-colors rounded'
+        : 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors';
+      this.listViewButton.className = isList
+        ? 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors'
+        : 'p-1.5 text-slate-500 hover:text-white transition-colors rounded';
+
+      this.container.className = isList
+        ? 'grid grid-cols-1 gap-6'
+        : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+
+      this.currentProducts.forEach(({ card, imageWrapper, detailsWrapper }) => {
+        card.className = `product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? 'md:flex-row md:items-center' : ''}`;
+        if (imageWrapper) {
+          imageWrapper.className = isList
+            ? 'img-wrapper relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5 bg-gradient-to-br from-slate-800 to-slate-900'
+            : 'img-wrapper aspect-square bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full';
+        }
+        if (detailsWrapper) {
+          detailsWrapper.className = `details-wrapper p-4 ${isList ? 'md:p-6' : ''} flex-1 flex flex-col justify-center relative z-20 pointer-events-none`;
+        }
+      });
     }
 
     renderLoading() {
@@ -222,14 +286,14 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (product.productImages && product.productImages.length > 0) {
             imageUrl = product.productImages[0].imageUrl;
           }
-          const brand = product.brandName || product.brand || 'Brand';
+          const brand = product.brandName || product.brand?.name || product.brand || 'Brand';
 
           return `
-          <div class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
+          <div data-product-card class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
 
             <a href="/product/${product.slug}" class="absolute inset-0 z-10 cursor-pointer block"></a>
 
-            <div class="img-wrapper ${isList ? "relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5" : "aspect-square"} bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
+            <div data-product-image-wrapper class="img-wrapper ${isList ? "relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5" : "aspect-square"} bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
               <img src="${imageUrl}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 
               <div class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
@@ -239,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <div class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
+            <div data-product-details class="details-wrapper p-4 ${isList ? "md:p-6" : ""} flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <h3 class="font-bold text-white text-lg leading-tight pointer-events-auto hover:text-primary transition-colors">${product.name}</h3>
@@ -262,6 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         })
         .join("");
+      this.currentProducts = this.readProductsFromDom();
     }
 
     renderPagination(pageData) {
@@ -345,11 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isInitialLoad = true;
 
   const loadProducts = async () => {
-    // If it's initial load and there are no specific filters in URL, we could optionally skip fetch,
-    // because Thymeleaf already rendered them. But we must update if URL has filters different than server.
-    if (!isInitialLoad) {
-      ui.renderLoading();
-    }
+    ui.renderLoading();
 
     state.updateUrl();
 
@@ -367,15 +428,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // If there are url query params, fetch immediately to sync state. 
-  // Otherwise, leave the SSR HTML as is until Interaction.
-  if (window.location.search) {
-    loadProducts();
-  }
+  loadProducts();
 
   // Event Listeners Setup
   const searchInput = document.getElementById('searchInput');
   const priceRange = document.getElementById('priceRange');
+  const applyFiltersBtn = document.getElementById('applyFiltersBtn');
   const categoryCheckboxes = document.querySelectorAll('.category-filter');
   const brandCheckboxes = document.querySelectorAll('.brand-filter');
   const genderCheckboxes = document.querySelectorAll('.gender-filter');
@@ -423,10 +481,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Gọi API thì vẫn giữ debounce
     priceRange.addEventListener('input', debounce((e) => {
-      state.filters.maxPrice = e.target.value;
+      state.filters.maxPrice = Number(e.target.value) >= PRICE_MAX ? null : e.target.value;
+      state.filters.minPrice = state.filters.maxPrice ? 0 : null;
       state.filters.page = 0;
       loadProducts();
     }, 300));
+  }
+
+  if (priceRange) {
+    const syncPriceDisplay = (value) => {
+      const priceDisplay = document.getElementById('priceDisplay');
+      if (priceDisplay) {
+        priceDisplay.textContent = `${new Intl.NumberFormat('en-US').format(value)}$`;
+      }
+    };
+
+    syncPriceDisplay(state.filters.maxPrice || priceRange.value || PRICE_MAX);
+
+    priceRange.addEventListener('input', () => {
+      syncPriceDisplay(priceRange.value);
+    });
+
+    priceRange.addEventListener('change', () => {
+      state.filters.maxPrice = Number(priceRange.value) >= PRICE_MAX ? null : priceRange.value;
+      state.filters.minPrice = state.filters.maxPrice ? 0 : null;
+    });
   }
 
   // Delegation for pagination clicks and clear button
@@ -445,7 +524,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clearBtn = e.target.closest('#clearFiltersBtn');
     if (clearBtn) {
-      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = state.createDefaultFilters();
+      state.initFromPath();
       state.updateUrl();
       state.syncUI();
       isInitialLoad = false;
@@ -523,7 +603,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const resetBtn = document.getElementById('resetFiltersBtn');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
-      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = state.createDefaultFilters();
+      state.initFromPath();
       state.updateUrl();
       state.syncUI();
       isInitialLoad = false;
@@ -531,13 +612,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', () => {
+      state.filters.page = 0;
+      isInitialLoad = false;
+      loadProducts();
+    });
+  }
+
+  const gridViewButton = document.getElementById('btn-grid-view');
+  const listViewButton = document.getElementById('btn-list-view');
+
+  if (gridViewButton && listViewButton) {
+    gridViewButton.addEventListener('click', () => ui.setViewMode(false));
+    listViewButton.addEventListener('click', () => ui.setViewMode(true));
+    ui.setViewMode(ui.isListView);
+  }
+
   // Handle browser back/forward buttons
   window.addEventListener('popstate', (event) => {
     if (event.state) {
       state.filters = event.state;
     } else {
-      state.filters = { keyword: '', categories: [], brands: [], gender: [], sports: [], minPrice: null, maxPrice: null, page: 0, size: 10 };
+      state.filters = state.createDefaultFilters();
       state.initFromUrl();
+      state.initFromPath();
     }
     state.syncUI();
     isInitialLoad = false; // back/forw is not initial load
