@@ -28,19 +28,18 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final ProductDetailRepository productDetailRepository;
     private final VoucherRepository voucherRepository;
-    private final UserRepository userRepository; // THÊM REPOSITORY NÀY
+    private final UserRepository userRepository;
     private final VNPayService vnPayService;
     private final EmailService emailService;
     private final OrderMapper orderMapper;
 
     @Override
     @Transactional
-    public OrderResponse checkout(Integer userId, OrderRequest request, HttpServletRequest httpServletRequest) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại!"));
-
-        // ĐÃ XÓA ĐOẠN TÌM GIỎ HÀNG BỊ THỪA Ở ĐÂY
+    public OrderResponse checkout(User user, OrderRequest request, HttpServletRequest httpServletRequest) {
+        // 1. Lấy giỏ hàng của User (Dùng user.getId() trực tiếp từ tham số)
+        Cart cart = cartRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
         double subtotalVal = 0;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -48,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
         // KIỂM TRA LUỒNG MUA HÀNG
         if (Boolean.TRUE.equals(request.getIsBuyNow())) {
-            // 1. Luồng MUA NGAY (Không quan tâm đến giỏ hàng)
+            // Luồng MUA NGAY: Lấy trực tiếp từ sản phẩm chi tiết
             ProductDetail pd = productDetailRepository.findById(request.getProductDetailId())
                     .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại!"));
 
@@ -60,8 +59,9 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderItems.add(item);
         } else {
+
             // 2. Luồng MUA TỪ GIỎ HÀNG (Chỉ tìm giỏ hàng khi rơi vào luồng này)
-            cartToDelete = cartRepository.findByUserId(userId)
+            cartToDelete = cartRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng!"));
 
             // Bổ sung lớp bảo vệ: Nếu có giỏ hàng nhưng bên trong không có sản phẩm nào
@@ -109,7 +109,6 @@ public class OrderServiceImpl implements OrderService {
             BigDecimal total, BigDecimal ship, BigDecimal discount) {
         Order order = createBaseOrder(request, user, total, ship, discount, "COD", "UNPAID");
 
-        // Trừ tồn kho
         items.forEach(item -> {
             item.setOrder(order);
             ProductDetail pd = item.getProductDetail();
@@ -120,7 +119,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(items);
         Order savedOrder = orderRepository.save(order);
 
-        // Chỉ xóa giỏ hàng nếu mua từ giỏ hàng
         if (cartToDelete != null) {
             recreateEmptyCart(user);
             cartRepository.delete(cartToDelete);
@@ -155,6 +153,7 @@ public class OrderServiceImpl implements OrderService {
     private Order createBaseOrder(OrderRequest request, User user, BigDecimal total, BigDecimal ship,
             BigDecimal discount, String method,
             String paymentStatus) {
+
         return Order.builder()
                 .orderCode("BS" + System.currentTimeMillis())
                 .user(user)
@@ -178,22 +177,19 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Thanh toán thất bại hoặc sai chữ ký!");
 
         String orderCode = request.getParameter("vnp_TxnRef");
-        Order order = orderRepository.findByOrderCode(orderCode)
+        Order order = orderRepository.findByOrderCode(orderCode)    
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng: " + orderCode));
 
         order.setPaymentStatus("PAID");
 
-        // Trừ tồn kho khi thanh toán thành công
         order.getOrderItems().forEach(item -> {
             ProductDetail pd = item.getProductDetail();
             pd.setStockQuantity(pd.getStockQuantity() - item.getQuantity());
             productDetailRepository.save(pd);
         });
 
-        // Xóa giỏ hàng nếu đơn hàng này được tạo từ giỏ hàng (check số lượng items
-        // trong giỏ)
         Cart cart = cartRepository.findByUserId(order.getUser().getId()).orElse(null);
-        if (cart != null && !cart.getCartDetails().isEmpty()) {
+        if (cart != null && !cart.getCartDetails().isEmpty()){
             recreateEmptyCart(order.getUser());
             cartRepository.delete(cart);
         }

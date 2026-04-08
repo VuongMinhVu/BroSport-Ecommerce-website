@@ -41,6 +41,7 @@ public class ProfileController {
 
         model.addAttribute("profileForm", form);
         model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+        model.addAttribute("user", user); // THÊM LẠI DÒNG NÀY
 
         return "account/profile-edit";
     }
@@ -67,7 +68,7 @@ public class ProfileController {
                 form.setAvatarUrl(uploadedUrl);
             } catch (Exception e) {
                 model.addAttribute("errorMessage", "Lỗi tải ảnh lên: " + e.getMessage());
-                return "account/profile-edit"; // Đã xóa model.addAttribute("user"...)
+                return "account/profile-edit";
             }
         } else {
             form.setAvatarUrl(currentUser.getAvatarUrl());
@@ -76,7 +77,7 @@ public class ProfileController {
         // Update dữ liệu vào DB
         User updatedUser = userService.updateProfile(email, form);
 
-        // Đã xóa model.addAttribute("user", updatedUser)
+        model.addAttribute("user", updatedUser);
         model.addAttribute("profileForm", ProfileUpdateRequest.builder()
                 .fullName(updatedUser.getFullName())
                 .phone(updatedUser.getPhone())

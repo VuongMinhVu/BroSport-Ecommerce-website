@@ -30,7 +30,7 @@ public class OrderController {
             Principal principal
     ) {
         User user = userService.getUserByEmail(principal.getName());
-        OrderResponse response = orderService.checkout(user.getId(), request, httpServletRequest);
+        OrderResponse response = orderService.checkout(user, request, httpServletRequest);
 
         return ResponseEntity.ok(response);
     }

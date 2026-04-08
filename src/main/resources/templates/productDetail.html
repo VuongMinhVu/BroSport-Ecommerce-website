@@ -149,7 +149,7 @@
             <span
               class="text-3xl font-black text-white"
               th:if="${product.showPrice != null}"
-              th:text="${#numbers.formatInteger(product.showPrice, 1, 'POINT')} + ' đ'"
+              th:text="${#numbers.formatInteger(product.showPrice, 1, 'POINT')} + ' $'"
             >
             </span>
 
@@ -163,7 +163,7 @@
             <span
               class="text-slate-500 line-through text-lg font-medium"
               th:if="${product.originPrice != null and product.showPrice != null and product.originPrice > product.showPrice}"
-              th:text="${#numbers.formatDecimal(product.originPrice, 1, 'POINT', 0, 'COMMA')} + ' đ'"
+              th:text="${#numbers.formatDecimal(product.originPrice, 1, 'POINT', 0, 'COMMA')} + ' $'"
             >
             </span>
           </div>

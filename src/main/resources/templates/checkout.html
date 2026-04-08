@@ -496,7 +496,6 @@
 
               // ⚠️ LƯU Ý: Giả lập userId = 1 (Giống như cartId lúc nãy)
               // Sau này bạn cần lấy ID thật từ người dùng đang đăng nhập
-              const currentUserId = 1;
 
               // 1. Lấy thông tin "Mua ngay" từ URL hiện tại
               const urlParams = new URLSearchParams(window.location.search);
@@ -506,7 +505,6 @@
 
               // 2. Tạo Payload gửi cho Backend
               const payload = {
-                userId: 1, // Mock User ID
                 fullName: document.getElementById("fullName").value,
                 phone: document.getElementById("phoneNumber").value,
                 shippingAddress:

@@ -20,6 +20,7 @@
             Brosport
           </h1>
         </a>
+
         <nav class="hidden xl:flex items-center gap-8 h-full">
           <a class="nav-link" th:href="@{/products}">New Arrivals</a>
           <a
@@ -99,22 +100,24 @@
 
           <div class="flex items-center gap-2">
             <a
-              th:href="@{/profile/edit}"
+              th:href="${user != null ? '/profile/edit' : '/login'}"
               class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all text-white"
             >
-              <div
-                class="h-full w-full bg-cover bg-center rounded-full"
-                th:style="'background-image: url(' + ${user.avatarUrl} + ')'"
+              <img
                 th:if="${user != null and !#strings.isEmpty(user.avatarUrl)}"
-              ></div>
+                th:src="${user.avatarUrl}"
+                class="h-full w-full object-cover rounded-full bg-[#2d2d2d]"
+                alt="User Avatar"
+              />
 
               <span
-                class="material-symbols-outlined text-2xl"
                 th:unless="${user != null and !#strings.isEmpty(user.avatarUrl)}"
+                class="material-symbols-outlined text-2xl"
               >
                 person
               </span>
             </a>
+
             <a
               th:href="@{/cart}"
               class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
@@ -175,8 +178,8 @@
                               <div class="flex-1 text-left">
                                 <h4 class="text-sm font-semibold text-white line-clamp-1">${item.name}</h4>
                                 <div class="flex gap-2 items-center mt-1">
-                                  ${item.showPrice ? `<span class="text-xs font-bold text-primary">${item.showPrice.toLocaleString("vi-VN")}đ</span>` : ""}
-                                  ${item.originPrice && item.originPrice > item.showPrice ? `<span class="text-[10px] text-slate-500 line-through">${item.originPrice.toLocaleString("vi-VN")}đ</span>` : ""}
+                                  ${item.showPrice != null ? `<span class="text-xs font-bold text-primary">${item.showPrice.toFixed(1)}$</span>` : ""}
+                                  ${item.originPrice != null && item.originPrice > item.showPrice ? `<span class="text-[10px] text-slate-500 line-through">${item.originPrice.toFixed(1)}$</span>` : ""}
                                 </div>
                               </div>
                             </div>
@@ -231,7 +234,7 @@
               : 1;
 
             try {
-              const response = await fetch(`/api/v1/carts/user/${userId}`);
+              const response = await fetch(`/api/v1/carts/my-cart`);
               if (!response.ok) throw new Error("Failed to fetch cart");
 
               const cart = await response.json();

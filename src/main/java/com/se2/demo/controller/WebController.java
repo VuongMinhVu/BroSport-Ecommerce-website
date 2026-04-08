@@ -4,22 +4,24 @@ import com.se2.demo.service.UserService;
 import com.se2.demo.model.entity.User;
 import java.security.Principal;
 import com.se2.demo.dto.request.ProductFilterRequest;
+import com.se2.demo.dto.response.CartResponse;
+import com.se2.demo.dto.response.OrderDetailResponse;
 import com.se2.demo.dto.response.ProductResponse;
+import com.se2.demo.model.entity.User;
 import com.se2.demo.service.ProductService;
+import com.se2.demo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestParam; // Để dùng @RequestParam
+import java.util.ArrayList; // Để dùng ArrayList
+import java.util.List;
 
 import com.se2.demo.service.CartService;
 import com.se2.demo.service.OrderService;
-import com.se2.demo.dto.response.OrderDetailResponse;
-import com.se2.demo.dto.response.CartResponse;
-
-import java.util.List;
 
 @Controller
 public class WebController {
@@ -31,6 +33,7 @@ public class WebController {
 
     public WebController(ProductService productService, CartService cartService, OrderService orderService,
             UserService userService) {
+
         this.productService = productService;
         this.cartService = cartService;
         this.orderService = orderService;
@@ -98,6 +101,7 @@ public class WebController {
             @RequestParam(required = false) Boolean buyNow,
             @RequestParam(required = false) Integer variantId,
             @RequestParam(required = false) Integer qty,
+
             Model model,
             Principal principal) {
 
@@ -152,20 +156,16 @@ public class WebController {
             // LUỒNG 2: MUA TỪ GIỎ HÀNG
             try {
                 CartResponse cart = cartService.getCartByUserId(currentUser.getId());
-
-                // Bảo vệ chống rỗng danh sách giỏ hàng
-                if (cart != null && cart.getCartDetails() != null) {
-                    displayItems = cart.getCartDetails().stream()
-                            .map(detail -> new CheckoutItemDTO(
-                                    detail.getProductName(),
-                                    detail.getSizeName(),
-                                    detail.getColorName(),
-                                    detail.getQuantity(),
-                                    detail.getUnitPrice() != null ? detail.getUnitPrice().doubleValue() : 0.0,
-                                    detail.getImageUrl()))
-                            .toList();
-                    subtotal = displayItems.stream().mapToDouble(item -> item.price() * item.quantity()).sum();
-                }
+                displayItems = cart.getCartDetails().stream()
+                        .map(detail -> new CheckoutItemDTO(
+                                detail.getProductName(),
+                                detail.getSizeName(),
+                                detail.getColorName(),
+                                detail.getQuantity(),
+                                detail.getUnitPrice(),
+                                detail.getImageUrl()))
+                        .toList();
+                subtotal = displayItems.stream().mapToDouble(item -> item.price() * item.quantity()).sum();
             } catch (Exception e) {
                 System.err.println(">>> Lỗi Giỏ Hàng: " + e.getMessage());
                 displayItems = List.of();
@@ -229,5 +229,39 @@ public class WebController {
     @GetMapping("/search-result")
     public String searchResultPage() {
         return "search-result";
+    }
+
+    // so sánh sp
+    @GetMapping("/product-comparison/details")
+    public String showComparisonDetails(
+            @RequestParam(value = "ids", required = false) String ids,
+            Model model) {
+
+        List<ProductResponse> compareList = new ArrayList<>();
+
+        if (ids != null && !ids.isEmpty()) {
+            try {
+                // Tách chuỗi "1,2" và chuyển thành List<Integer> an toàn
+                List<Integer> idList = java.util.Arrays.stream(ids.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .map(Integer::parseInt)
+                        .limit(4) // Giới hạn tối đa 4 sản phẩm để giao diện đẹp
+                        .toList();
+
+                for (Integer id : idList) {
+                    ProductResponse product = productService.getProductById(id);
+                    if (product != null) {
+                        compareList.add(product);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                // Nếu ID không phải là số, chỉ cần log và không làm sập trang
+                System.err.println("Invalid ID format: " + e.getMessage());
+            }
+        }
+
+        model.addAttribute("compareList", compareList);
+        return "pages/product_compare_details";
     }
 }

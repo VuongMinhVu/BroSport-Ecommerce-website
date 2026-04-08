@@ -77,6 +77,7 @@
         @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
       }
     </style>
+
     <style>
       :root {
         --bg: #050505;
@@ -464,6 +465,17 @@
         color: #1877f2;
       }
 
+      .forgot-password-link {
+        margin-top: 14px;
+        text-align: center;
+      }
+
+      .forgot-password-link a {
+        color: var(--orange-2);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
       .login-card-footer {
         background: rgba(255, 255, 255, 0.04);
         border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -621,6 +633,10 @@
                 </div>
 
                 <button type="submit" class="submit-btn">Login</button>
+
+                <div class="forgot-password-link">
+                  <a th:href="@{/forgot-password}">Forgot password?</a>
+                </div>
               </form>
             </div>
 

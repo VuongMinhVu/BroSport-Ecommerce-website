@@ -216,6 +216,36 @@
     </div>
 
     <script>
+      function toggleEditMode(event) {
+        event.preventDefault();
+
+        const form = document.getElementById("profileForm");
+        const inputs = form.querySelectorAll("input, textarea");
+        const btnIcon = document.getElementById("btnIcon");
+        const btnText = document.getElementById("btnText");
+        const inputWraps = document.querySelectorAll(".input-wrap");
+
+        // BƯỚC 1: Nếu đang ở chế độ xem -> Mở khóa ô nhập liệu
+        if (btnText.textContent === "Edit Profile") {
+          inputs.forEach((input) => {
+            input.removeAttribute("readonly");
+          });
+          inputWraps.forEach((wrap) => {
+            wrap.classList.add("editable");
+          });
+
+          // Đổi giao diện nút thành Save Changes
+          btnText.textContent = "Save Changes";
+          btnIcon.className = "fa-regular fa-floppy-disk";
+
+          // Tự động focus con trỏ vào ô đầu tiên
+          inputs[0].focus();
+        }
+        // BƯỚC 2: Nếu đã ở chế độ sửa -> Gửi form lên Backend
+        else {
+          form.submit();
+        }
+      }
       document
         .getElementById("avatar-upload")
         .addEventListener("change", function (event) {
@@ -223,6 +253,7 @@
           if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
+              // Thay đổi src của thẻ img để hiển thị ảnh vừa chọn
               document.getElementById("avatar-preview").src = e.target.result;
             };
             reader.readAsDataURL(file);
