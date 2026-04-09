@@ -89,20 +89,44 @@ public class ProfileController {
         return "account/profile-edit";
     }
 
+    @GetMapping("/change-password")
+    public String showChangePasswordPage(Model model, Principal principal) {
+        String email = principal.getName();
+        User user = userService.getUserByEmail(email);
+
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+        model.addAttribute("user", user);
+
+        return "account/change-password";
+    }
+
     @PostMapping("/profile/change-password")
     public String processChangePassword(
-            @ModelAttribute ChangePasswordRequest request,
+            @Valid @ModelAttribute("changePasswordRequest") ChangePasswordRequest request,
+            BindingResult bindingResult,
             Principal principal,
+            Model model,
             RedirectAttributes redirectAttributes,
             HttpServletRequest httpServletRequest) {
         try {
             String email = principal.getName();
+
+            if (bindingResult.hasErrors()) {
+                User user = userService.getUserByEmail(email);
+                model.addAttribute("user", user);
+                model.addAttribute("changePasswordRequest", request);
+                return "account/change-password";
+            }
+
             userService.changePassword(email, request);
             redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công!");
+            return "redirect:/change-password";
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            User user = userService.getUserByEmail(principal.getName());
+            model.addAttribute("user", user);
+            model.addAttribute("changePasswordRequest", request);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "account/change-password";
         }
-        String referer = httpServletRequest.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/account/profile/edit");
     }
 }
