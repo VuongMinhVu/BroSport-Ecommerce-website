@@ -25,8 +25,7 @@ public class CartDetailController {
     @PostMapping
     public ResponseEntity<CartDetailResponse> addItemToCart(
             @RequestBody CartDetailRequest request,
-            Principal principal
-    ) {
+            Principal principal) {
         User user = userService.getUserByEmail(principal.getName());
         CartDetailResponse response = cartDetailService.addItemToCart(user.getId(), request);
 

@@ -4,14 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Apex Pro Runner v2 | Brosport</title>
+    <title th:text="${product.name} + ' | Brosport'">
+      Apex Pro Runner v2 | Brosport
+    </title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
       rel="stylesheet"
     />
     <link
@@ -24,13 +22,13 @@
         theme: {
           extend: {
             colors: {
-              primary: "#f48c25",
+              primary: "#ff6600",
               "background-light": "#f8f7f5",
-              "background-dark": "#121212",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
             },
-            fontFamily: {
-              display: ["Lexend", "sans-serif"],
-            },
+            fontFamily: { display: ["Lexend"] },
             borderRadius: {
               DEFAULT: "0.25rem",
               lg: "0.5rem",
@@ -60,21 +58,18 @@
   <body
     class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300"
   >
-    <!-- Header / Nav -->
     <div th:replace="~{fragments/header :: site-header}"></div>
     <main class="max-w-7xl mx-auto px-6 py-8">
-      <!-- Breadcrumbs -->
       <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
-        <a class="hover:text-primary" href="#">Home</a>
+        <a class="hover:text-primary" href="/">Home</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
-        <a class="hover:text-primary" href="#">Footwear</a>
+        <a class="hover:text-primary" href="/products">Sản phẩm</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
-        <a class="hover:text-primary" href="#">Running</a>
-        <span class="material-symbols-outlined text-xs">chevron_right</span>
-        <span class="text-white font-medium">Apex Pro Runner v2</span>
+        <span class="text-white font-medium" th:text="${product.name}"
+          >Apex Pro Runner v2</span
+        >
       </nav>
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <!-- Left: Image Gallery -->
         <div class="lg:col-span-7 flex flex-col gap-4">
           <div
             class="aspect-square bg-white/5 rounded-xl overflow-hidden group relative"
@@ -113,7 +108,6 @@
             </div>
           </div>
         </div>
-        <!-- Right: Product Actions -->
         <div class="lg:col-span-5 flex flex-col gap-8 sticky top-28 h-fit">
           <div>
             <div class="flex items-center justify-between mb-2">
@@ -134,10 +128,10 @@
                 <span class="material-symbols-outlined text-sm fill-1"
                   >star</span
                 >
-                <span class="material-symbols-outlined text-sm">star_half</span>
-                <span class="text-white text-xs font-medium ml-1"
-                  >4.8 (124)</span
+                <span class="material-symbols-outlined text-sm fill-1"
+                  >star</span
                 >
+                <span class="text-white text-xs font-medium ml-1">5.0</span>
               </div>
             </div>
             <h2
@@ -155,7 +149,7 @@
             <span
               class="text-3xl font-black text-white"
               th:if="${product.showPrice != null}"
-              th:text="${#numbers.formatDecimal(product.showPrice, 1, 'POINT', 0, 'COMMA')} + 'đ'"
+              th:text="${#numbers.formatInteger(product.showPrice, 1, 'POINT')} + ' $'"
             >
             </span>
 
@@ -169,11 +163,10 @@
             <span
               class="text-slate-500 line-through text-lg font-medium"
               th:if="${product.originPrice != null and product.showPrice != null and product.originPrice > product.showPrice}"
-              th:text="${#numbers.formatDecimal(product.originPrice, 1, 'POINT', 0, 'COMMA')} + '$'"
+              th:text="${#numbers.formatDecimal(product.originPrice, 1, 'POINT', 0, 'COMMA')} + ' $'"
             >
             </span>
           </div>
-          <!-- Color Selection -->
           <div class="space-y-4">
             <p class="text-sm font-bold uppercase tracking-wider">
               Màu sắc:
@@ -201,7 +194,6 @@
             </div>
           </div>
 
-          <!-- Size Selection -->
           <div class="space-y-4 mt-6">
             <div class="flex justify-between items-center">
               <p class="text-sm font-bold uppercase tracking-wider">
@@ -226,7 +218,6 @@
             </div>
           </div>
 
-          <!-- CTA -->
           <div class="flex flex-col gap-3 pt-4">
             <button
               class="w-full py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 buy-now-btn"
@@ -235,14 +226,6 @@
               Mua ngay
             </button>
             <div class="flex gap-3">
-              <button
-                class="flex-1 py-4 border border-white/10 rounded-xl font-bold text-sm uppercase flex items-center justify-center gap-2 hover:bg-white/5 transition-colors compare-btn"
-              >
-                <span class="material-symbols-outlined text-xl"
-                  >compare_arrows</span
-                >
-                So sánh
-              </button>
               <button
                 class="flex-1 py-4 border border-white/10 rounded-xl font-bold text-sm uppercase flex items-center justify-center gap-2 hover:bg-white/5 transition-colors add-to-cart-btn"
               >
@@ -258,20 +241,18 @@
               <span class="material-symbols-outlined text-primary"
                 >local_shipping</span
               >
-              <span class="text-xs text-slate-400">Free Express Delivery</span>
+              <span class="text-xs text-slate-400">Giao hàng Hỏa Tốc</span>
             </div>
             <div class="flex items-center gap-3">
               <span class="material-symbols-outlined text-primary"
                 >verified</span
               >
-              <span class="text-xs text-slate-400"
-                >2 Year Performance Warranty</span
-              >
+              <span class="text-xs text-slate-400">Bảo hành chính hãng</span>
             </div>
           </div>
         </div>
       </div>
-      <!-- Product Specs Tabs (Simulated) -->
+
       <div class="mt-20 border-t border-white/10 pt-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div>
@@ -302,7 +283,6 @@
           </div>
         </div>
       </div>
-      <!-- Reviews Section -->
       <section class="mt-24 border-t border-white/10 pt-20 pb-20">
         <div class="flex flex-col md:flex-row gap-16">
           <div class="md:w-1/3 space-y-8">
@@ -313,7 +293,7 @@
                 <span id="total-reviews-text" class="font-bold text-white"
                   >0</span
                 >
-                lượt mua hàng
+                lượt đánh giá
               </p>
             </div>
             <div class="flex items-center gap-4">
@@ -401,7 +381,7 @@
               <input
                 type="text"
                 id="review-title"
-                placeholder="Tiêu đề (Ví dụ: Giày đi rất êm!)"
+                placeholder="Tiêu đề (Ví dụ: Sản phẩm rất tốt!)"
                 class="bg-transparent border border-white/10 rounded p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary"
               />
               <textarea
@@ -458,101 +438,8 @@
         </div>
       </section>
     </main>
-    <!-- Footer -->
-    <footer class="bg-black/40 border-t border-white/10 py-20">
-      <div
-        class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12"
-      >
-        <div class="space-y-6">
-          <div class="flex items-center gap-3">
-            <div
-              class="size-8 bg-primary rounded flex items-center justify-center text-white"
-            >
-              <span class="material-symbols-outlined">bolt</span>
-            </div>
-            <h1 class="text-2xl font-black tracking-tighter uppercase italic">
-              Brosport
-            </h1>
-          </div>
-          <p class="text-sm text-slate-500 leading-relaxed">
-            Premium performance gear for the modern athlete. Push your limits
-            with science-backed engineering.
-          </p>
-          <div class="flex gap-4">
-            <a
-              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-              href="#"
-              ><span class="material-symbols-outlined text-sm"
-                >social_leaderboard</span
-              ></a
-            >
-            <a
-              class="size-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-              href="#"
-              ><span class="material-symbols-outlined text-sm"
-                >alternate_email</span
-              ></a
-            >
-          </div>
-        </div>
-        <div class="space-y-6">
-          <h6 class="font-black uppercase italic tracking-widest text-sm">
-            Shop
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-400">
-            <li><a class="hover:text-primary" href="#">New Arrivals</a></li>
-            <li><a class="hover:text-primary" href="#">Running Shoes</a></li>
-            <li><a class="hover:text-primary" href="#">Performance Tops</a></li>
-            <li><a class="hover:text-primary" href="#">Training Gear</a></li>
-          </ul>
-        </div>
-        <div class="space-y-6">
-          <h6 class="font-black uppercase italic tracking-widest text-sm">
-            Support
-          </h6>
-          <ul class="space-y-4 text-sm text-slate-400">
-            <li><a class="hover:text-primary" href="#">Order Tracking</a></li>
-            <li>
-              <a class="hover:text-primary" href="#">Returns &amp; Exchanges</a>
-            </li>
-            <li><a class="hover:text-primary" href="#">Sizing Guide</a></li>
-            <li><a class="hover:text-primary" href="#">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="space-y-6">
-          <h6 class="font-black uppercase italic tracking-widest text-sm">
-            Newsletter
-          </h6>
-          <p class="text-sm text-slate-500">
-            Get elite access to new drops and training tips.
-          </p>
-          <div class="flex border-b border-white/20 pb-2">
-            <input
-              class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-600"
-              placeholder="Email Address"
-              type="email"
-            />
-            <button class="text-primary font-bold uppercase text-xs">
-              Join
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-4"
-      >
-        <p class="text-[10px] text-slate-600 uppercase tracking-widest">
-          © 2023 Brosport International. All Rights Reserved.
-        </p>
-        <div
-          class="flex gap-6 text-[10px] text-slate-600 uppercase tracking-widest"
-        >
-          <a class="hover:text-slate-400" href="#">Privacy Policy</a>
-          <a class="hover:text-slate-400" href="#">Terms of Service</a>
-          <a class="hover:text-slate-400" href="#">Cookie Settings</a>
-        </div>
-      </div>
-    </footer>
+    <div th:replace="~{fragments/footer :: site-footer}"></div>
+
     <script th:inline="javascript">
       // Lấy mảng biến thể (productDetails) từ Spring Boot đổ sang JS
       const variants = /*[[${product.productDetails}]]*/ [];
@@ -562,7 +449,7 @@
       let selectedSize = null;
       let selectedVariantId = null;
 
-      // 1. XỬ LÝ ẢNH THUMBNAIL (Bấm vào ảnh nhỏ thì ảnh to thay đổi)
+      // 1. XỬ LÝ ẢNH THUMBNAIL
       const mainImg = document.querySelector(".main-product-img");
       const thumbnails = document.querySelectorAll(".gallery-thumbnail");
 
@@ -622,7 +509,7 @@
         });
       });
 
-      // 4. KIỂM TRA TÌNH TRẠNG CÒN HÀNG (Cập nhật cho cả 2 nút)
+      // 4. KIỂM TRA TÌNH TRẠNG CÒN HÀNG
       const addToCartBtn = document.querySelector(".add-to-cart-btn");
       const buyNowBtn = document.querySelector(".buy-now-btn");
 
@@ -636,7 +523,6 @@
         if (variant) {
           selectedVariantId = variant.id;
           if (variant.stockQuantity > 0) {
-            // Bật cả 2 nút nếu còn hàng
             addToCartBtn.disabled = false;
             addToCartBtn.classList.remove("opacity-50", "cursor-not-allowed");
             buyNowBtn.disabled = false;
@@ -644,7 +530,6 @@
             buyNowBtn.innerHTML =
               '<span class="material-symbols-outlined">bolt</span> Mua ngay';
           } else {
-            // Tắt cả 2 nút nếu hết hàng
             addToCartBtn.disabled = true;
             addToCartBtn.classList.add("opacity-50", "cursor-not-allowed");
             buyNowBtn.disabled = true;
@@ -654,7 +539,6 @@
           }
         } else {
           selectedVariantId = null;
-          // Tắt nút nếu biến thể không tồn tại
           addToCartBtn.disabled = true;
           addToCartBtn.classList.add("opacity-50", "cursor-not-allowed");
           buyNowBtn.disabled = true;
@@ -664,7 +548,7 @@
         }
       }
 
-      // 5. HÀM GỌI API DÙNG CHUNG CHO GIỎ HÀNG VÀ MUA NGAY
+      // 5. HÀM GỌI API CHUẨN SECURITY
       async function executeAddToCart() {
         if (!selectedColor || !selectedSize) {
           showNotification("Vui lòng chọn Màu sắc và Kích thước trước!");
@@ -672,22 +556,13 @@
         }
         if (!selectedVariantId) return false;
 
-        // ⚠️ LƯU Ý QUAN TRỌNG VỀ cartId:
-        // Để API chạy được, bạn cần truyền ID giỏ hàng của User đang đăng nhập.
-        // Tạm thời ở đây tôi mock (giả lập) cartId = 1 để bạn test tính năng.
-        // Sau này bạn có thể truyền cartId từ WebController sang qua Thymeleaf.
-        const currentCartId = 1;
-
-        // Cấu trúc payload chuẩn khớp chính xác 100% với CartDetailRequest.java
         const payload = {
-          cartId: currentCartId,
           productDetailId: selectedVariantId,
           quantity: 1,
         };
 
         try {
-          // Đã đổi URL thành /api/v1/cart-details
-          const response = await fetch("/api/v1/cart-details", {
+          let response = await fetch("/api/v1/cart-details", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -695,11 +570,32 @@
             body: JSON.stringify(payload),
           });
 
-          if (response.ok) {
-            return true;
-          } else if (response.status === 401 || response.status === 403) {
-            showNotification("Bạn cần đăng nhập để thực hiện chức năng này!");
+          // Xử lý chuyển hướng nếu chưa đăng nhập
+          if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
             return false;
+          }
+
+          // Xử lý nếu chưa có giỏ hàng (tự động tạo mới rồi add lại)
+          if (!response.ok) {
+            await fetch("/api/v1/carts", { method: "POST" });
+            response = await fetch("/api/v1/cart-details", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+          }
+
+          if (response.ok) {
+            // Cập nhật biểu tượng số lượng trên Header
+            const cartBadge =
+              document.querySelector('a[href="/cart"] span.absolute') ||
+              document.querySelector(".cart-count");
+            if (cartBadge) {
+              cartBadge.textContent =
+                (parseInt(cartBadge.textContent) || 0) + 1;
+            }
+            return true;
           } else {
             showNotification(
               "Có lỗi xảy ra khi thêm vào giỏ, vui lòng thử lại!",
@@ -720,28 +616,26 @@
           showNotification(
             `Đã thêm ${selectedColor} (Size ${selectedSize}) vào giỏ hàng!`,
           );
-          // Tuỳ chọn: Bạn có thể cập nhật số lượng badge giỏ hàng ở đây
         }
       });
 
-      // Sự kiện click: MUA NGAY (Bỏ qua giỏ hàng, đi thẳng tới checkout)
+      // Sự kiện click: MUA NGAY
       buyNowBtn.addEventListener("click", function () {
         if (!selectedColor || !selectedSize || !selectedVariantId) {
           showNotification("Vui lòng chọn Màu sắc và Kích thước!");
           return;
         }
-        // Chuyển hướng kèm theo dữ liệu Mua Ngay
         window.location.href = `/checkout?buyNow=true&variantId=${selectedVariantId}&qty=1`;
       });
 
-      // 6. THÔNG BÁO (Notification popup)
+      // 6. THÔNG BÁO TẠM THỜI
       function showNotification(message) {
         const existing = document.querySelector(".notification");
         if (existing) existing.remove();
 
         const notification = document.createElement("div");
         notification.className =
-          "notification fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg font-bold animate-slideIn z-50";
+          "notification fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg font-bold animate-slideIn z-[100]";
         notification.textContent = message;
         document.body.appendChild(notification);
 
@@ -749,7 +643,7 @@
       }
 
       // ==========================================
-      // PHẦN QUẢN LÝ ĐÁNH GIÁ (REVIEWS) API LOGIC
+      // PHẦN QUẢN LÝ ĐÁNH GIÁ (REVIEWS)
       // ==========================================
       let reviewPage = 0;
       const reviewSize = 5;
@@ -762,7 +656,6 @@
       );
       const ratingFilter = document.getElementById("rating-filter");
 
-      // Elements của Form đánh giá
       const toggleReviewFormBtn = document.getElementById(
         "toggle-review-form-btn",
       );
@@ -771,7 +664,7 @@
       const submitReviewBtn = document.getElementById("submit-review-btn");
       let selectedRating = 0;
 
-      // 1. GỌI API LẤY DANH SÁCH REVIEW
+      // GỌI API LẤY DANH SÁCH REVIEW
       async function fetchReviews(append = false) {
         const ratingVal = ratingFilter.value;
         let url = `/api/v1/reviews/product/${productId}?page=${reviewPage}&size=${reviewSize}`;
@@ -798,7 +691,6 @@
               });
             }
 
-            // Ẩn/Hiện nút Load More
             if (data.reviews.last || data.reviews.content.length === 0) {
               loadMoreReviewsBtn.style.display = "none";
             } else {
@@ -810,7 +702,7 @@
         }
       }
 
-      // 2. CẬP NHẬT GIAO DIỆN THỐNG KÊ (Bên trái)
+      // CẬP NHẬT GIAO DIỆN THỐNG KÊ (Bên trái)
       function updateReviewSummary(data) {
         const total = data.totalReviews || 0;
         const avg = data.averageRating || 0;
@@ -820,15 +712,12 @@
         document.getElementById("avg-rating-number").textContent =
           avg.toFixed(1);
 
-        // Vẽ sao trung bình
         let starsHtml = "";
         for (let i = 1; i <= 5; i++) {
-          // dùng fill-1 cho những sao <= avg
           starsHtml += `<span class="material-symbols-outlined text-xl ${i <= Math.round(avg) ? "fill-1" : ""}">star</span>`;
         }
         document.getElementById("avg-rating-stars").innerHTML = starsHtml;
 
-        // Vẽ thanh phần trăm
         for (let i = 5; i >= 1; i--) {
           const countForStar = counts[i] || 0;
           const pct =
@@ -838,7 +727,7 @@
         }
       }
 
-      // 3. TẠO HTML CHO TỪNG BÀI ĐÁNH GIÁ (Đã bỏ nút Like/Helpful)
+      // TẠO HTML CHO TỪNG BÀI ĐÁNH GIÁ
       function createReviewHTML(review) {
         const dateStr = new Date(review.createdAt).toLocaleDateString("vi-VN");
 
@@ -880,24 +769,20 @@
         `;
       }
 
-      // 4. SỰ KIỆN: Bộ Lọc (Dropdown)
       ratingFilter.addEventListener("change", () => {
         reviewPage = 0;
         fetchReviews(false);
       });
 
-      // 5. SỰ KIỆN: Tải thêm
       loadMoreReviewsBtn.addEventListener("click", () => {
         reviewPage++;
         fetchReviews(true);
       });
 
-      // 6. SỰ KIỆN: Mở Form Đánh giá
       toggleReviewFormBtn.addEventListener("click", () => {
         reviewFormSection.classList.toggle("hidden");
       });
 
-      // 7. SỰ KIỆN: Chấm sao
       starSelector.forEach((star) => {
         star.addEventListener("click", function () {
           selectedRating = parseInt(this.getAttribute("data-val"));
@@ -913,7 +798,7 @@
         });
       });
 
-      // 8. SỰ KIỆN: Đẩy Form Đánh Giá
+      // ĐẨY FORM ĐÁNH GIÁ (CHUẨN SECURITY, BỎ USERID MOCK)
       submitReviewBtn.addEventListener("click", async () => {
         if (selectedRating === 0) {
           showNotification("Vui lòng chọn số sao!");
@@ -923,12 +808,8 @@
         const title = document.getElementById("review-title").value.trim();
         const comment = document.getElementById("review-comment").value.trim();
 
-        // ⚠️ MOCK DỮ LIỆU USERID
-        const currentUserId = 1;
-
         const payload = {
           productId: productId,
-          userId: currentUserId,
           rating: selectedRating,
           title: title,
           comment: comment,
@@ -948,7 +829,6 @@
             showNotification("Đánh giá của bạn đã được ghi nhận!");
             reviewFormSection.classList.add("hidden");
 
-            // Reset form
             document.getElementById("review-title").value = "";
             document.getElementById("review-comment").value = "";
             selectedRating = 0;
@@ -957,10 +837,11 @@
               s.classList.add("text-slate-500");
             });
 
-            // Trở về trang 1 và clear Filter
             reviewPage = 0;
             ratingFilter.value = "";
             fetchReviews(false);
+          } else if (res.status === 401 || res.status === 403) {
+            window.location.href = "/login";
           } else {
             const errorData = await res.text();
             showNotification("Lỗi: " + errorData);
@@ -973,7 +854,6 @@
         }
       });
 
-      // KHỞI CHẠY KHI VỪA VÀO TRANG
       fetchReviews();
     </script>
   </body>

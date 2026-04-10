@@ -19,13 +19,13 @@
         theme: {
           extend: {
             colors: {
-              primary: "#f48c25",
+              primary: "#ff6600",
               "background-light": "#f8f7f5",
-              "background-dark": "#221910",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
             },
-            fontFamily: {
-              display: ["Lexend"],
-            },
+            fontFamily: { display: ["Lexend"] },
             borderRadius: {
               DEFAULT: "0.25rem",
               lg: "0.5rem",
@@ -36,6 +36,16 @@
         },
       };
     </script>
+    <style>
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #f5f5f5 !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+    </style>
   </head>
 
   <body
@@ -80,8 +90,8 @@
                       name="fullName"
                       class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
                       required
-                      th:placeholder="${user.name}"
-                      th:value="${user.name}"
+                      th:placeholder="${user.fullName}"
+                      th:value="${user.fullName}"
                       type="text"
                     />
                   </div>
@@ -89,35 +99,28 @@
                     <label
                       class="block text-sm font-medium text-[#cbad90] mb-2"
                       for="streetAddress"
-                      >Street Address</label
+                      >Shipping Address</label
                     >
                     <input
                       id="streetAddress"
                       name="streetAddress"
                       required
-                      minlength="10"
+                      minlength="5"
                       class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                      placeholder="123 Sport Avenue"
+                      placeholder="123 Sport Avenue, City..."
+                      th:value="${user.address}"
                       type="text"
                     />
                   </div>
-                  <div>
-                    <label
-                      class="block text-sm font-medium text-[#cbad90] mb-2"
-                      for="city"
-                      >City</label
-                    >
+                  <div class="hidden">
                     <input
                       id="city"
                       name="city"
-                      required
-                      minlength="2"
-                      class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                      placeholder="New York"
                       type="text"
+                      value="Default City"
                     />
                   </div>
-                  <div>
+                  <div class="md:col-span-2">
                     <label
                       class="block text-sm font-medium text-[#cbad90] mb-2"
                       for="phoneNumber"
@@ -127,10 +130,9 @@
                       id="phoneNumber"
                       name="phoneNumber"
                       required
-                      pattern="(\+?\d{1,4}[\s-])?(?!0+\s+,?$)\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}"
-                      title="Please enter a valid phone number, e.g., +1 (555) 000-0000"
                       class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+84 123 456 789"
+                      th:value="${user.phone}"
                       type="tel"
                     />
                   </div>
@@ -247,9 +249,9 @@
                         </p>
                         <p
                           class="font-bold text-primary"
-                          th:text="${'$' + #numbers.formatDecimal(item.price, 1, 2)}"
+                          th:text="${#numbers.formatInteger(item.price, 1, 'POINT')} + 'đ'"
                         >
-                          $0.00
+                          0đ
                         </p>
                       </div>
                     </div>
@@ -350,34 +352,48 @@
                 </div>
                 <div class="space-y-3 mb-8">
                   <div class="flex justify-between text-[#cbad90]">
-                    <span>Subtotal</span>
+                    <span>Tạm tính</span>
                     <span
                       id="summary-subtotal"
-                      th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}"
+                      th:text="${#numbers.formatInteger(subtotal != null ? subtotal : 0, 1, 'POINT')} + 'đ'"
                       th:data-subtotal="${subtotal != null ? subtotal : 0}"
-                      >$0.00</span
+                      >0đ</span
                     >
                   </div>
+
                   <div class="flex justify-between text-[#cbad90]">
-                    <span>Shipping</span>
+                    <span>Phí vận chuyển</span>
                     <span
+                      id="summary-shipping"
+                      th:if="${shippingFee == null or shippingFee == 0}"
                       class="text-green-500 font-medium text-xs border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10"
+                      th:data-shipping="0"
                       >FREE</span
                     >
+                    <span
+                      id="summary-shipping"
+                      th:unless="${shippingFee == null or shippingFee == 0}"
+                      class="font-medium text-white"
+                      th:text="${#numbers.formatInteger(shippingFee, 1, 'POINT')} + 'đ'"
+                      th:data-shipping="${shippingFee}"
+                      >30.000đ</span
+                    >
                   </div>
+
                   <div class="flex justify-between text-green-500">
-                    <span id="summary-discount-label">Discount</span>
-                    <span id="summary-discount">-$0.00</span>
+                    <span id="summary-discount-label">Voucher giảm giá</span>
+                    <span id="summary-discount">-0đ</span>
                   </div>
+
                   <div
                     class="flex justify-between text-white text-xl font-extrabold pt-2 border-t border-[#493622]"
                   >
-                    <span>Total</span>
+                    <span>Tổng cộng</span>
                     <span
                       id="summary-total"
                       class="text-primary"
-                      th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}"
-                      >$0.00</span
+                      th:text="${#numbers.formatInteger(total != null ? total : 0, 1, 'POINT')} + 'đ'"
+                      >0đ</span
                     >
                   </div>
                 </div>
@@ -535,9 +551,12 @@
                   }
                 } else {
                   const errorData = await response.json();
+                  // Đổi chữ "message" thành "Message" (viết hoa chữ M) để bắt đúng dữ liệu Backend trả về
                   alert(
                     "Lỗi đặt hàng: " +
-                      (errorData.message || "Vui lòng kiểm tra lại thông tin!"),
+                      (errorData.Message ||
+                        errorData.message ||
+                        "Vui lòng kiểm tra lại thông tin!"),
                   );
                   resetButton();
                 }
@@ -559,6 +578,7 @@
         }
 
         let currentDiscountTotal = 0.0;
+        let isFreeShippingVoucher = false;
 
         function applyVoucher() {
           const voucherInput = document.getElementById("voucher-input");
@@ -571,22 +591,27 @@
           const messageEl = document.getElementById("voucher-message");
           const iconEl = document.getElementById("voucher-icon");
 
-          // Simulate fetch request to backend to validate voucher
           const btn = document.getElementById("apply-voucher-btn");
           const originalText = btn.textContent;
-          btn.textContent = "Checking...";
+          btn.textContent = "Đang kiểm tra...";
           btn.disabled = true;
 
-          // Base subtotal from thymeleaf data attribute
           const subtotalEl = document.getElementById("summary-subtotal");
           const subtotal =
             parseFloat(subtotalEl.getAttribute("data-subtotal")) || 0;
 
-          setTimeout(() => {
-            btn.textContent = originalText;
-            btn.disabled = false;
+          // Lấy phí ship gốc từ giao diện
+          const shippingEl = document.getElementById("summary-shipping");
+          const baseShipping =
+            parseFloat(shippingEl.getAttribute("data-shipping")) || 0;
 
+          setTimeout(() => {
+            btn.textContent = "Áp dụng";
+            btn.disabled = false;
             container.classList.remove("hidden");
+
+            isFreeShippingVoucher = false; // Reset cờ freeship
+            currentDiscountTotal = 0; // Reset giảm giá
 
             if (
               voucherCode === "FREESHIP" ||
@@ -594,84 +619,178 @@
               voucherCode === "SUMMER24" ||
               voucherCode === "BROSPORT20"
             ) {
-              // Success simulation
               container.className =
                 "flex items-center gap-2 text-green-500 bg-green-500/10 border border-green-500/20 px-3 py-2 rounded-lg text-sm mb-4";
               iconEl.textContent = "check_circle";
 
               let discountRate = 0;
               if (voucherCode === "FREESHIP") {
-                messageEl.textContent = "Voucher Applied: Free Shipping";
+                isFreeShippingVoucher = true;
+                currentDiscountTotal = baseShipping; // Giảm đúng bằng tiền ship
+                messageEl.textContent = "Áp dụng mã: Miễn phí vận chuyển";
               } else if (voucherCode === "NEWPLAYER") {
-                currentDiscountTotal = Math.min(15.0, subtotal);
-                messageEl.textContent = "Voucher Applied: -$15";
+                currentDiscountTotal = Math.min(150000, subtotal); // Giảm 150k
+                messageEl.textContent = "Áp dụng mã: -150.000đ";
               } else if (voucherCode === "SUMMER24") {
                 discountRate = 0.1;
-                messageEl.textContent = "Voucher Applied: -10%";
+                messageEl.textContent = "Áp dụng mã: Giảm 10%";
               } else if (voucherCode === "BROSPORT20") {
                 discountRate = 0.2;
-                messageEl.textContent = "Voucher Applied: -20%";
+                messageEl.textContent = "Áp dụng mã: Giảm 20%";
               }
 
               if (discountRate > 0) {
                 currentDiscountTotal = subtotal * discountRate;
               }
-
-              updateTotals(subtotal);
+              updateTotals(subtotal, baseShipping);
             } else {
-              // Error fallback
               container.className =
                 "flex items-center gap-2 text-red-500 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg text-sm mb-4";
               iconEl.textContent = "error";
-              messageEl.textContent = "Invalid or expired voucher code";
-              currentDiscountTotal = 0;
-              updateTotals(subtotal);
+              messageEl.textContent = "Mã không hợp lệ hoặc đã hết hạn";
+              updateTotals(subtotal, baseShipping);
             }
           }, 800);
         }
 
-        function updateTotals(subtotal) {
+        function updateTotals(subtotal, baseShipping) {
           const discountEl = document.getElementById("summary-discount");
           const totalEl = document.getElementById("summary-total");
 
-          const total = Math.max(0, subtotal - currentDiscountTotal);
+          // Tổng tiền = Tạm tính + Phí ship - Giảm giá
+          const total = Math.max(
+            0,
+            subtotal + baseShipping - currentDiscountTotal,
+          );
 
-          discountEl.textContent = `-$${currentDiscountTotal.toFixed(2)}`;
-          totalEl.textContent = `$${total.toFixed(2)}`;
+          // Format theo chuẩn VNĐ
+          discountEl.textContent = `-${new Intl.NumberFormat("vi-VN").format(Math.round(currentDiscountTotal))}đ`;
+          totalEl.textContent = `${new Intl.NumberFormat("vi-VN").format(Math.round(total))}đ`;
         }
       </script>
-      <footer class="mt-20 border-t border-[#493622] py-10 px-10">
+      <footer
+        class="mt-auto border-t border-white/10 bg-surface/50 px-6 lg:px-20 py-12"
+      >
         <div
-          class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6"
+          class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12"
         >
-          <div class="flex items-center gap-2 text-primary">
-            <div class="size-5">
-              <svg
-                fill="currentColor"
-                viewBox="0 0 48 48"
-                xmlns="http://www.w3.org/2000/svg"
+          <div class="md:col-span-1">
+            <div class="flex items-center gap-3 text-primary mb-6">
+              <div
+                class="size-6 bg-primary text-background-dark flex items-center justify-center rounded"
               >
-                <path
-                  d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z"
-                ></path>
-              </svg>
+                <span class="material-symbols-outlined font-bold text-[16px]"
+                  >bolt</span
+                >
+              </div>
+              <h2
+                class="text-white text-xl font-extrabold uppercase tracking-tight"
+              >
+                Brosport
+              </h2>
             </div>
-            <h3 class="text-white font-bold">Brosport</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">
+              Elevating performance for athletes who dare to be great. Premium
+              gear for the next generation of champions.
+            </p>
+            <div class="flex gap-4">
+              <a class="text-slate-400 hover:text-primary" href="#"
+                ><span class="material-symbols-outlined">public</span></a
+              >
+              <a class="text-slate-400 hover:text-primary" href="#"
+                ><span class="material-symbols-outlined">chat</span></a
+              >
+              <a class="text-slate-400 hover:text-primary" href="#"
+                ><span class="material-symbols-outlined">share</span></a
+              >
+            </div>
           </div>
-          <div class="flex gap-8 text-[#cbad90] text-sm">
-            <a class="hover:text-white transition-colors" href="#"
-              >Privacy Policy</a
+          <div>
+            <h4
+              class="text-white font-bold mb-4 uppercase tracking-widest text-xs"
             >
-            <a class="hover:text-white transition-colors" href="#"
-              >Help Center</a
-            >
-            <a class="hover:text-white transition-colors" href="#"
-              >Track Order</a
-            >
+              Shop
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >New Arrivals</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Bestsellers</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Sale</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Gear Guide</a
+                >
+              </li>
+            </ul>
           </div>
-          <p class="text-[#cbad90] text-xs">
-            © 2024 Brosport. All rights reserved.
-          </p>
+          <div>
+            <h4
+              class="text-white font-bold mb-4 uppercase tracking-widest text-xs"
+            >
+              Support
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Order Tracking</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Returns &amp; Exchanges</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Shipping Policy</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >FAQs</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4
+              class="text-white font-bold mb-4 uppercase tracking-widest text-xs"
+            >
+              Join the Elite
+            </h4>
+            <p class="text-slate-400 text-sm mb-4">
+              Subscribe for exclusive drops and athlete insights.
+            </p>
+            <form class="flex gap-2">
+              <input
+                class="flex-1 bg-background-dark border-none rounded-lg text-xs p-3 focus:ring-1 focus:ring-primary"
+                placeholder="Your email"
+                type="email"
+              />
+              <button
+                class="bg-primary text-background-dark px-4 rounded-lg font-bold text-xs uppercase tracking-tighter"
+              >
+                Join
+              </button>
+            </form>
+          </div>
+        </div>
+        <div
+          class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-white/5 text-center text-xs text-slate-500"
+        >
+          © 2024 Brosport Performance. All Rights Reserved. Designed for the
+          Elite.
         </div>
       </footer>
     </div>

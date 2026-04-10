@@ -15,10 +15,11 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, imports = {LocalDateTime.class})
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, imports = { LocalDateTime.class })
 public interface CartMapper {
 
     Cart toEntity(CartRequest request);
+
     List<CartResponse> toCartResponseList(List<Cart> carts);
 
     @Mapping(target = "cartDetails", source = "cartDetails")
@@ -67,7 +68,8 @@ public interface CartMapper {
     }
 
     default Double calculateSubtotal(List<CartDetail> details) {
-        if (details == null) return 0.0;
+        if (details == null)
+            return 0.0;
         return details.stream()
                 .mapToDouble(d -> d.getProductDetail().getProduct().getShowPrice().doubleValue() * d.getQuantity())
                 .sum();

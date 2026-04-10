@@ -27,34 +27,40 @@ public class ProductSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("category").get("id"), filter.getCategoryId()));
             }
             if (filter.getCategories() != null && !filter.getCategories().trim().isEmpty()) {
-                predicates.add(criteriaBuilder.lower(root.get("category").get("name")).in(splitValues(filter.getCategories())));
+                predicates.add(criteriaBuilder.lower(root.get("category").get("name"))
+                        .in(splitValues(filter.getCategories())));
             }
 
             if (filter.getBrandId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("brand").get("id"), filter.getBrandId()));
             }
             if (filter.getBrands() != null && !filter.getBrands().trim().isEmpty()) {
-                predicates.add(criteriaBuilder.lower(root.get("brand").get("name")).in(splitValues(filter.getBrands())));
+                predicates
+                        .add(criteriaBuilder.lower(root.get("brand").get("name")).in(splitValues(filter.getBrands())));
             }
 
             if (filter.getGenderId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("gender").get("id"), filter.getGenderId()));
             }
             if (filter.getGender() != null && !filter.getGender().trim().isEmpty()) {
-                predicates.add(criteriaBuilder.lower(root.get("gender").get("name")).in(splitValues(filter.getGender())));
+                predicates
+                        .add(criteriaBuilder.lower(root.get("gender").get("name")).in(splitValues(filter.getGender())));
             }
 
             if (filter.getSportId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("sport").get("id"), filter.getSportId()));
             }
             if (filter.getSports() != null && !filter.getSports().trim().isEmpty()) {
-                predicates.add(criteriaBuilder.lower(root.get("sport").get("name")).in(splitValues(filter.getSports())));
+                predicates
+                        .add(criteriaBuilder.lower(root.get("sport").get("name")).in(splitValues(filter.getSports())));
             }
 
+            // ĐÃ SỬA: Đổi "price" thành "showPrice" cho khớp với Entity Product
             if (filter.getMinPrice() != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("showPrice"), filter.getMinPrice()));
             }
 
+            // ĐÃ SỬA: Đổi "price" thành "showPrice" cho khớp với Entity Product
             if (filter.getMaxPrice() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("showPrice"), filter.getMaxPrice()));
             }

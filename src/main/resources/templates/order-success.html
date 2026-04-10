@@ -61,7 +61,9 @@
         <div th:replace="~{fragments/header :: site-header}"></div>
 
         <main class="flex flex-1 flex-col items-center py-12 px-6">
-          <div class="max-w-[900px] w-full flex flex-col items-center text-center">
+          <div
+            class="max-w-[900px] w-full flex flex-col items-center text-center"
+          >
             <div class="mb-8 flex flex-col items-center">
               <div
                 class="size-24 rounded-full bg-accent-success/10 flex items-center justify-center mb-6"
@@ -190,7 +192,9 @@
                         th:text="${'-$' + #numbers.formatDecimal(order.discount, 1, 2)}"
                       ></span>
                     </div>
-                    <div class="border-t border-slate-200 dark:border-white/10 pt-3 flex justify-between text-xl font-bold">
+                    <div
+                      class="border-t border-slate-200 dark:border-white/10 pt-3 flex justify-between text-xl font-bold"
+                    >
                       <span>Total</span>
                       <span
                         class="text-primary"
@@ -199,7 +203,9 @@
                     </div>
                   </div>
 
-                  <div class="mt-6 pt-6 border-t border-slate-200 dark:border-white/10 space-y-2 text-sm">
+                  <div
+                    class="mt-6 pt-6 border-t border-slate-200 dark:border-white/10 space-y-2 text-sm"
+                  >
                     <div class="flex justify-between gap-4">
                       <span class="text-slate-500">Recipient</span>
                       <span
@@ -233,14 +239,12 @@
               <span class="material-symbols-outlined text-4xl text-primary mb-4"
                 >error</span
               >
-              <p class="text-slate-500 font-bold">
-                Could not find this order.
-              </p>
+              <p class="text-slate-500 font-bold">Could not find this order.</p>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
               <a
-                href="/order-tracking"
+                href="/order-history"
                 class="flex-1 max-w-xs h-14 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02]"
               >
                 <span class="material-symbols-outlined">local_shipping</span>
@@ -260,7 +264,9 @@
         <footer
           class="bg-slate-100 dark:bg-card-dark py-12 px-6 lg:px-40 mt-auto border-t border-slate-200 dark:border-primary/10"
         >
-          <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+          <div
+            class="flex flex-col md:flex-row justify-between items-start gap-8"
+          >
             <div class="max-w-xs">
               <div class="flex items-center gap-2 text-primary mb-4">
                 <span class="material-symbols-outlined">bolt</span>
