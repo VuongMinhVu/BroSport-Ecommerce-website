@@ -82,4 +82,41 @@ public class EmailServiceImpl implements EmailService {
             log.error("Lỗi gửi email cho đơn hàng ID: {}", orderId, e);
         }
     }
+
+    @Override
+    @Async("notificationExecutor")
+    public void sendOtpEmail(String email, String otp) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(email);
+            helper.setSubject("BroSport - Mã xác thực Quên mật khẩu");
+
+            // --- VẼ GIAO DIỆN HTML CHO EMAIL OTP ---
+            StringBuilder html = new StringBuilder();
+            html.append("<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>");
+            html.append("<h2 style='color: #FF5A5F; text-align: center;'>Yêu cầu đặt lại mật khẩu</h2>");
+            html.append("<p>Xin chào,</p>");
+            html.append("<p>Hệ thống BroSport vừa nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Vui lòng nhập mã xác thực (OTP) dưới đây để hoàn tất:</p>");
+
+            // Mã OTP được làm to, in đậm và có background nổi bật
+            html.append("<div style='text-align: center; margin: 30px 0;'>");
+            html.append("<span style='font-size: 32px; font-weight: bold; letter-spacing: 10px; color: #333; background: #f4f4f4; padding: 15px 30px; border-radius: 5px;'>")
+                    .append(otp).append("</span>");
+            html.append("</div>");
+
+            html.append("<p style='color: red; font-size: 14px; text-align: center;'>Lưu ý: Mã xác thực này có hiệu lực trong phiên làm việc của bạn. TUYỆT ĐỐI KHÔNG chia sẻ mã này cho bất kỳ ai!</p>");
+            html.append("<hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'/>");
+            html.append("<p style='text-align: center; color: gray; font-size: 12px;'>Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.</p>");
+            html.append("</div>");
+
+            helper.setText(html.toString(), true);
+            mailSender.send(message);
+            log.info("Đã gửi email OTP thành công tới: {}", email);
+
+        } catch (Exception e) {
+            log.error("Lỗi gửi email OTP tới: {}", email, e);
+        }
+    }
 }

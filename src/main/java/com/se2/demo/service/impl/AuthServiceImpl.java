@@ -6,6 +6,7 @@ import com.se2.demo.model.entity.User;
 import com.se2.demo.repository.UserRepository;
 import com.se2.demo.service.AuthService;
 import com.se2.demo.service.CartService;
+import com.se2.demo.service.EmailService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CartService cartService;
+    private final EmailService emailService;
 
     @Override
     @Transactional
@@ -55,13 +57,11 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("Email không tồn tại trong hệ thống."));
 
         String otp = String.format("%06d", new Random().nextInt(999999));
-
         session.setAttribute("RESET_EMAIL", email);
         session.setAttribute("RESET_OTP", otp);
-
         session.setAttribute("OTP_VERIFIED", false);
 
-        log.info("[MOCK EMAIL] Đã gửi mã OTP: {} đến email: {}", otp, email);
+        emailService.sendOtpEmail(email, otp);
     }
 
     @Override
