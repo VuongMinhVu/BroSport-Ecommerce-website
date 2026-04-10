@@ -44,7 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
         minPrice: null,
         maxPrice: null,
         page: 0,
-
+        sortBy: null,
+        sortDir: null,
         size: 12,
       };
     }
@@ -69,6 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.filters.maxPrice = params.get("maxPrice");
       if (params.has("page"))
         this.filters.page = parseInt(params.get("page")) || 0;
+      if (params.has("sortBy")) this.filters.sortBy = params.get("sortBy");
+      if (params.has("sortDir")) this.filters.sortDir = params.get("sortDir");
     }
 
     initFromPath() {
@@ -109,6 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (this.filters.maxPrice && Number(this.filters.maxPrice) < PRICE_MAX)
         params.set("maxPrice", this.filters.maxPrice);
       if (this.filters.page > 0) params.set("page", this.filters.page);
+      if (this.filters.sortBy) params.set("sortBy", this.filters.sortBy);
+      if (this.filters.sortDir) params.set("sortDir", this.filters.sortDir);
 
       const path = window.location.pathname;
       const newUrl = `${path}${params.toString() ? "?" + params.toString() : ""}`;
@@ -127,6 +132,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (range) range.value = currentMaxPrice;
       if (priceDisplay)
         priceDisplay.textContent = `${new Intl.NumberFormat("en-US").format(currentMaxPrice)}$`;
+
+      const sortLabel = document.getElementById("sort-label");
+      if (sortLabel) {
+        if (this.filters.sortBy === "showPrice" && this.filters.sortDir === "asc") {
+          sortLabel.textContent = "Price: Low to High";
+        } else if (this.filters.sortBy === "showPrice" && this.filters.sortDir === "desc") {
+          sortLabel.textContent = "Price: High to Low";
+        } else {
+          sortLabel.textContent = "Sort: Default";
+        }
+      }
 
       if (this.filters.categories) {
         document.querySelectorAll(".category-filter").forEach((cb) => {
@@ -182,6 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (filters.minPrice) {
           params.append("minPrice", filters.minPrice);
         }
+        if (filters.sortBy) params.append("sortBy", filters.sortBy);
+        if (filters.sortDir) params.append("sortDir", filters.sortDir);
         params.append("page", filters.page);
         params.append("size", filters.size);
 
@@ -576,6 +594,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Sort Dropdown delegation
+  document.addEventListener("click", (e) => {
+    // Hide dropdown when clicking outside
+    const sortDropdownContainer = document.getElementById("sort-dropdown-container");
+    if (sortDropdownContainer && !sortDropdownContainer.contains(e.target)) {
+      const options = document.getElementById('sort-options');
+      if (options && !options.classList.contains('hidden')) {
+        options.classList.add('hidden');
+      }
+    }
+
+    const sortOption = e.target.closest(".sort-option");
+    if (sortOption) {
+      e.preventDefault();
+      const sortValue = sortOption.getAttribute("data-sort");
+      if (sortValue === "priceAsc") {
+        state.filters.sortBy = "showPrice";
+        state.filters.sortDir = "asc";
+      } else if (sortValue === "priceDesc") {
+        state.filters.sortBy = "showPrice";
+        state.filters.sortDir = "desc";
+      } else {
+        state.filters.sortBy = null;
+        state.filters.sortDir = null;
+      }
+      state.filters.page = 0;
+      isInitialLoad = false;
+      document.getElementById('sort-options').classList.add('hidden');
+      state.updateUrl();
+      state.syncUI();
+      loadProducts();
+    }
+  });
+
   // Delegation for pagination clicks and clear button
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".pagination-btn");
@@ -620,6 +672,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       fetch(`/api/v1/carts/my-cart`)
         .then((response) => {
+          if (response.redirected && response.url.includes('/login')) {
+            throw new Error("UNAUTHORIZED");
+          }
+          if (response.status === 401 || response.status === 403) {
+            throw new Error("UNAUTHORIZED");
+          }
           if (response.ok) {
             return response.json();
           }
@@ -632,6 +690,8 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify({ userId: userId }),
           }).then((res) => {
+            if (res.redirected && res.url.includes('/login')) throw new Error("UNAUTHORIZED");
+            if (res.status === 401 || res.status === 403) throw new Error("UNAUTHORIZED");
             if (!res.ok) throw new Error("Failed to create cart");
             return res.json();
           });
@@ -668,7 +728,15 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch((error) => {
           console.error("Error adding to cart:", error);
-          alert("An error occurred. Please try again later.");
+          if (error.message === "UNAUTHORIZED" || error.message.includes("Unexpected token '<")) {
+            if (typeof showLoginModal === "function") {
+              showLoginModal();
+            } else {
+              alert("Login required. Please log in to add items to cart.");
+            }
+          } else {
+            alert("An error occurred. Please try again later.");
+          }
         });
     }
   });
