@@ -12,6 +12,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByUserIdOrderByCreatedAtDesc(Integer userId);
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(o) > 0 FROM Order o JOIN o.orderItems oi JOIN oi.productDetail pd WHERE o.user.id = :userId AND pd.product.id = :productId AND (o.paymentStatus = 'PAID' OR o.paymentMethod = 'COD')")
-    boolean hasUserPurchasedProduct(@org.springframework.data.repository.query.Param("userId") Integer userId, @org.springframework.data.repository.query.Param("productId") Integer productId);
+    // Cho phép đánh giá nếu trạng thái là Đã Giao (DELIVERED) hoặc Đã Thanh
+    // Toán (PAID)
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(o) > 0 FROM Order o JOIN o.orderItems oi JOIN oi.productDetail pd WHERE o.user.id = :userId AND pd.product.id = :productId AND (o.orderStatus = 'DELIVERED' OR o.paymentStatus = 'PAID')")
+    boolean hasUserPurchasedProduct(@org.springframework.data.repository.query.Param("userId") Integer userId,
+            @org.springframework.data.repository.query.Param("productId") Integer productId);
 }

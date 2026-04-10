@@ -43,8 +43,9 @@ public interface ProductMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "slug", target = "slug")
-    @Mapping(source = "originPrice", target = "showPrice")
-    @Mapping(source = "showPrice", target = "originPrice")
+    // ĐÃ SỬA LẠI ĐÚNG CHIỀU:
+    @Mapping(source = "showPrice", target = "showPrice")
+    @Mapping(source = "originPrice", target = "originPrice")
     @Mapping(source = "brand.name", target = "brandName")
     @Mapping(source = "sport.name", target = "sportName")
     @Mapping(source = "gender.name", target = "genderName")

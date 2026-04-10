@@ -35,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+
     public OrderResponse checkout(User user, OrderRequest request, HttpServletRequest httpServletRequest) {
         // 1. Lấy giỏ hàng của User (Dùng user.getId() trực tiếp từ tham số)
         Cart cart = cartRepository.findByUserId(user.getId())
@@ -58,8 +59,15 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderItems.add(item);
         } else {
-            // Luồng MUA TỪ GIỎ HÀNG
-            cartToDelete = cart; // Sử dụng biến cart đã tìm thấy ở trên
+
+            // 2. Luồng MUA TỪ GIỎ HÀNG (Chỉ tìm giỏ hàng khi rơi vào luồng này)
+            cartToDelete = cartRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng!"));
+
+            // Bổ sung lớp bảo vệ: Nếu có giỏ hàng nhưng bên trong không có sản phẩm nào
+            if (cartToDelete.getCartDetails() == null || cartToDelete.getCartDetails().isEmpty()) {
+                throw new RuntimeException("Giỏ hàng của bạn đang trống!");
+            }
 
             subtotalVal = cartToDelete.getCartDetails().stream()
                     .mapToDouble(d -> d.getProductDetail().getProduct().getShowPrice().doubleValue() * d.getQuantity())
@@ -76,8 +84,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         BigDecimal subtotal = new BigDecimal(subtotalVal);
-        BigDecimal shippingFee = BigDecimal.ZERO;
+
+        // Tính phí ship (Miễn phí nếu tổng > 1.000.000đ)
+        BigDecimal shippingFee = (subtotalVal > 0 && subtotalVal < 1000000)
+                ? new BigDecimal(30000)
+                : BigDecimal.ZERO;
+
         BigDecimal discount = calculateDiscount(request.getVoucherCode(), subtotalVal);
+
         BigDecimal finalAmount = subtotal.add(shippingFee).subtract(discount);
 
         String method = request.getPaymentMethod().toUpperCase();
@@ -92,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse processCODOrder(OrderRequest request, User user, List<OrderItem> items, Cart cartToDelete,
-                                          BigDecimal total, BigDecimal ship, BigDecimal discount) {
+            BigDecimal total, BigDecimal ship, BigDecimal discount) {
         Order order = createBaseOrder(request, user, total, ship, discount, "COD", "UNPAID");
 
         items.forEach(item -> {
@@ -119,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse processVNPayRequest(OrderRequest request, User user, List<OrderItem> items, Cart cartToDelete,
-                                              BigDecimal total, BigDecimal ship, BigDecimal discount, HttpServletRequest httpServletRequest) {
+            BigDecimal total, BigDecimal ship, BigDecimal discount, HttpServletRequest httpServletRequest) {
         Order order = createBaseOrder(request, user, total, ship, discount, "VNPAY", "PENDING");
 
         items.forEach(item -> item.setOrder(order));
@@ -136,8 +150,10 @@ public class OrderServiceImpl implements OrderService {
         return response;
     }
 
-    private Order createBaseOrder(OrderRequest request, User user, BigDecimal total, BigDecimal ship, BigDecimal discount, String method,
-                                  String paymentStatus) {
+    private Order createBaseOrder(OrderRequest request, User user, BigDecimal total, BigDecimal ship,
+            BigDecimal discount, String method,
+            String paymentStatus) {
+
         return Order.builder()
                 .orderCode("BS" + System.currentTimeMillis())
                 .user(user)
@@ -161,7 +177,7 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Thanh toán thất bại hoặc sai chữ ký!");
 
         String orderCode = request.getParameter("vnp_TxnRef");
-        Order order = orderRepository.findByOrderCode(orderCode)
+        Order order = orderRepository.findByOrderCode(orderCode)    
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng: " + orderCode));
 
         order.setPaymentStatus("PAID");
@@ -173,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
         });
 
         Cart cart = cartRepository.findByUserId(order.getUser().getId()).orElse(null);
-        if (cart != null && !cart.getCartDetails().isEmpty()) {
+        if (cart != null && !cart.getCartDetails().isEmpty()){
             recreateEmptyCart(order.getUser());
             cartRepository.delete(cart);
         }

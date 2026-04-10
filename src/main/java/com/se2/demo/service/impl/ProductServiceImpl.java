@@ -53,7 +53,13 @@ public class ProductServiceImpl implements ProductService {
                     : Sort.Direction.ASC;
             String sortBy = filterRequest.getSortBy();
 
-            List<String> allowedSortFields = java.util.Arrays.asList("id", "name", "price", "createdAt", "updatedAt");
+            // Map frontend parameter "price" to actual entity property "showPrice"
+            if ("price".equals(sortBy)) {
+                sortBy = "showPrice";
+            }
+
+            List<String> allowedSortFields = java.util.Arrays.asList("id", "name", "showPrice", "createdAt",
+                    "updatedAt");
             if (!allowedSortFields.contains(sortBy)) {
                 sortBy = "id";
             }

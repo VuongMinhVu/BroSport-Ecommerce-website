@@ -12,11 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl  implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public User getUserByEmail(String email) {
@@ -33,6 +32,7 @@ public class UserServiceImpl  implements UserService {
         user.setFullName(request.getFullName());
         user.setPhone(request.getPhone());
         user.setAvatarUrl(request.getAvatarUrl());
+        user.setAddress(request.getAddress()); // THÊM DÒNG NÀY VÀO ĐÂY
 
         return userRepository.save(user);
     }

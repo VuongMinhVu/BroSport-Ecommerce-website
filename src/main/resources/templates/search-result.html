@@ -868,14 +868,19 @@
                         <h3 class="font-bold">${product.name}</h3>
 
                         <div class="flex gap-2 items-center">
-                          <span class="text-primary font-bold">
-                            ${product.showPrice.toLocaleString("vi-VN")}đ
-                          </span>
+  <span class="text-primary font-bold"> 
+    ${product.showPrice != null ? product.showPrice.toFixed(1) + "$" : "Liên hệ"}
+  </span>
 
-                          <span class="text-xs line-through text-slate-400">
-                            ${product.originPrice.toLocaleString("vi-VN")}đ
-                          </span>
-                        </div>
+  ${
+    product.originPrice != null && product.originPrice > product.showPrice
+      ? `
+  <span class="text-xs line-through text-slate-400">
+    ${product.originPrice.toFixed(1)}$
+  </span>`
+      : ""
+  }
+</div>
                       </div>
 
                     </div>

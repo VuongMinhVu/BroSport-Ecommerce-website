@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ff6600",
+              "background-light": "#f8f7f5",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
+            },
+            fontFamily: { display: ["Lexend"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <aside
+      th:fragment="user-sidebar(activePage)"
+      class="lg:border-r lg:border-white/5 lg:pr-5"
+    >
+      <div class="flex items-center gap-3 mb-5">
+        <div
+          class="w-[34px] h-[34px] rounded-full overflow-hidden bg-[#1e1f24] border border-[#30323a] flex items-center justify-center text-[#ff8a1d] font-bold"
+        >
+          <img
+            th:if="${user?.avatarUrl != null and !#strings.isEmpty(user.avatarUrl)}"
+            th:src="${user.avatarUrl}"
+            class="w-full h-full object-cover"
+            alt="Mini Avatar"
+          />
+          <span
+            th:unless="${user?.avatarUrl != null and !#strings.isEmpty(user.avatarUrl)}"
+            th:text="${#strings.substring(user?.fullName ?: 'U', 0, 1)}"
+            >A</span
+          >
+        </div>
+        <div>
+          <h3 class="text-[14px] mb-0.5" th:text="${user?.fullName ?: 'User'}">
+            Tên người dùng
+          </h3>
+          <p class="text-[11px] text-[#ff8a1d]">Thành viên</p>
+        </div>
+      </div>
+
+      <nav class="flex flex-col gap-2">
+        <a
+          th:href="@{/profile/edit}"
+          th:class="${activePage == 'profile'} 
+                         ? 'flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[13px] bg-primary/10 border border-primary/30 text-[#ffb06d]' 
+                         : 'flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[#c1c6cf] text-[13px] hover:bg-white/5 transition-colors'"
+        >
+          <i class="fa-regular fa-user"></i><span>Hồ sơ cá nhân</span>
+        </a>
+
+        <a
+          th:href="@{/change-password}"
+          th:class="${activePage == 'password'} 
+                         ? 'flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[13px] bg-primary/10 border border-primary/30 text-[#ffb06d]' 
+                         : 'flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[#c1c6cf] text-[13px] hover:bg-white/5 transition-colors'"
+        >
+          <i class="fa-solid fa-lock"></i><span>Đổi mật khẩu</span>
+        </a>
+
+        <a
+          th:href="@{/order-history}"
+          th:class="${activePage == 'orders'} 
+                         ? 'flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[13px] bg-primary/10 border border-primary/30 text-[#ffb06d]' 
+                         : 'flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[#c1c6cf] text-[13px] hover:bg-white/5 transition-colors'"
+        >
+          <i class="fa-solid fa-box"></i><span>Lịch sử đơn hàng</span>
+        </a>
+      </nav>
+
+      <div class="h-px bg-white/10 my-5"></div>
+
+      <form th:action="@{/logout}" method="post" class="m-0 p-0">
+        <button
+          type="submit"
+          class="w-full flex items-center gap-2.5 h-[42px] px-3.5 rounded-[10px] text-[13px] text-[#ff6b6d] hover:bg-white/5 transition-colors"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket"></i
+          ><span>Đăng xuất</span>
+        </button>
+      </form>
+    </aside>
+  </body>
+</html>

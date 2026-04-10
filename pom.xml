@@ -92,7 +92,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
 		</dependency>
-	</dependencies>
+	
+   <dependency>
+     <groupId>io.atlasmap</groupId>
+     <artifactId>atlas-itests-concurrency</artifactId>
+     <version>1.19.0</version>
+   </dependency>
+ </dependencies>
 
 	<build>
 		<plugins>

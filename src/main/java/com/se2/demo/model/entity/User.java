@@ -31,4 +31,6 @@ public class User {
 
     @Column(name = "avatar_url")
     String avatarUrl;
+
+    String address;
 }
