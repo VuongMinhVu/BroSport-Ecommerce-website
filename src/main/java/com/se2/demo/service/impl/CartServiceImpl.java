@@ -39,6 +39,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartResponse createCart(Integer userId) {
+
         Cart cart = new Cart();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));

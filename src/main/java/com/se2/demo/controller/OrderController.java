@@ -9,9 +9,11 @@ import com.se2.demo.service.OrderService;
 import com.se2.demo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 
@@ -35,9 +37,18 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/vnpay-callback")
-    public ResponseEntity<OrderResponse> handleCallback(HttpServletRequest request) {
-        OrderResponse response = orderService.processPaymentCallback(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Void> handleCallback(HttpServletRequest request) {
+        try {
+            OrderResponse response = orderService.processPaymentCallback(request);
+            String vnp_TxnRef = request.getParameter("vnp_TxnRef");
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create("/order-success?orderCode=" + vnp_TxnRef))
+                    .build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create("/cart?error=true"))
+                    .build();
+        }
     }
 
     // xem lich su

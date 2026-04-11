@@ -78,6 +78,38 @@
       }
     </style>
 
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+            rel="stylesheet"
+    />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#ff6600",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#000000",
+                        "surface-dark": "#121212",
+                        "border-dark": "#ffffff10",
+                    },
+                    fontFamily: { display: ["Lexend"] },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
     <style>
       :root {
         --bg: #050505;
@@ -604,6 +636,18 @@
                 <h1>Welcome Back, Athlete</h1>
                 <p>Log in to track your stats and manage your gear.</p>
               </div>
+
+                <div th:if="${param.error}" class="error-box">
+                    Tài khoản hoặc mật khẩu không chính xác!
+                </div>
+
+                <div th:if="${param.success}" class="success-box">
+                    Đăng ký thành công! Vui lòng đăng nhập.
+                </div>
+
+                <div th:if="${param.logout}" class="success-box" style="color: #93c5fd; background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.28);">
+                    Bạn đã đăng xuất thành công.
+                </div>
 
               <form th:action="@{/login}" method="post">
                 <div class="form-group">
