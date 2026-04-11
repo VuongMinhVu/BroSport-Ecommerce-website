@@ -701,16 +701,87 @@
   <div th:replace="~{fragments/footer :: site-footer}"></div>
 
 
-  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] hidden">
+  <div id="toast-success"
+    class="fixed inset-0 flex items-center justify-center z-[100] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
     <div
-      class="bg-[#1a1a1a] border border-border-dark text-white px-6 py-3 rounded-full font-bold text-sm flex items-center gap-3 shadow-2xl">
-      <span id="toast-icon" class="material-symbols-outlined text-primary text-base">check_circle</span>
-      <span id="toast-msg">Item added to cart!</span>
+      class="bg-black/80 text-white rounded-lg flex flex-col items-center justify-center py-6 px-8 min-w-[240px] shadow-2xl backdrop-blur-sm">
+      <div
+        class="bg-emerald-500 rounded-full w-14 h-14 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
+        <span class="material-symbols-outlined text-white text-3xl font-bold">check</span>
+      </div>
+      <span class="text-lg font-medium tracking-wide">Sản phẩm đã được thêm vào Giỏ hàng</span>
+    </div>
+  </div>
+
+  <!-- Custom Login Modal -->
+  <div id="loginModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="hideLoginModal()"></div>
+
+    <!-- Modal Content -->
+    <div
+      class="relative bg-surface border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all scale-95 opacity-0"
+      id="loginModalContent">
+      <div class="absolute -top-3 -right-3">
+        <button onclick="hideLoginModal()"
+          class="w-8 h-8 flex items-center justify-center bg-black border border-white/10 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="text-center">
+        <div
+          class="w-16 h-16 mx-auto bg-primary/20 flex items-center justify-center rounded-full mb-4 ring-8 ring-primary/10">
+          <span class="material-symbols-outlined text-3xl text-primary font-bold">priority_high</span>
+        </div>
+
+        <h3 class="text-xs font-black tracking-[0.2em] text-primary uppercase mb-2">Brosport Secure Protocol</h3>
+        <h4 class="text-2xl font-bold tracking-tight text-white mb-2">Login Required</h4>
+        <p class="text-slate-400 text-sm mb-6">
+          You must be logged in to access and manage your personal cart.
+        </p>
+
+        <div class="flex flex-col gap-3">
+          <a href="/login"
+            class="w-full h-11 flex items-center justify-center bg-primary text-black font-bold uppercase tracking-wider text-sm rounded-lg hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+            Log In Now
+          </a>
+          <button onclick="hideLoginModal()"
+            class="w-full h-11 flex items-center justify-center bg-transparent text-slate-400 font-bold uppercase tracking-wider text-sm rounded-lg border border-white/10 hover:bg-white/5 hover:text-white transition-colors">
+            Dismiss
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- ==================== JAVASCRIPT ==================== -->
   <script th:inline="javascript">
+    // Custom Modal logic
+    function showLoginModal() {
+      const modal = document.getElementById('loginModal');
+      const content = document.getElementById('loginModalContent');
+      if (!modal || !content) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function hideLoginModal() {
+      const modal = document.getElementById('loginModal');
+      const content = document.getElementById('loginModalContent');
+      if (!modal || !content) return;
+      content.classList.remove('scale-100', 'opacity-100');
+      content.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
     // Khai báo biến kiểm tra Đăng nhập
     const CURRENT_USER_ID = /*[[${session.user != null ? session.user.id : null}]]*/ null;
     /* =========================================================
@@ -758,29 +829,32 @@
 
     // Extract unique colors from productDetails
     function getUniqueColors(product) {
-      // productDetails chứa danh sách các biến thể
       const details = product.productDetails || [];
       if (details.length > 0) {
         const seen = new Set();
         return details
-          .map((d) => d.color) // d.color lúc này là chuỗi "Đỏ", "Đen"...
-          .filter((colorName) => {
-            if (!colorName) return false;
-            const normalized = colorName.trim();
+          .filter((d) => {
+            if (!d.color) return false;
+            const normalized = d.color.trim();
             if (seen.has(normalized)) return false;
             seen.add(normalized);
             return true;
           })
-          .map((name) => name.trim());
+          .map((d) => {
+            let imgUrl = "";
+            if (d.variantImages && Array.isArray(d.variantImages) && d.variantImages.length > 0) {
+              imgUrl = d.variantImages[0].imageUrl;
+            }
+            return { name: d.color.trim(), image: imgUrl };
+          });
       }
       return [];
     }
 
     // Color dots HTML
-    function renderColorDots(colors, theme = "light") {
+    function renderColorDots(colors, productId = "", defaultImage = "") {
       if (!colors || colors.length === 0)
         return '<span class="text-[10px] text-gray-500 italic">No color</span>';
-
 
       const colorMap = {
         'red': '#FF0000', 'black': '#000000', 'white': '#FFFFFF',
@@ -788,34 +862,38 @@
         'orange': '#FF6600', 'pink': '#FFC0CB', 'purple': '#800080'
       };
 
-      return colors.slice(0, 5).map((colorName, i) => {
+      return colors.slice(0, 5).map((colorObj, i) => {
+        const colorName = typeof colorObj === 'string' ? colorObj : colorObj.name;
+        const imgUrl = typeof colorObj === 'string' ? '' : colorObj.image;
+        const targetImage = imgUrl || defaultImage;
+
         const normalizedName = colorName.toLowerCase();
         const hex = colorMap[normalizedName] || '#888';
 
         // i === 0 là chấm đầu tiên mặc định được chọn
         const activeClass = i === 0 ? 'active-dot' : '';
+        const safeTargetImage = targetImage ? targetImage.replace(/'/g, "\\'") : '';
+
         return `
             <div class="color-dot ${activeClass}"
                  style="background-color: ${hex}; width: 16px; height: 16px; border-radius: 50%; cursor: pointer;
-                        border: 1px solid rgba(255,255,255,0.2); /* Viền sáng nhẹ để tách khối */
-                        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); /* Viền trong để màu trắng không bị lẫn nền */
-                        transition: all 0.2s;"
+                        border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); transition: all 0.2s;"
                  title="${colorName}"
-                 onclick="event.stopPropagation(); selectColorDot(this)">
+                 onclick="event.stopPropagation(); selectColorDot(this, '${safeTargetImage}', '${productId}')">
             </div>`;
-      })
-        .join("");
+      }).join("");
     }
 
 
     // Color dot selection
-    function selectColorDot(el) {
+    function selectColorDot(el, imageUrl, productId) {
       // 1. Xóa hết trạng thái của các chấm cùng cụm
       const siblings = el.parentElement.querySelectorAll('.color-dot');
       siblings.forEach(s => {
         s.style.outline = 'none';
         s.style.outlineOffset = '0px';
         s.style.transform = 'scale(1)';
+        s.classList.remove('active-dot');
       });
 
       // 2. Thêm viền cam rực rỡ và khoanh tròn cho chấm được click
@@ -823,14 +901,25 @@
       el.style.outlineOffset = '2px';
       el.style.transform = 'scale(1.1)';
       el.classList.add('active-dot');
+
+      // 3. Thay đổi hỉnh ảnh
+      if (imageUrl && productId) {
+        const imgEl = document.getElementById('img-prod-' + productId);
+        if (imgEl && imageUrl.trim() !== '') {
+          imgEl.src = imageUrl;
+        }
+      }
     }
     // Toast notification
-    function showToast(msg, icon = 'check_circle') {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-msg').textContent = msg;
-      document.getElementById('toast-icon').textContent = icon;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3000);
+    function showSuccessToast() {
+      const toast = document.getElementById("toast-success");
+      if (!toast) return;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.remove("opacity-0"), 10);
+      setTimeout(() => {
+        toast.classList.add("opacity-0");
+        setTimeout(() => toast.classList.add("hidden"), 300);
+      }, 2000);
     }
 
     /* =========================================================
@@ -911,8 +1000,8 @@
       grid.innerHTML = products
         .map((product) => {
           const colors = getUniqueColors(product);
-          const colorsHtml = renderColorDots(colors, "light");
           const image = getProductImage(product);
+          const colorsHtml = renderColorDots(colors, product.id, image);
 
           // Xử lý giá: Format sang USD và lấy giá gốc (nếu có giảm giá)
           // Lấy originPrice (từ Backend đang là giá thấp) làm giá bán chính
@@ -923,23 +1012,18 @@
           const brand = product.brand || "BROSPORT";
 
           return `
-        <div class="product-card group cursor-pointer flex flex-col"
+        <div class="product-card group cursor-pointer flex flex-col h-full"
              onclick="window.location='/product/${product.slug || product.id}'"
              style="background: transparent; transform: none; box-shadow: none;">
 
             <div class="relative aspect-square w-full overflow-hidden mb-4 bg-[#f3f4f6]">
-                <img src="${image}" alt="${product.name}"
+                <img id="img-prod-${product.id}" src="${image}" alt="${product.name}"
                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                      onerror="this.src='https://via.placeholder.com/500x625?text=Product'">
-
-                <button class="absolute bottom-4 right-4 bg-black text-white p-3 rounded-full opacity-0 group-hover:opacity-100 hover:bg-[#FF7A00] transition-all shadow-xl z-10"
-                        onclick="event.stopPropagation(); addToCart(${product.id})">
-                    <span class="material-symbols-outlined" style="font-size:22px;">add_shopping_cart</span>
-                </button>
             </div>
 
-            <div class="flex flex-col gap-1">
-                <div class="flex gap-2 mb-1 min-h-[20px] items-center">
+            <div class="flex flex-col flex-1">
+                <div class="flex gap-2 mb-4 min-h-[20px] items-center">
                     ${colorsHtml}
                 </div>
                 <p class="text-[11px] text-gray-500 font-bold uppercase tracking-widest transition-colors duration-200 group-hover:text-[#FF7A00]">
@@ -949,9 +1033,15 @@
                     ${product.name}
                 </h3>
 
-                <div class="flex items-baseline gap-2 mt-1">
-                    <span class="text-[#FF7A00] font-black text-lg">${showPriceFmt}</span>
-                    ${originPriceFmt ? `<span class="text-slate-400 line-through text-xs font-bold">${originPriceFmt}</span>` : ''}
+                <div class="flex items-center justify-between mt-auto pt-2">
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-[#FF7A00] font-black text-lg">${showPriceFmt}</span>
+                        ${originPriceFmt ? `<span class="text-slate-400 line-through text-xs font-bold">${originPriceFmt}</span>` : ''}
+                    </div>
+                    <button class="relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0 flex items-center justify-center shadow-sm"
+                            onclick="event.stopPropagation(); addToCart(${product.id})" title="Add to Cart">
+                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                    </button>
                 </div>
             </div>
         </div>`;
@@ -1174,8 +1264,8 @@
       // 2. Render theo cấu trúc của Flash Sale
       grid.innerHTML = products.map(product => {
         const colors = getUniqueColors(product);
-        const colorsHtml = renderColorDots(colors, 'dark');
         const image = getProductImage(product);
+        const colorsHtml = renderColorDots(colors, product.id, image);
 
         // Xử lý giá: Format sang USD và lấy giá gốc (nếu có giảm giá)
         // Lấy originPrice (từ Backend đang là giá thấp) làm giá bán chính
@@ -1186,23 +1276,19 @@
         const brand = product.brand || 'BROSPORT';
 
         return `
-        <div class="product-card group cursor-pointer flex flex-col"
+        <div class="product-card group cursor-pointer flex flex-col h-full"
         onclick="window.location='/product/${product.slug || product.id}'">
 
             <div class="relative aspect-square w-full overflow-hidden mb-4 bg-surface-dark rounded-xl">
-                <img src="${image}" alt="${product.name}"
+                <img id="img-prod-${product.id}" src="${image}" alt="${product.name}"
      class="w-full h-full object-cover block transform-gpu transition-transform duration-700 ease-in-out group-hover:scale-110"
      style="backface-visibility: hidden; will-change: transform;"
      onerror="this.src='https://via.placeholder.com/500x625?text=Product'">
 
-                <button class="absolute bottom-4 right-4 bg-primary text-white p-3 rounded-full opacity-0 group-hover:opacity-100 hover:scale-110 transition-all shadow-xl z-10"
-                        onclick="event.stopPropagation(); addToCart(${product.id})">
-                    <span class="material-symbols-outlined" style="font-size:22px;">add_shopping_cart</span>
-                </button>
             </div>
 
-            <div class="flex flex-col gap-1">
-                <div class="flex gap-2 mb-1 min-h-[20px] items-center">
+            <div class="flex flex-col flex-1">
+                <div class="flex gap-2 mb-4 min-h-[20px] items-center">
                     ${colorsHtml}
                 </div>
                 <p class="text-[11px] text-gray-500 font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
@@ -1212,9 +1298,15 @@
                     ${product.name}
                 </h3>
 
-                <div class="flex items-baseline gap-2 mt-1">
-                    <span class="text-primary font-black text-lg">${showPriceFmt}</span>
-                    ${originPriceFmt ? `<span class="text-slate-500 line-through text-[11px] font-bold">${originPriceFmt}</span>` : ''}
+                <div class="flex items-center justify-between mt-auto pt-2">
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-primary font-black text-lg">${showPriceFmt}</span>
+                        ${originPriceFmt ? `<span class="text-slate-500 line-through text-[11px] font-bold">${originPriceFmt}</span>` : ''}
+                    </div>
+                    <button class="relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0 flex items-center justify-center shadow-sm"
+                            onclick="event.stopPropagation(); addToCart(${product.id})" title="Add to Cart">
+                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                    </button>
                 </div>
             </div>
         </div>`;
@@ -1225,75 +1317,71 @@
     }
 
     /* =========================================================
-     8. ADD TO CART (HYBRID: GUEST + LOGGED IN)
+     8. ADD TO CART
      ========================================================= */
     async function addToCart(productId) {
       try {
-        // 1. Fetch thông tin sản phẩm
         const productData = await apiFetch(`/products/${productId}`);
-        if (!productData) { showToast("Không tìm thấy sản phẩm", "error"); return; }
-        const detail = productData.productDetails?.[0];
-        if (!detail) { showToast("Sản phẩm hiện đang hết hàng!", "error"); return; }
+        if (!productData) { alert("Sản phẩm không có sẵn"); return; }
+        const detail = productData.productDetails && productData.productDetails.length > 0 ? productData.productDetails[0] : null;
+        if (!detail) { alert("Sản phẩm hết hàng!"); return; }
 
-        // 2. Kiểm tra đăng nhập
-        const userId = CURRENT_USER_ID;
+        const detailId = detail.id;
+        const userInputElement = document.getElementById("currentUserId");
+        const userId = userInputElement ? parseInt(userInputElement.value) || 1 : 1;
 
-        if (userId) {
-          // --- LUỒNG ĐÃ ĐĂNG NHẬP (Lưu Database) ---
-          let cart;
-          const cartRes = await fetch(`/api/v1/carts/user/${userId}`);
-          if (cartRes.ok) {
-            cart = await cartRes.json();
-          } else {
-            const newCartRes = await fetch('/api/v1/carts', {
-              method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ userId: userId })
+        fetch(`/api/v1/carts/my-cart`)
+          .then((response) => {
+            if (response.redirected && response.url.includes('/login')) throw new Error("UNAUTHORIZED");
+            if (response.status === 401 || response.status === 403) throw new Error("UNAUTHORIZED");
+            if (response.ok) return response.json();
+            return fetch("/api/v1/carts", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ userId: userId }),
+            }).then((res) => {
+              if (res.redirected && res.url.includes('/login')) throw new Error("UNAUTHORIZED");
+              if (res.status === 401 || res.status === 403) throw new Error("UNAUTHORIZED");
+              if (!res.ok) throw new Error("Failed to create cart");
+              return res.json();
             });
-            cart = await newCartRes.json();
-          }
+          })
+          .then((cart) => {
+            return fetch("/api/v1/cart-details", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ cartId: cart.id, productDetailId: detailId, quantity: 1 }),
+            });
+          })
+          .then((response) => {
+            if (response.status === 401 || response.status === 403) throw new Error("UNAUTHORIZED");
+            if (!response.ok) throw new Error("Server error");
+            showSuccessToast();
 
-          const addRes = await fetch('/api/v1/cart-details', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cartId: cart.id, productDetailId: detail.id, quantity: 1 })
+            // Dispatch completely decoupled event so header knows to re-fetch cart count
+            const evt = new CustomEvent("cart-updated");
+            document.dispatchEvent(evt);
+
+            // Also manual update if header listener isn't there
+            const badge = document.getElementById("cart-count");
+            if (badge) {
+              badge.textContent = parseInt(badge.textContent || "0") + 1;
+            }
+          })
+          .catch((error) => {
+            if (error.message === "UNAUTHORIZED") {
+              if (typeof showLoginModal === "function") {
+                showLoginModal();
+              } else {
+                alert("Login required. Please log in to add items to cart.");
+                window.location.href = "/login";
+              }
+            } else {
+              alert("Error adding to cart");
+            }
           });
-
-          if (addRes.ok) {
-            showToast("Đã thêm vào giỏ hàng!", "check_circle");
-            const badge = document.getElementById("cart-count") || document.querySelector('a[href="/cart"] span.absolute');
-            if (badge) badge.textContent = parseInt(badge.textContent || "0") + 1;
-          } else {
-            showToast("Lỗi khi thêm vào giỏ", "error");
-          }
-
-        } else {
-          // --- LUỒNG KHÁCH VÃNG LAI (Lưu Local Storage) ---
-          let cart = JSON.parse(localStorage.getItem('brosport_guest_cart')) || [];
-          const existingItemIndex = cart.findIndex(item => item.productDetailId === detail.id);
-
-          if (existingItemIndex > -1) {
-            cart[existingItemIndex].quantity += 1;
-          } else {
-            cart.push({
-              productId: productData.id,
-              productDetailId: detail.id,
-              name: productData.name,
-              price: productData.showPrice || productData.originPrice,
-              image: productData.productImages?.[0]?.imageUrl || '',
-              color: detail.color,
-              size: detail.size,
-              quantity: 1
-            });
-          }
-          localStorage.setItem('brosport_guest_cart', JSON.stringify(cart));
-          showToast("Đã thêm vào giỏ hàng!", "check_circle");
-
-          // Cập nhật số lượng trên icon Header
-          const badge = document.getElementById("cart-count") || document.querySelector('a[href="/cart"] span.absolute');
-          if (badge) badge.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-        }
       } catch (err) {
-        console.error("Add to cart error:", err);
-        showToast("Không thể thêm vào giỏ hàng", "error");
+        alert("Error adding to cart");
       }
     }
 

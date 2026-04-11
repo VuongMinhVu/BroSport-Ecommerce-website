@@ -1,175 +1,136 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <body>
-    <header
-      th:fragment="site-header"
-      class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl"
-    >
-      <div
-        class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20"
-      >
-        <a class="flex items-center gap-2 group flex-shrink-0" th:href="@{/}">
+
+<body>
+  <header th:fragment="site-header"
+    class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
+      <a class="flex items-center gap-2 group flex-shrink-0" th:href="@{/}">
+        <div
+          class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
+          <span class="material-symbols-outlined font-bold">bolt</span>
+        </div>
+        <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">
+          Brosport
+        </h1>
+      </a>
+
+      <nav class="hidden xl:flex items-center gap-8 h-full">
+        <a class="nav-link" th:href="@{/products}">New Arrivals</a>
+        <a class="nav-link" th:href="@{/products/men}"
+          th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
+        <a class="nav-link" th:href="@{/products/women}"
+          th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
+        <a class="nav-link" th:href="@{/products/kids}"
+          th:classappend="${categorySlug == 'kids' ? 'text-primary' : ''}">Kids</a>
+        <a class="nav-link" th:href="@{/products/accessories}"
+          th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
+        <div class="relative group h-full flex items-center">
+          <a class="nav-link cursor-pointer flex items-center gap-1"
+            th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands <span
+              class="material-symbols-outlined text-[16px]">expand_more</span>
+          </a>
           <div
-            class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12"
-          >
-            <span class="material-symbols-outlined font-bold">bolt</span>
-          </div>
-          <h1
-            class="text-2xl font-black tracking-tighter uppercase italic text-white"
-          >
-            Brosport
-          </h1>
-        </a>
-
-        <nav class="hidden xl:flex items-center gap-8 h-full">
-          <a class="nav-link" th:href="@{/products}">New Arrivals</a>
-          <a
-            class="nav-link"
-            th:href="@{/products/men}"
-            th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}"
-            >Men</a
-          >
-          <a
-            class="nav-link"
-            th:href="@{/products/women}"
-            th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}"
-            >Women</a
-          >
-          <a
-            class="nav-link"
-            th:href="@{/products/kids}"
-            th:classappend="${categorySlug == 'kids' ? 'text-primary' : ''}"
-            >Kids</a
-          >
-          <a
-            class="nav-link"
-            th:href="@{/products/accessories}"
-            th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}"
-            >Accessories</a
-          >
-          <a
-            class="nav-link"
-            th:href="@{/products/brands}"
-            th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}"
-            >Brands</a
-          >
-          <a
-            class="nav-link"
-            th:href="@{/products/sports}"
-            th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}"
-            >Sports</a
-          >
-          <a
-            class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-            th:href="@{/products/sales}"
-            th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}"
-            >Sales</a
-          >
-        </nav>
-
-        <div class="flex items-center gap-4">
-          <div class="relative hidden lg:block group">
-            <span
-              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors"
-              >search</span
-            >
-            <input
-              id="global-search-input"
-              autocomplete="off"
-              class="h-11 w-64 rounded-full border-none bg-black pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-              placeholder="Search elite gear..."
-              type="text"
-            />
-
-            <div
-              id="global-search-dropdown"
-              class="absolute top-full left-0 mt-2 w-80 bg-[#1a1a1a] border border-border-dark rounded-xl shadow-2xl shadow-primary/20 hidden z-50 max-h-96 overflow-y-auto"
-            >
-              <div id="global-dropdown-content" class="py-2"></div>
-              <div
-                id="global-empty-state"
-                class="px-4 py-8 text-center text-slate-400"
-              >
-                <span class="material-symbols-outlined text-3xl block mb-2"
-                  >search</span
-                >
-                <p class="text-sm">Enter a product name to search...</p>
-              </div>
+            class="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-max min-w-[200px] bg-[#1a1a1a] border border-border-dark rounded-xl shadow-2xl shadow-primary/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+            <div class="h-4 w-full absolute -top-4 bg-transparent"></div>
+            <div id="header-brands-dropdown" class="py-2 max-h-80 overflow-y-auto flex flex-col">
+              <div class="px-4 py-3 text-slate-500 text-xs text-center"><span
+                  class="material-symbols-outlined animate-spin text-[16px]">sync</span></div>
             </div>
           </div>
-
-          <div class="flex items-center gap-2">
-            <a
-              th:href="${user != null ? '/profile/edit' : '/login'}"
-              class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all text-white"
-            >
-              <img
-                th:if="${user != null and !#strings.isEmpty(user.avatarUrl)}"
-                th:src="${user.avatarUrl}"
-                class="h-full w-full object-cover rounded-full bg-[#2d2d2d]"
-                alt="User Avatar"
-              />
-
-              <span
-                th:unless="${user != null and !#strings.isEmpty(user.avatarUrl)}"
-                class="material-symbols-outlined text-2xl"
-              >
-                person
-              </span>
-            </a>
-
-            <a
-              th:href="@{/cart}"
-              class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors"
-            >
-              <span class="material-symbols-outlined text-2xl"
-                >shopping_cart</span
-              >
-              <span
-                id="cart-count"
-                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
-                th:text="${cartItems != null ? #lists.size(cartItems) : 0}"
-                >0</span
-              >
-            </a>
+        </div>
+        <div class="relative group h-full flex items-center">
+          <a class="nav-link cursor-pointer flex items-center gap-1"
+            th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports <span
+              class="material-symbols-outlined text-[16px]">expand_more</span></a>
+          <div
+            class="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-max min-w-[200px] bg-[#1a1a1a] border border-border-dark rounded-xl shadow-2xl shadow-primary/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+            <div class="h-4 w-full absolute -top-4 bg-transparent"></div>
+            <div id="header-sports-dropdown" class="py-2 max-h-80 overflow-y-auto flex flex-col">
+              <div class="px-4 py-3 text-slate-500 text-xs text-center"><span
+                  class="material-symbols-outlined animate-spin text-[16px]">sync</span></div>
+            </div>
           </div>
         </div>
+        <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
+          th:href="@{/products/sales}" th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <div class="relative hidden lg:block group">
+          <span
+            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
+          <input id="global-search-input" autocomplete="off"
+            class="h-11 w-64 rounded-full border-none bg-black pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
+            placeholder="Search elite gear..." type="text" />
+
+          <div id="global-search-dropdown"
+            class="absolute top-full left-0 mt-2 w-80 bg-[#1a1a1a] border border-border-dark rounded-xl shadow-2xl shadow-primary/20 hidden z-50 max-h-96 overflow-y-auto">
+            <div id="global-dropdown-content" class="py-2"></div>
+            <div id="global-empty-state" class="px-4 py-8 text-center text-slate-400">
+              <span class="material-symbols-outlined text-3xl block mb-2">search</span>
+              <p class="text-sm">Enter a product name to search...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a th:href="${user != null ? '/profile/edit' : '/login'}"
+            class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all text-white">
+            <img th:if="${user != null and !#strings.isEmpty(user.avatarUrl)}" th:src="${user.avatarUrl}"
+              class="h-full w-full object-cover rounded-full bg-[#2d2d2d]" alt="User Avatar" />
+
+            <span th:unless="${user != null and !#strings.isEmpty(user.avatarUrl)}"
+              class="material-symbols-outlined text-2xl">
+              person
+            </span>
+          </a>
+
+          <a th:href="@{/cart}"
+            class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors">
+            <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+            <span id="cart-count"
+              class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
+              th:text="${cartItems != null ? #lists.size(cartItems) : 0}">0</span>
+          </a>
+        </div>
       </div>
+    </div>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const searchInput = document.getElementById("global-search-input");
-          const searchDropdown = document.getElementById(
-            "global-search-dropdown",
-          );
-          const dropdownContent = document.getElementById(
-            "global-dropdown-content",
-          );
-          const emptyState = document.getElementById("global-empty-state");
-          const cartCountBadge = document.getElementById("cart-count");
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("global-search-input");
+        const searchDropdown = document.getElementById(
+          "global-search-dropdown",
+        );
+        const dropdownContent = document.getElementById(
+          "global-dropdown-content",
+        );
+        const emptyState = document.getElementById("global-empty-state");
+        const cartCountBadge = document.getElementById("cart-count");
 
-          syncCartCount();
+        syncCartCount();
 
-          if (!searchInput) return;
+        if (!searchInput) return;
 
-          // 1. Gợi ý từ khóa (Autocomplete)
-          searchInput.addEventListener("input", async (e) => {
-            const query = e.target.value.trim();
-            if (query.length === 0) {
-              searchDropdown.classList.add("hidden");
-              return;
-            }
-            try {
-              const res = await fetch(
-                `/api/v1/search/autocomplete?keyword=${encodeURIComponent(query)}`,
-              );
-              const data = await res.json();
-              const products = data.content || data;
+        // 1. Gợi ý từ khóa (Autocomplete)
+        searchInput.addEventListener("input", async (e) => {
+          const query = e.target.value.trim();
+          if (query.length === 0) {
+            searchDropdown.classList.add("hidden");
+            return;
+          }
+          try {
+            const res = await fetch(
+              `/api/v1/search/autocomplete?keyword=${encodeURIComponent(query)}`,
+            );
+            const data = await res.json();
+            const products = data.content || data;
 
-              if (products && products.length > 0) {
-                dropdownContent.innerHTML = products
-                  .map(
-                    (item) => `
+            if (products && products.length > 0) {
+              dropdownContent.innerHTML = products
+                .map(
+                  (item) => `
                             <div class="px-4 py-3 hover:bg-white/10 cursor-pointer flex items-center gap-3 transition-colors"
                                  onclick="window.location.href='/product/${item.slug}'">
                               <div class="w-12 h-12 shrink-0 bg-white/5 rounded-md border border-[#2d2d2d] overflow-hidden flex items-center justify-center">
@@ -184,71 +145,105 @@
                               </div>
                             </div>
                         `,
-                  )
-                  .join("");
-                emptyState.classList.add("hidden");
-              } else {
-                dropdownContent.innerHTML = "";
-                emptyState.classList.remove("hidden");
-              }
-              searchDropdown.classList.remove("hidden");
-            } catch (err) {
-              console.error("Lỗi khi tìm kiếm:", err);
+                )
+                .join("");
+              emptyState.classList.add("hidden");
+            } else {
+              dropdownContent.innerHTML = "";
+              emptyState.classList.remove("hidden");
             }
-          });
+            searchDropdown.classList.remove("hidden");
+          } catch (err) {
+            console.error("Lỗi khi tìm kiếm:", err);
+          }
+        });
 
-          // 2. Chuyển hướng khi bấm Enter
-          searchInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              const query = e.target.value.trim();
-              if (query.length > 0) {
-                window.location.href = `/products?keyword=${encodeURIComponent(query)}`;
-              }
-            }
-          });
-
-          // 3. Ẩn dropdown khi click ra ngoài
-          document.addEventListener("click", (e) => {
-            if (
-              !e.target.closest("#global-search-input") &&
-              !e.target.closest("#global-search-dropdown")
-            ) {
-              searchDropdown.classList.add("hidden");
-            }
-          });
-
-          // 4. Hiện dropdown khi click lại vào ô search
-          searchInput.addEventListener("focus", (e) => {
-            if (e.target.value.length > 0) {
-              searchDropdown.classList.remove("hidden");
-            }
-          });
-
-          async function syncCartCount() {
-            if (!cartCountBadge) return;
-
-            const userInputElement = document.getElementById("currentUserId");
-            const userId = userInputElement
-              ? parseInt(userInputElement.value, 10) || 1
-              : 1;
-
-            try {
-              const response = await fetch(`/api/v1/carts/my-cart`);
-              if (!response.ok) throw new Error("Failed to fetch cart");
-
-              const cart = await response.json();
-              const cartItems = Array.isArray(cart.cartDetails)
-                ? cart.cartDetails
-                : [];
-
-              cartCountBadge.textContent = String(cartItems.length);
-            } catch (error) {
-              cartCountBadge.textContent = "0";
+        // 2. Chuyển hướng khi bấm Enter
+        searchInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+              window.location.href = `/products?keyword=${encodeURIComponent(query)}`;
             }
           }
         });
-      </script>
-    </header>
-  </body>
+
+        // 3. Ẩn dropdown khi click ra ngoài
+        document.addEventListener("click", (e) => {
+          if (
+            !e.target.closest("#global-search-input") &&
+            !e.target.closest("#global-search-dropdown")
+          ) {
+            searchDropdown.classList.add("hidden");
+          }
+        });
+
+        // 4. Hiện dropdown khi click lại vào ô search
+        searchInput.addEventListener("focus", (e) => {
+          if (e.target.value.length > 0) {
+            searchDropdown.classList.remove("hidden");
+          }
+        });
+
+        async function syncCartCount() {
+          if (!cartCountBadge) return;
+
+          const userInputElement = document.getElementById("currentUserId");
+          const userId = userInputElement
+            ? parseInt(userInputElement.value, 10) || 1
+            : 1;
+
+          try {
+            const response = await fetch(`/api/v1/carts/my-cart`);
+            if (!response.ok) throw new Error("Failed to fetch cart");
+
+            const cart = await response.json();
+            const cartItems = Array.isArray(cart.cartDetails)
+              ? cart.cartDetails
+              : [];
+
+            cartCountBadge.textContent = String(cartItems.length);
+          } catch (error) {
+            cartCountBadge.textContent = "0";
+          }
+        }
+
+        async function fetchHeaderDropdowns() {
+          try {
+            const brandsRes = await fetch("/api/v1/brands");
+            if (brandsRes.ok) {
+              const bData = await brandsRes.json();
+              const brands = bData.content || bData || [];
+              const bContainer = document.getElementById("header-brands-dropdown");
+              if (bContainer) {
+                if (brands.length > 0) {
+                  bContainer.innerHTML = brands.map(b => `<a href="/products?brands=${encodeURIComponent(b.name).replace(/%20/g, '+')}" class="block px-6 py-3 text-[13px] font-bold text-slate-300 hover:text-white hover:bg-white/10 hover:pl-8 transition-all uppercase tracking-widest border-l-2 border-transparent hover:border-primary whitespace-nowrap">${b.name}</a>`).join('');
+                } else {
+                  bContainer.innerHTML = '<div class="px-4 py-3 text-slate-500 text-xs text-center">No brands found</div>';
+                }
+              }
+            }
+
+            const sportsRes = await fetch("/api/v1/sports?size=20");
+            if (sportsRes.ok) {
+              const sData = await sportsRes.json();
+              const sports = sData.content || sData || [];
+              const sContainer = document.getElementById("header-sports-dropdown");
+              if (sContainer) {
+                if (sports.length > 0) {
+                  sContainer.innerHTML = sports.map(s => `<a href="/products?sports=${encodeURIComponent(s.name).replace(/%20/g, '+')}" class="block px-6 py-3 text-[13px] font-bold text-slate-300 hover:text-white hover:bg-white/10 hover:pl-8 transition-all uppercase tracking-widest border-l-2 border-transparent hover:border-primary whitespace-nowrap">${s.name}</a>`).join('');
+                } else {
+                  sContainer.innerHTML = '<div class="px-4 py-3 text-slate-500 text-xs text-center">No sports found</div>';
+                }
+              }
+            }
+          } catch (ignored) { }
+        }
+        fetchHeaderDropdowns();
+      });
+    </script>
+  </header>
+</body>
+
 </html>
