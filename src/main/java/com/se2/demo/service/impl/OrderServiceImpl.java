@@ -88,8 +88,8 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal subtotal = new BigDecimal(subtotalVal);
 
         // Tính phí ship (Miễn phí nếu tổng > 1.000.000đ)
-        BigDecimal shippingFee = (subtotalVal > 0 && subtotalVal < 1000000)
-                ? new BigDecimal(30000)
+        BigDecimal shippingFee = (subtotalVal > 0 && subtotalVal < 1000)
+                ? new BigDecimal(30)
                 : BigDecimal.ZERO;
 
         BigDecimal discount = calculateDiscount(request.getVoucherCode(), subtotalVal);
