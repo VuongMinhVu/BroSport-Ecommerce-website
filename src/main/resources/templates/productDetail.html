@@ -50,6 +50,11 @@
           "GRAD" 0,
           "opsz" 24;
       }
+
+      .filled {
+        font-variation-settings: "FILL" 1;
+      }
+
       .review-bar-fill {
         transition: width 0.5s ease-in-out;
       }
@@ -115,23 +120,28 @@
                 class="text-primary font-bold tracking-widest uppercase text-xs"
                 >Elite Performance</span
               >
-              <div class="flex items-center gap-1 text-primary">
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
+
+              <div class="flex items-center gap-1">
+                <div
+                  id="top-avg-rating-stars"
+                  class="flex items-center text-primary"
                 >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                </div>
+                <span
+                  id="top-avg-rating-number"
+                  class="text-white text-xs font-bold ml-1"
+                  >0.0</span
                 >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
+                <span
+                  id="top-total-reviews"
+                  class="text-slate-500 text-xs font-medium ml-1"
+                  >(0 đánh giá)</span
                 >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
-                >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
-                >
-                <span class="text-white text-xs font-medium ml-1">5.0</span>
               </div>
             </div>
             <h2
@@ -201,8 +211,8 @@
               </p>
               <a
                 th:if="${product.sizeGuide != null}"
-                th:href="${product.sizeGuide}"
-                target="_blank"
+                href="javascript:void(0)"
+                onclick="showSizeGuideModal()"
                 class="text-xs text-primary font-semibold underline underline-offset-4 hover:text-white transition-colors"
               >
                 Hướng dẫn Size
@@ -438,6 +448,127 @@
         </div>
       </section>
     </main>
+    <div
+      id="login-modal"
+      class="fixed inset-0 flex items-center justify-center z-[200] hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto"
+        onclick="hideLoginModal()"
+      ></div>
+      <div
+        class="bg-[#121212] border border-[#2a2a2a] rounded-2xl flex flex-col items-center justify-center p-8 w-[90%] max-w-sm shadow-[0_0_50px_rgba(255,102,0,0.1)] relative z-10 transform scale-95 transition-transform duration-300"
+        id="login-modal-content"
+      >
+        <div
+          class="w-14 h-14 bg-[#ff6600]/10 rounded-full flex items-center justify-center mb-6 border border-[#ff6600]/20"
+        >
+          <div
+            class="w-10 h-10 bg-[#ff6600] rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,102,0,0.5)]"
+          >
+            <span class="text-black font-black text-xl">!</span>
+          </div>
+        </div>
+
+        <h2 class="text-white text-xl font-bold mb-3 tracking-wide">
+          Login Required
+        </h2>
+
+        <p class="text-slate-400 text-sm text-center mb-8 px-2 font-medium">
+          Please log in to add items to your cart and continue your performance
+          journey.
+        </p>
+
+        <a
+          href="/login"
+          class="w-full bg-[#ff6600] text-black font-bold py-3 rounded-lg flex justify-center items-center hover:bg-[#ff7a1f] hover:scale-[1.02] transition-all shadow-[0_4px_14px_0_rgba(255,102,0,0.39)] mb-3"
+        >
+          Log In Now
+        </a>
+
+        <button
+          onclick="hideLoginModal()"
+          class="w-full bg-transparent border border-[#ff6600]/30 text-[#ff6600] font-bold py-3 rounded-lg hover:bg-[#ff6600]/10 transition-colors"
+        >
+          Dismiss
+        </button>
+
+        <div
+          class="w-full flex items-center justify-center gap-3 mt-8 opacity-60"
+        >
+          <div
+            class="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[#ff6600]/30"
+          ></div>
+          <p
+            class="text-[8px] font-black tracking-[0.2em] uppercase text-slate-500"
+          >
+            Brosport Secure Protocol
+          </p>
+          <div
+            class="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[#ff6600]/30"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="size-guide-modal"
+      class="fixed inset-0 flex items-center justify-center z-[250] hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto"
+        onclick="hideSizeGuideModal()"
+      ></div>
+
+      <div
+        class="bg-[#121212] border border-[#2a2a2a] rounded-2xl flex flex-col w-[95%] max-w-3xl shadow-[0_0_50px_rgba(255,102,0,0.1)] relative z-10 transform scale-95 transition-transform duration-300 overflow-hidden"
+        id="size-guide-content"
+      >
+        <div
+          class="flex items-center justify-between p-4 md:p-5 border-b border-white/10"
+        >
+          <h3
+            class="text-white text-lg font-bold tracking-wide uppercase flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >straighten</span
+            >
+            Bảng hướng dẫn kích thước
+          </h3>
+          <button
+            onclick="hideSizeGuideModal()"
+            class="text-slate-400 hover:text-primary transition-colors p-1 rounded-full hover:bg-white/5"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div
+          class="p-4 md:p-6 overflow-y-auto max-h-[70vh] bg-[#0a0a0a] text-center"
+        >
+          <img
+            th:if="${product.sizeGuide != null}"
+            th:src="${product.sizeGuide}"
+            alt="Bảng hướng dẫn chọn size"
+            class="max-w-full h-auto mx-auto rounded-lg object-contain block"
+          />
+          <p
+            th:unless="${product.sizeGuide != null}"
+            class="text-slate-500 italic py-10"
+          >
+            Chưa có thông tin bảng kích thước cho sản phẩm này.
+          </p>
+        </div>
+
+        <div class="p-4 border-t border-white/10 flex justify-end bg-[#121212]">
+          <button
+            onclick="hideSizeGuideModal()"
+            class="bg-primary text-black font-bold py-2.5 px-8 rounded-lg hover:bg-[#ff7a1f] transition-colors uppercase tracking-widest text-xs"
+          >
+            Đã hiểu
+          </button>
+        </div>
+      </div>
+    </div>
     <div th:replace="~{fragments/footer :: site-footer}"></div>
 
     <script th:inline="javascript">
@@ -549,6 +680,30 @@
       }
 
       // 5. HÀM GỌI API CHUẨN SECURITY
+      // Các hàm điều khiển Modal Đăng nhập
+      function showLoginModal() {
+        const modal = document.getElementById("login-modal");
+        const content = document.getElementById("login-modal-content");
+        if (!modal) return;
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+        }, 10);
+      }
+
+      function hideLoginModal() {
+        const modal = document.getElementById("login-modal");
+        const content = document.getElementById("login-modal-content");
+        if (!modal) return;
+        modal.classList.add("opacity-0");
+        content.classList.add("scale-95");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
+
+      // 5. HÀM GỌI API CHUẨN SECURITY KẾT HỢP MODAL
       async function executeAddToCart() {
         if (!selectedColor || !selectedSize) {
           showNotification("Vui lòng chọn Màu sắc và Kích thước trước!");
@@ -570,9 +725,13 @@
             body: JSON.stringify(payload),
           });
 
-          // Xử lý chuyển hướng nếu chưa đăng nhập
+          // Bắt lỗi Chưa đăng nhập và hiển thị Modal
+          if (response.redirected && response.url.includes("/login")) {
+            showLoginModal();
+            return false;
+          }
           if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
+            showLoginModal();
             return false;
           }
 
@@ -604,7 +763,15 @@
           }
         } catch (err) {
           console.error(err);
-          showNotification("Lỗi kết nối tới Server!");
+          // Trường hợp lỗi mạng gãy ngang mà chứa HTML của trang login
+          if (
+            err.message === "UNAUTHORIZED" ||
+            err.message.includes("Unexpected token '<")
+          ) {
+            showLoginModal();
+          } else {
+            showNotification("Lỗi kết nối tới Server!");
+          }
           return false;
         }
       }
@@ -625,6 +792,17 @@
           showNotification("Vui lòng chọn Màu sắc và Kích thước!");
           return;
         }
+
+        // Kiểm tra trạng thái đăng nhập thông qua biến user từ GlobalControllerAdvice
+        const currentUserId = /*[[${user != null ? user.id : null}]]*/ null;
+
+        if (!currentUserId) {
+          // Nếu chưa đăng nhập, hiển thị Modal chặn lại
+          showLoginModal();
+          return;
+        }
+
+        // Nếu đã đăng nhập hợp lệ, thực hiện chuyển hướng sang trang thanh toán
         window.location.href = `/checkout?buyNow=true&variantId=${selectedVariantId}&qty=1`;
       });
 
@@ -703,18 +881,33 @@
       }
 
       // CẬP NHẬT GIAO DIỆN THỐNG KÊ (Bên trái)
+      // CẬP NHẬT GIAO DIỆN THỐNG KÊ (Cả Header và Mục Review)
       function updateReviewSummary(data) {
-        const total = data.totalReviews || 0;
-        const avg = data.averageRating || 0;
-        const counts = data.ratingCounts || {};
+        let total = data.totalReviews || 0;
+        let avg = data.averageRating || 0;
+        let counts = data.ratingCounts || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
+        // Fallback: Tự tính toán điểm trung bình nếu Backend chưa hỗ trợ trả về averageRating
+        if (total === 0 && data.reviews && data.reviews.content) {
+          total = data.reviews.totalElements || data.reviews.content.length;
+          if (total > 0) {
+            let sum = 0;
+            data.reviews.content.forEach((r) => {
+              sum += r.rating;
+              counts[r.rating] = (counts[r.rating] || 0) + 1;
+            });
+            avg = sum / total;
+          }
+        }
+
+        // Cập nhật phần dưới cùng (Review Section)
         document.getElementById("total-reviews-text").textContent = total;
         document.getElementById("avg-rating-number").textContent =
           avg.toFixed(1);
 
         let starsHtml = "";
         for (let i = 1; i <= 5; i++) {
-          starsHtml += `<span class="material-symbols-outlined text-xl ${i <= Math.round(avg) ? "fill-1" : ""}">star</span>`;
+          starsHtml += `<span class="material-symbols-outlined text-xl ${i <= Math.round(avg) ? "filled" : "text-slate-600"}">star</span>`;
         }
         document.getElementById("avg-rating-stars").innerHTML = starsHtml;
 
@@ -725,6 +918,23 @@
           document.getElementById(`bar-${i}`).style.width = `${pct}%`;
           document.getElementById(`pct-${i}`).textContent = `${pct}%`;
         }
+
+        // Cập nhật phần Header (Top Section)
+        const topStarsContainer = document.getElementById(
+          "top-avg-rating-stars",
+        );
+        const topNumber = document.getElementById("top-avg-rating-number");
+        const topTotal = document.getElementById("top-total-reviews");
+
+        if (topStarsContainer) {
+          let topStarsHtml = "";
+          for (let i = 1; i <= 5; i++) {
+            topStarsHtml += `<span class="material-symbols-outlined text-sm ${i <= Math.round(avg) ? "filled text-primary" : "text-slate-600"}">star</span>`;
+          }
+          topStarsContainer.innerHTML = topStarsHtml;
+        }
+        if (topNumber) topNumber.textContent = avg > 0 ? avg.toFixed(1) : "0.0";
+        if (topTotal) topTotal.textContent = `(${total} đánh giá)`;
       }
 
       // TẠO HTML CHO TỪNG BÀI ĐÁNH GIÁ
@@ -733,7 +943,8 @@
 
         let starsHtml = "";
         for (let i = 1; i <= 5; i++) {
-          starsHtml += `<span class="material-symbols-outlined text-xs ${i <= review.rating ? "fill-1" : ""}">star</span>`;
+          // Thay fill-1 thành filled để hiện rõ sao
+          starsHtml += `<span class="material-symbols-outlined text-xs ${i <= review.rating ? "filled text-primary" : "text-slate-600"}">star</span>`;
         }
 
         const initial = review.fullName
@@ -751,7 +962,7 @@
                     <div>
                         <h5 class="font-bold text-sm">${review.fullName || "Người dùng ẩn danh"}</h5>
                         <div class="flex items-center gap-2">
-                            <div class="flex text-primary text-[10px]">
+                            <div class="flex text-[10px]">
                                 ${starsHtml}
                             </div>
                             <span class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1">
@@ -788,10 +999,10 @@
           selectedRating = parseInt(this.getAttribute("data-val"));
           starSelector.forEach((s) => {
             if (parseInt(s.getAttribute("data-val")) <= selectedRating) {
-              s.classList.add("text-primary", "fill-1");
+              s.classList.add("text-primary", "filled");
               s.classList.remove("text-slate-500");
             } else {
-              s.classList.remove("text-primary", "fill-1");
+              s.classList.remove("text-primary", "filled");
               s.classList.add("text-slate-500");
             }
           });
@@ -855,6 +1066,34 @@
       });
 
       fetchReviews();
+
+      // Các hàm điều khiển Modal Hướng Dẫn Size
+      function showSizeGuideModal() {
+        const modal = document.getElementById("size-guide-modal");
+        const content = document.getElementById("size-guide-content");
+        if (!modal) return;
+
+        modal.classList.remove("hidden");
+        // Delay 10ms để CSS nhận diện thay đổi trạng thái và chạy Animation mượt mà
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+        }, 10);
+      }
+
+      function hideSizeGuideModal() {
+        const modal = document.getElementById("size-guide-modal");
+        const content = document.getElementById("size-guide-content");
+        if (!modal) return;
+
+        modal.classList.add("opacity-0");
+        content.classList.add("scale-95");
+
+        // Đợi 300ms cho hiệu ứng Fade Out chạy xong rồi mới ẩn hẳn khối HTML
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
     </script>
   </body>
 </html>
