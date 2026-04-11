@@ -98,15 +98,15 @@ public class DataSeeder {
                         List<Category> leafCategories = new ArrayList<>();
                         if (categoryRepository.count() == 0) {
                                 Category shoes = Category.builder().name("Sports Shoes").slug("sports-shoes")
-                                                .imageUrl("https://picsum.photos/seed/shoes/600/600")
+                                                .imageUrl("https://cdn.shopify.com/s/files/1/0456/5070/6581/files/1011C223.400-1_900x.jpg?v=1775458989")
                                                 .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
                                 Category clothing = Category.builder().name("Apparel").slug("apparel")
-                                                .imageUrl("https://picsum.photos/seed/clothes/600/600")
+                                                .imageUrl("https://supersports.com.vn/cdn/shop/files/1386973-690-1.jpg?v=1773110315&width=1000")
                                                 .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
                                 Category accessories = Category.builder().name("Accessories").slug("accessories")
-                                                .imageUrl("https://picsum.photos/seed/accessories/600/600")
+                                                .imageUrl("https://supersports.com.vn/cdn/shop/products/DC4244-010-1.jpg?v=1669803434")
                                                 .sizeGuide("https://d1w6lranmzyrqf.cloudfront.net/uploads/20220507/aca14234870be6b9e87ce7bd3933ed01.jpg")
                                                 .build();
                                 categoryRepository.saveAll(Arrays.asList(shoes, clothing, accessories));
@@ -266,7 +266,7 @@ public class DataSeeder {
                                                         + randomBrand.getName().toLowerCase() + "-"
                                                         + i;
 
-                                        BigDecimal basePrice = BigDecimal.valueOf((random.nextInt(20) + 5) * 100000);
+                                        BigDecimal basePrice = BigDecimal.valueOf(random.nextInt(151) + 50); // $50 to $200
                                         BigDecimal originPrice = basePrice;
                                         BigDecimal showPrice = basePrice;
                                         
@@ -297,13 +297,110 @@ public class DataSeeder {
                                         Product savedProduct = productRepository.save(product);
 
                                         List<ProductImage> images = new ArrayList<>();
+                                        
+                                        List<String> tshirtsImgs = Arrays.asList(
+                                            "https://supersports.com.vn/cdn/shop/files/1386973-690-1.jpg?v=1773110315&width=1000",
+                                            "https://supersports.com.vn/cdn/shop/files/1386973-338-1.jpg?v=1771835249&width=1000",
+                                            "https://supersports.com.vn/cdn/shop/files/2157331010-1.jpg?v=1772595841&width=1000",
+                                            "https://supersports.com.vn/cdn/shop/files/DM6428-100-1.jpg?v=1775459418",
+                                            "https://supersports.com.vn/cdn/shop/files/IH1956-486-1.jpg?v=1774413021",
+                                            "https://supersports.com.vn/cdn/shop/files/KE5325-1.jpg?v=1767952982",
+                                            "https://supersports.com.vn/cdn/shop/files/FB7933-010-1.jpg?v=1762772360",
+                                            "https://supersports.com.vn/cdn/shop/files/6005932-402-1.jpg?v=1756119434",
+                                            "https://supersports.com.vn/cdn/shop/files/IH1156-045-1.jpg?v=1774412971",
+                                            "https://supersports.com.vn/cdn/shop/files/IF2198-010-1.jpg?v=1774412855",
+                                            "https://supersports.com.vn/cdn/shop/files/IH1956-010-1.jpg?v=1774412998",
+                                            "https://supersports.com.vn/cdn/shop/files/1174750-WHT-1.jpg?v=1765361284",
+                                            "https://supersports.com.vn/cdn/shop/files/KD6416-1.jpg?v=1772013224"
+                                        );
+                                        List<String> pantsImgs = Arrays.asList(
+                                            "https://n7media.coolmate.me/uploads/December2024/quan-dai-nam-ut-pants-v3-xam-dam_(8).jpg",
+                                            "https://n7media.coolmate.me/uploads/November2025/quan-dai-nam-ecc-warp-pant-taper-1-1-xanh-reu.jpg",
+                                            "https://n7media.coolmate.me/uploads/October2025/quan-dai-track-pants-winbreaker-cargo-7-xanh-navy_66.jpg",
+                                            "https://supersports.com.vn/cdn/shop/products/1370082-001-1.jpg?v=1745835792",
+                                            "https://supersports.com.vn/cdn/shop/files/2126402279-1.jpg?v=1730169409",
+                                            "https://supersports.com.vn/cdn/shop/files/1388823-348-1.jpg?v=1740971386",
+                                            "https://supersports.com.vn/cdn/shop/files/95D313-023-1.jpg?v=1731057562&width=1000",
+                                            "https://n7media.coolmate.me/uploads/August2025/quan-nam-travel-shorts-7-inch-xam-123.jpg",
+                                            "https://n7media.coolmate.me/uploads/December2024/quan-dai-chay-bo-running-pant-den_(3).jpg",
+                                            "https://n7media.coolmate.me/uploads/December2024/quan-dai-nam-woven-excool-sieu-nhe-xanh-navy_(5).jpg"
+                                        );
+                                        List<String> shortsImgs = Arrays.asList(
+                                            "https://n7media.coolmate.me/uploads/August2025/quan-short-ecc-ripstop-1-1-xanh-la-dam.jpg",
+                                            "https://n7media.coolmate.me/uploads/September2025/quan-shorts-nam-chay-bo-ultra-fast-free-run-ii-exdry-nhanh-kho-den-1.jpg",
+                                            "https://supersports.com.vn/cdn/shop/files/1170236-BLK-1.jpg?v=1753342070",
+                                            "https://supersports.com.vn/cdn/shop/files/6007632-600-1.jpg?v=1756119586",
+                                            "https://supersports.com.vn/cdn/shop/files/6007632-001-1.jpg?v=1756119809",
+                                            "https://n7media.coolmate.me/uploads/November2025/short-the-thao-promax-side-9-trang_60.jpg",
+                                            "https://n7media.coolmate.me/uploads/2026/12/27/quan-shorts-chay-trail-widflow-2-9-den_13.jpg",
+                                            "https://n7media.coolmate.me/uploads/August2025/quan-chino-nam-7-inch-trang-1-1.jpg",
+                                            "https://n7media.coolmate.me/uploads/September2025/quan-shorts-chay-bo-economy-ii-xanh-ngoc-1.jpg"
+                                        );
+                                        List<String> runningShoesImgs = Arrays.asList(
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/1011C223.400-1_900x.jpg?v=1775458989",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/1171904-SBY-2_900x.jpg?v=1772511793",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/IB1895-101-1_900x.jpg?v=1774410854",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/HM6803-802-1_900x.jpg?v=1774410767",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/JP9192-1_900x.jpg?v=1772012802",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/JS4938-1_900x.jpg?v=1754991362",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/31291301-1_900x.jpg?v=1773816307",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/6006723-101-1_900x.jpg?v=1773110314",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/6006717-003-1_900x.jpg?v=1773110315",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/6006723-299-1_900x.jpg?v=1773110317",
+                                            "https://supersports.com.vn/cdn/shop/files/1171930-BFS-1.jpg?v=1775013032&width=1000",
+                                            "https://supersports.com.vn/cdn/shop/files/1171930-BWHT-1.jpg?v=1768291962",
+                                            "https://supersports.com.vn/cdn/shop/files/JS4938-1.jpg?v=1754991362&width=1000",
+                                            "https://supersports.com.vn/cdn/shop/files/2079321101-1.jpg?v=1769661169",
+                                            "https://supersports.com.vn/cdn/shop/files/2079321028-1.jpg?v=1722919919&width=1000",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/HM9594-005-2_6bdd8a5d-96d2-493f-bf57-9d977de6f77f_900x.jpg?v=1772781796"
+                                        );
+                                        List<String> footballShoesImgs = Arrays.asList(
+                                            "//supersports.com.vn/cdn/shop/files/IM3646-640-2.jpg?v=1773201614&width=1000",
+                                            "//supersports.com.vn/cdn/shop/files/JH8854-2.jpg?v=1751364966&width=1000",
+                                            "//supersports.com.vn/cdn/shop/files/JH8853-2.jpg?v=1759117881&width=1000",
+                                            "//supersports.com.vn/cdn/shop/files/DV4337-402-1.jpg?v=1757327173&width=1000",
+                                            "//supersports.com.vn/cdn/shop/files/DV4337-800-2_6b4e2604-cc89-4824-a709-2f9288cbe306.jpg?v=1770854228&width=1000",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/Q1GB261350-1_900x.jpg?v=1769421326",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/JQ0954-1_900x.jpg?v=1770374706",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/10897501-1_900x.jpg?v=1764737496",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/JI1133-1_900x.jpg?v=1752054004",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/JR8977-1_900x.jpg?v=1767579612"
+                                        );
+                                        List<String> basketballShoesImgs = Arrays.asList(
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/HV1991-001-1_900x.jpg?v=1765362373",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/HQ8650-076-1_900x.jpg?v=1766657994",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/FB2237-004-1_900x.jpg?v=1725531193",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/HJ6777-018-1_900x.jpg?v=1757328270",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/FB2237-402-1_900x.jpg?v=1728985664",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/HQ4613-001-1_900x.jpg?v=1765510498",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/6001920-001-1_900x.jpg?v=1746669201",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/3027630-001-1_900x.jpg?v=1733987492",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/3028805-803-1_900x.jpg?v=1738661228",
+                                            "https://cdn.shopify.com/s/files/1/0456/5070/6581/files/3027633-001-1_900x.jpg?v=1733202053"
+                                        );
+
                                         int numImages = random.nextInt(3) + 1;
                                         for (int imgIdx = 1; imgIdx <= numImages; imgIdx++) {
+                                                String selectedImg = "https://picsum.photos/seed/" + (savedProduct.getId() * 10 + imgIdx) + "/800/800";
+                                                String catName = randomCategory.getName().toLowerCase();
+                                                
+                                                if (catName.contains("t-shirt")) {
+                                                    selectedImg = tshirtsImgs.get(random.nextInt(tshirtsImgs.size()));
+                                                } else if (catName.contains("pant")) {
+                                                    selectedImg = pantsImgs.get(random.nextInt(pantsImgs.size()));
+                                                } else if (catName.contains("short")) {
+                                                    selectedImg = shortsImgs.get(random.nextInt(shortsImgs.size()));
+                                                } else if (catName.contains("running")) {
+                                                    selectedImg = runningShoesImgs.get(random.nextInt(runningShoesImgs.size()));
+                                                } else if (catName.contains("football")) {
+                                                    selectedImg = footballShoesImgs.get(random.nextInt(footballShoesImgs.size()));
+                                                } else if (catName.contains("basketball")) {
+                                                    selectedImg = basketballShoesImgs.get(random.nextInt(basketballShoesImgs.size()));
+                                                }
+
                                                 ProductImage mainImage = ProductImage.builder()
                                                                 .product(savedProduct)
-                                                                .imageUrl("https://picsum.photos/seed/"
-                                                                                + (savedProduct.getId() * 10 + imgIdx)
-                                                                                + "/800/800")
+                                                                .imageUrl(selectedImg)
                                                                 .isMain(imgIdx == 1)
                                                                 .sortOrder(imgIdx)
                                                                 .build();
@@ -423,8 +520,8 @@ public class DataSeeder {
                                         Order order1 = Order.builder()
                                                         .orderCode("BS-SEED-" + System.currentTimeMillis())
                                                         .user(customer1)
-                                                        .totalPrice(BigDecimal.valueOf(1000000))
-                                                        .shippingFee(BigDecimal.valueOf(30000))
+                                                        .totalPrice(BigDecimal.valueOf(100))
+                                                        .shippingFee(BigDecimal.valueOf(5))
                                                         .paymentMethod("COD")
                                                         .paymentStatus("PAID")
                                                         .orderStatus("DELIVERED")
@@ -458,8 +555,8 @@ public class DataSeeder {
                                         Order order2 = Order.builder()
                                                         .orderCode("BS-SEED-" + (System.currentTimeMillis() + 1))
                                                         .user(customer2)
-                                                        .totalPrice(BigDecimal.valueOf(500000))
-                                                        .shippingFee(BigDecimal.valueOf(30000))
+                                                        .totalPrice(BigDecimal.valueOf(50))
+                                                        .shippingFee(BigDecimal.valueOf(5))
                                                         .paymentMethod("VNPAY")
                                                         .paymentStatus("PAID")
                                                         .orderStatus("DELIVERED")
