@@ -40,4 +40,26 @@ public class EmailServiceImpl implements EmailService {
             log.error("Failed to send email for Order: {}", order.getOrderCode(), e);
         }
     }
+
+    @Override
+    @Async("notificationExecutor")
+    public void sendOtpEmail(String toEmail, String otp) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("Mã OTP khôi phục mật khẩu - BroSport");
+
+            String htmlContent = "<h2>Yêu cầu khôi phục mật khẩu</h2>" +
+                    "<p>Mã OTP của bạn là: <b>" + otp + "</b></p>" +
+                    "<p>Mã này dùng để xác minh tài khoản của bạn. Vui lòng không chia sẻ mã này cho bất kỳ ai.</p>";
+
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+            log.info("Đã gửi email OTP thành công đến: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Lỗi khi gửi email OTP đến: {}", toEmail, e);
+        }
+    }
 }

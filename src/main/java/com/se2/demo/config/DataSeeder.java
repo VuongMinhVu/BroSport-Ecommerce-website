@@ -59,7 +59,12 @@ public class DataSeeder {
                                 }
                                 if (needUpdate) {
                                         productRepository.saveAll(existingProducts);
-                                        log.info("Scaled down all high product prices to match new format.");
+                                        for (Product p : existingProducts) {
+                                                this.publisher.publishEvent(
+                                                                new ProductEvent(this.productMapper.toDocument(p),
+                                                                                Constant.PRODUCT_UPDATED_EVENT));
+                                        }
+                                        log.info("Scaled down all high product prices to match new format and synced to Elasticsearch.");
                                 }
                         }
 
@@ -264,7 +269,7 @@ public class DataSeeder {
                                                         + randomBrand.getName().toLowerCase() + "-"
                                                         + i;
 
-                                        BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 100000);
+                                        BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 10);
                                         BigDecimal comparePrice = price.multiply(BigDecimal.valueOf(1.2));
 
                                         Product product = Product.builder()
