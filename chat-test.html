@@ -1,108 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <meta charset="UTF-8">
-  <title>BroSport Chat Test</title>
+  <title>Test Chat BroSport</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
   <style>
     body {
-      font-family: Arial;
+      font-family: sans-serif;
+      display: flex;
+      gap: 20px;
       padding: 20px;
     }
 
-    .box {
+    .panel {
       border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-      width: 400px;
+      padding: 15px;
+      border-radius: 8px;
+      width: 300px;
     }
 
-    #messages {
-      height: 200px;
-      overflow-y: scroll;
-      border: 1px solid #000;
-      padding: 5px;
+    .chat-box {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #eee;
       margin-bottom: 10px;
+      padding: 5px;
       background: #f9f9f9;
+    }
+
+    input,
+    button {
+      margin-top: 5px;
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .msg-me {
+      color: blue;
+      text-align: right;
+    }
+
+    .msg-other {
+      color: green;
+      text-align: left;
     }
   </style>
 </head>
 
 <body>
-  <h2>Kiểm thử Chat BroSport</h2>
 
-  <div class="box">
-    <b>1. Đăng nhập giả lập</b><br>
-    <input type="text" id="myId" placeholder="Nhập email của bạn (VD: user1@gmail.com)" style="width: 250px;">
+  <div class="panel">
+    <h3>1. Đăng nhập WebSocket</h3>
+    <input type="text" id="myEmail" placeholder="Email của bạn (VD: user@brosport.com)">
     <button onclick="connect()">Kết nối</button>
-    <span id="status" style="color: red;">Chưa kết nối</span>
+    <p id="status" style="color: red; font-weight: bold;">Chưa kết nối</p>
   </div>
 
-  <div class="box">
-    <b>2. Gửi tin nhắn</b><br>
-    <input type="text" id="targetId" placeholder="Người nhận (Mặc định: admin@brosport.com)"
-      style="width: 250px;"><br><br>
-    <input type="text" id="messageContent" placeholder="Nội dung tin nhắn..." style="width: 250px;">
-    <button onclick="sendMessage()">Gửi</button>
-  </div>
-
-  <div class="box">
-    <b>3. Lịch sử nhận</b>
-    <div id="messages"></div>
+  <div class="panel">
+    <h3>2. Khung Chat</h3>
+    <div class="chat-box" id="chatBox"></div>
+    <input type="text" id="targetEmail" placeholder="Gửi tới Email... (VD: admin@brosport.com)">
+    <input type="text" id="msgContent" placeholder="Nhập tin nhắn...">
+    <button onclick="sendMessage()">Gửi Tin Nhắn</button>
   </div>
 
   <script>
     var stompClient = null;
 
     function connect() {
-      var myId = document.getElementById('myId').value;
-      if (!myId) { alert("Vui lòng nhập Email của bạn"); return; }
+      var myEmail = document.getElementById('myEmail').value;
+      if (!myEmail) { alert("Nhập email để kết nối!"); return; }
 
       var socket = new SockJS('http://localhost:8080/ws');
       stompClient = Stomp.over(socket);
 
       stompClient.connect({}, function (frame) {
-        document.getElementById('status').innerText = "Đã kết nối!";
+        document.getElementById('status').innerText = "Đã kết nối: " + myEmail;
         document.getElementById('status').style.color = "green";
 
-        // Đăng ký nhận tin nhắn của chính mình
-        stompClient.subscribe('/user/' + myId + '/queue/messages', function (msg) {
-          var body = JSON.parse(msg.body);
-          var chatBox = document.getElementById('messages');
-          chatBox.innerHTML += `<p><b>[Nhận từ ${body.senderId}]:</b> ${body.content}</p>`;
-          chatBox.scrollTop = chatBox.scrollHeight;
+        // Lắng nghe tin nhắn gửi đến mình qua kênh /topic (dùng cho test Local)
+        stompClient.subscribe('/topic/messages/' + myEmail, function (msg) {
+          var data = JSON.parse(msg.body);
+          showMsg(data.senderEmail, data.content, 'msg-other');
         });
       }, function (error) {
-        alert("Lỗi kết nối: Mở file SecurityConfig.java kiểm tra đã permitAll /ws/** chưa!");
+        alert("Lỗi kết nối! Kiểm tra server đã chạy và SecurityConfig đã permitAll /ws/** chưa.");
       });
     }
 
     function sendMessage() {
-      var myId = document.getElementById('myId').value;
-      var targetId = document.getElementById('targetId').value || "admin@brosport.com";
-      var content = document.getElementById('messageContent').value;
+      var myEmail = document.getElementById('myEmail').value;
+      var targetEmail = document.getElementById('targetEmail').value || "admin@brosport.com";
+      var content = document.getElementById('msgContent').value;
 
       if (stompClient && content) {
         var chatMessage = {
-          senderId: myId,
-          recipientId: targetId,
+          senderEmail: myEmail,
+          recipientId: targetEmail,
           content: content
         };
 
         // Gửi lên server
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
 
-        // Hiển thị tin nhắn vừa gửi lên màn hình
-        var chatBox = document.getElementById('messages');
-        chatBox.innerHTML += `<p style="color:blue;"><b>[Bạn gửi cho ${targetId}]:</b> ${content}</p>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        document.getElementById('messageContent').value = ''; // Xóa ô nhập
+        // Hiện thị phía mình
+        showMsg("Bạn", content, 'msg-me');
+        document.getElementById('msgContent').value = '';
       } else {
-        alert("Hãy kết nối và nhập nội dung trước khi gửi!");
+        alert("Chưa kết nối hoặc chưa nhập tin nhắn!");
       }
+    }
+
+    function showMsg(sender, text, className) {
+      var chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML += `<div class="${className}"><b>${sender}:</b> ${text}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
   </script>
 </body>

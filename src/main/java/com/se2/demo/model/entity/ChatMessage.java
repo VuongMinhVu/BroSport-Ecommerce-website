@@ -5,7 +5,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_messages")
+@Table(name = "chat_messages", indexes = {
+    @Index(name = "idx_conv_time", columnList = "conversation_id, timestamp")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,11 +18,19 @@ public class ChatMessage {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String senderId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "conversation_id")
+  private ChatConversation conversation;
+
+  private String senderEmail;
+
   private String recipientId;
 
   private String content;
   private LocalDateTime timestamp;
+
+  @Builder.Default
+  private boolean isRead = false;
 
   @Enumerated(EnumType.STRING)
   private MessageStatus status;

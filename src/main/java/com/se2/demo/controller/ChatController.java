@@ -1,40 +1,42 @@
 package com.se2.demo.controller;
 
 import com.se2.demo.model.entity.ChatMessage;
-import com.se2.demo.model.entity.MessageStatus;
-import com.se2.demo.repository.ChatMessageRepository;
-import lombok.RequiredArgsConstructor;
+import com.se2.demo.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import java.time.LocalDateTime;
+
 import java.security.Principal;
 
 @Controller
-@RequiredArgsConstructor
 public class ChatController {
-  private final SimpMessagingTemplate messagingTemplate;
-  private final ChatMessageRepository chatMessageRepository;
+
+  @Autowired
+  private SimpMessagingTemplate messagingTemplate;
+
+  @Autowired
+  private ChatService chatService;
 
   @MessageMapping("/chat.sendMessage")
-  public void processMessage(@Payload ChatMessage chatMessage, Principal principal) {
-    String sender = (principal != null) ? principal.getName() : chatMessage.getSenderId();
-    chatMessage.setSenderId(sender);
-
-    if (chatMessage.getRecipientId() == null || chatMessage.getRecipientId().trim().isEmpty()) {
-      chatMessage.setRecipientId("admin@brosport.com");
+  public void processMessage(@Payload ChatMessage incomingMsg, Principal principal) {
+    String senderEmail;
+    if (principal == null) {
+      System.out.println("⚠️ CẢNH BÁO: Đang cho phép gửi tin nhắn nặc danh (Chưa đăng nhập)! Hãy chặn lại khi lên Production.");
+      senderEmail = incomingMsg.getSenderEmail();
+    } else {
+      senderEmail = principal.getName();
     }
+    
+    String recipientEmail = incomingMsg.getRecipientId(); // Nếu user gửi, recipient = "admin"
 
-    chatMessage.setTimestamp(LocalDateTime.now());
-    chatMessage.setStatus(MessageStatus.RECEIVED);
+    // 1. Lưu vào Database thông qua Service
+    ChatMessage savedMsg = chatService.saveMessage(senderEmail, recipientEmail, incomingMsg.getContent());
 
-    ChatMessage savedMsg = chatMessageRepository.save(chatMessage);
-
-    messagingTemplate.convertAndSendToUser(
-            chatMessage.getRecipientId(),
-            "/queue/messages",
+    // 2. Gửi tin nhắn real-time tới người nhận
+    messagingTemplate.convertAndSend(
+            "/topic/messages/" + recipientEmail,
             savedMsg
     );
   }
