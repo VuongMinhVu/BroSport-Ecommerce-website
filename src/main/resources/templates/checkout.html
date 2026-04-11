@@ -1,496 +1,833 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" class="dark" lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Brosport Checkout</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap"
-        rel="stylesheet" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#f48c25",
-                        "background-light": "#f8f7f5",
-                        "background-dark": "#221910",
-                    },
-                    fontFamily: {
-                        "display": ["Lexend"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ff6600",
+              "background-light": "#f8f7f5",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
             },
-        }
+            fontFamily: { display: ["Lexend"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
     </script>
-</head>
+    <style>
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #f5f5f5 !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+    </style>
+  </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-white">
-    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
-        <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
-            <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
-                <a class="flex items-center gap-2 group flex-shrink-0" href="/homepage">
-                    <div
-                        class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
-                        <span class="material-symbols-outlined font-bold">bolt</span>
-                    </div>
-                    <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">Brosport</h1>
-                </a>
-
-                <nav class="hidden xl:flex items-center gap-8 h-full">
-                    <a class="nav-link" th:href="@{/products}">New Arrivals</a>
-                    <a class="nav-link" th:href="@{/products/men}"
-                        th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
-                    <a class="nav-link" th:href="@{/products/women}"
-                        th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
-                    <a class="nav-link" th:href="@{/products/accessories}"
-                        th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
-                    <a class="nav-link" th:href="@{/products/brands}"
-                        th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
-                    <a class="nav-link" th:href="@{/products/sports}"
-                        th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
-                    <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-                        th:href="@{/products/sales}"
-                        th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
-                </nav>
-
-                <div class="flex items-center gap-4">
-                    <div class="relative hidden lg:block group">
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-white"
+  >
+    <div
+      class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden"
+    >
+      <div th:replace="~{fragments/header :: site-header}"></div>
+      <main class="max-w-7xl mx-auto w-full px-4 md:px-10 py-8">
+        <nav class="flex items-center gap-2 mb-8 text-sm">
+          <a class="text-[#cbad90] hover:text-primary" href="#">Home</a>
+          <span class="material-symbols-outlined text-sm text-[#cbad90]"
+            >chevron_right</span
+          >
+          <a class="text-[#cbad90] hover:text-primary" href="/cart">Cart</a>
+          <span class="material-symbols-outlined text-sm text-[#cbad90]"
+            >chevron_right</span
+          >
+          <span class="text-white font-semibold">Checkout</span>
+        </nav>
+        <h1 class="text-4xl font-extrabold mb-10 tracking-tight">Checkout</h1>
+        <form th:action="@{/checkout/process}" method="POST" id="checkout-form">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div class="lg:col-span-7 space-y-10">
+              <section>
+                <div class="flex items-center gap-3 mb-6">
+                  <span class="material-symbols-outlined text-primary"
+                    >local_shipping</span
+                  >
+                  <h2 class="text-2xl font-bold">Shipping Information</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="md:col-span-2">
+                    <label
+                      class="block text-sm font-medium text-[#cbad90] mb-2"
+                      for="fullName"
+                      >Full Name</label
+                    >
+                    <input
+                      id="fullName"
+                      name="fullName"
+                      class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                      required
+                      th:placeholder="${user.fullName}"
+                      th:value="${user.fullName}"
+                      type="text"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label
+                      class="block text-sm font-medium text-[#cbad90] mb-2"
+                      for="streetAddress"
+                      >Shipping Address</label
+                    >
+                    <input
+                      id="streetAddress"
+                      name="streetAddress"
+                      required
+                      minlength="5"
+                      class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                      placeholder="123 Sport Avenue, City..."
+                      th:value="${user.address}"
+                      type="text"
+                    />
+                  </div>
+                  <div class="hidden">
+                    <input
+                      id="city"
+                      name="city"
+                      type="text"
+                      value="Default City"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label
+                      class="block text-sm font-medium text-[#cbad90] mb-2"
+                      for="phoneNumber"
+                      >Phone Number</label
+                    >
+                    <input
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      required
+                      class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                      placeholder="+84 123 456 789"
+                      th:value="${user.phone}"
+                      type="tel"
+                    />
+                  </div>
+                </div>
+              </section>
+              <hr class="border-[#493622]" />
+              <section>
+                <div class="flex items-center gap-3 mb-6">
+                  <span class="material-symbols-outlined text-primary"
+                    >payments</span
+                  >
+                  <h2 class="text-2xl font-bold">Payment Method</h2>
+                </div>
+                <div class="space-y-4">
+                  <label
+                    class="relative flex items-center justify-between p-4 bg-[#342618] border-2 border-primary rounded-xl cursor-pointer"
+                  >
+                    <div class="flex items-center gap-4">
+                      <div class="bg-white p-1 rounded">
                         <span
-                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
-                        <input
-                            class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-                            placeholder="Search elite gear..." type="text" />
+                          class="material-symbols-outlined text-blue-600 font-bold"
+                          >account_balance_wallet</span
+                        >
+                      </div>
+                      <div>
+                        <p class="font-bold">VNPay</p>
+                        <p class="text-xs text-[#cbad90]">
+                          Fast and secure digital payment
+                        </p>
+                      </div>
                     </div>
-
-                    <div class="flex items-center gap-2">
-                        <a href="/profile"
-                            class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all">
-                            <div class="h-full w-full bg-cover bg-center"
-                                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                                th:if="${user != null and user.avatarUrl != null}">
-                            </div>
-                            <span th:unless="${user != null and user.avatarUrl != null}"
-                                class="material-symbols-outlined text-2xl">person</span>
-                        </a>
-
-                        <button
-                            class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors">
-                            <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-                            <span
-                                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
-                                th:text="${cartItems != null ? #lists.size(cartItems) : 0}">0</span>
-                        </button>
+                    <input
+                      checked=""
+                      class="w-5 h-5 text-primary focus:ring-offset-background-dark"
+                      name="payment"
+                      value="vnpay"
+                      type="radio"
+                    />
+                  </label>
+                  <label
+                    class="relative flex items-center justify-between p-4 bg-[#342618] border border-[#493622] rounded-xl cursor-pointer hover:border-[#684d31] transition-all"
+                  >
+                    <div class="flex items-center gap-4">
+                      <div class="bg-gray-100 p-1 rounded">
+                        <span class="material-symbols-outlined text-gray-800"
+                          >handshake</span
+                        >
+                      </div>
+                      <div>
+                        <p class="font-bold">Cash on Delivery (COD)</p>
+                        <p class="text-xs text-[#cbad90]">
+                          Pay when you receive your order
+                        </p>
+                      </div>
                     </div>
+                    <input
+                      class="w-5 h-5 text-primary focus:ring-offset-background-dark"
+                      name="payment"
+                      value="cod"
+                      type="radio"
+                    />
+                  </label>
                 </div>
+              </section>
+              <div class="flex items-center gap-2 text-[#cbad90] text-sm py-4">
+                <span class="material-symbols-outlined text-sm">lock</span>
+                <p>All transactions are secure and encrypted.</p>
+              </div>
             </div>
-        </header>
-        <main class="max-w-7xl mx-auto w-full px-4 md:px-10 py-8">
-            <nav class="flex items-center gap-2 mb-8 text-sm">
-                <a class="text-[#cbad90] hover:text-primary" href="#">Home</a>
-                <span class="material-symbols-outlined text-sm text-[#cbad90]">chevron_right</span>
-                <a class="text-[#cbad90] hover:text-primary" href="/cart">Cart</a>
-                <span class="material-symbols-outlined text-sm text-[#cbad90]">chevron_right</span>
-                <span class="text-white font-semibold">Checkout</span>
-            </nav>
-            <h1 class="text-4xl font-extrabold mb-10 tracking-tight">Checkout</h1>
-            <form th:action="@{/checkout/process}" method="POST" id="checkout-form">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                    <div class="lg:col-span-7 space-y-10">
-                        <section>
-                            <div class="flex items-center gap-3 mb-6">
-                                <span class="material-symbols-outlined text-primary">local_shipping</span>
-                                <h2 class="text-2xl font-bold">Shipping Information</h2>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-[#cbad90] mb-2" for="fullName">Full
-                                        Name</label>
-                                    <input id="fullName" name="fullName"
-                                        class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                                        required th:placeholder="${user.name}" th:value="${user.name}" type="text" />
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-[#cbad90] mb-2"
-                                        for="streetAddress">Street Address</label>
-                                    <input id="streetAddress" name="streetAddress" required minlength="10"
-                                        class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                                        placeholder="123 Sport Avenue" type="text" />
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-[#cbad90] mb-2" for="city">City</label>
-                                    <input id="city" name="city" required minlength="2"
-                                        class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                                        placeholder="New York" type="text" />
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-[#cbad90] mb-2" for="phoneNumber">Phone
-                                        Number</label>
-                                    <input id="phoneNumber" name="phoneNumber" required
-                                        pattern="(\+?\d{1,4}[\s-])?(?!0+\s+,?$)\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}"
-                                        title="Please enter a valid phone number, e.g., +1 (555) 000-0000"
-                                        class="w-full bg-[#342618] border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
-                                        placeholder="+1 (555) 000-0000" type="tel" />
-                                </div>
-                            </div>
-                        </section>
-                        <hr class="border-[#493622]" />
-                        <section>
-                            <div class="flex items-center gap-3 mb-6">
-                                <span class="material-symbols-outlined text-primary">payments</span>
-                                <h2 class="text-2xl font-bold">Payment Method</h2>
-                            </div>
-                            <div class="space-y-4">
-                                <label
-                                    class="relative flex items-center justify-between p-4 bg-[#342618] border-2 border-primary rounded-xl cursor-pointer">
-                                    <div class="flex items-center gap-4">
-                                        <div class="bg-white p-1 rounded">
-                                            <span
-                                                class="material-symbols-outlined text-blue-600 font-bold">account_balance_wallet</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-bold">VNPay</p>
-                                            <p class="text-xs text-[#cbad90]">Fast and secure digital payment</p>
-                                        </div>
-                                    </div>
-                                    <input checked="" class="w-5 h-5 text-primary focus:ring-offset-background-dark"
-                                        name="payment" value="vnpay" type="radio" />
-                                </label>
-                                <label
-                                    class="relative flex items-center justify-between p-4 bg-[#342618] border border-[#493622] rounded-xl cursor-pointer hover:border-[#684d31] transition-all">
-                                    <div class="flex items-center gap-4">
-                                        <div class="bg-gray-100 p-1 rounded">
-                                            <span class="material-symbols-outlined text-gray-800">handshake</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-bold">Cash on Delivery (COD)</p>
-                                            <p class="text-xs text-[#cbad90]">Pay when you receive your order</p>
-                                        </div>
-                                    </div>
-                                    <input class="w-5 h-5 text-primary focus:ring-offset-background-dark" name="payment"
-                                        value="cod" type="radio" />
-                                </label>
-                            </div>
-                        </section>
-                        <div class="flex items-center gap-2 text-[#cbad90] text-sm py-4">
-                            <span class="material-symbols-outlined text-sm">lock</span>
-                            <p>All transactions are secure and encrypted.</p>
-                        </div>
+            <div class="lg:col-span-5">
+              <div
+                class="sticky top-28 bg-[#342618] border border-[#493622] rounded-2xl p-6 lg:p-8"
+              >
+                <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
+                <div
+                  id="checkout-items-container"
+                  class="space-y-6 mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar"
+                >
+                  <div
+                    th:if="${#lists.isEmpty(cartItems)}"
+                    class="text-center py-8"
+                  >
+                    <p class="text-[#cbad90] mb-4">Your cart is empty.</p>
+                    <a
+                      href="/products"
+                      class="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+                      >Return to Shop</a
+                    >
+                  </div>
+
+                  <div th:each="item : ${cartItems}" class="flex gap-4">
+                    <div
+                      class="size-20 bg-[#493622] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
+                    >
+                      <img
+                        class="w-full h-full object-cover"
+                        th:alt="${item.name}"
+                        th:src="${item.imageUrl}"
+                      />
                     </div>
-                    <div class="lg:col-span-5">
-                        <div class="sticky top-28 bg-[#342618] border border-[#493622] rounded-2xl p-6 lg:p-8">
-                            <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
-                            <div id="checkout-items-container"
-                                class="space-y-6 mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-
-                                <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-8">
-                                    <p class="text-[#cbad90] mb-4">Your cart is empty.</p>
-                                    <a href="/products"
-                                        class="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition-colors">Return
-                                        to Shop</a>
-                                </div>
-
-                                <div th:each="item : ${cartItems}" class="flex gap-4">
-                                    <div
-                                        class="size-20 bg-[#493622] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
-                                        <img class="w-full h-full object-cover" th:alt="${item.name}"
-                                            th:src="${item.imageUrl}" />
-                                    </div>
-                                    <div class="flex-1">
-                                        <p class="font-bold text-white" th:text="${item.name}">Product Name</p>
-                                        <p class="text-sm text-[#cbad90]">
-                                            <span th:text="'Size: ' + ${item.size} + ' | ' + ${item.color}">Size
-                                                details</span>
-                                        </p>
-                                        <div class="flex justify-between items-center mt-1">
-                                            <p class="text-sm" th:text="'Qty: ' + ${item.quantity}">Qty: 1</p>
-                                            <p class="font-bold text-primary"
-                                                th:text="${'$' + #numbers.formatDecimal(item.price, 1, 2)}">$0.00</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <hr class="border-[#493622] mb-6" />
-                            <div class="mb-8">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <span
-                                        class="material-symbols-outlined text-primary text-xl">confirmation_number</span>
-                                    <h3 class="font-bold text-white">Voucher &amp; Promo</h3>
-                                </div>
-                                <div class="flex gap-2 mb-3">
-                                    <!-- prevent submit on button click  -->
-                                    <input id="voucher-input"
-                                        class="flex-1 bg-background-dark border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none text-sm"
-                                        placeholder="Enter promo code" type="text" />
-                                    <button type="button" id="apply-voucher-btn" onclick="applyVoucher()"
-                                        class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition-colors whitespace-nowrap text-sm uppercase tracking-wider">
-                                        Apply
-                                    </button>
-                                </div>
-                                <div id="voucher-message-container"
-                                    class="hidden flex items-center gap-2 px-3 py-2 rounded-lg text-sm mb-4">
-                                    <span id="voucher-icon"
-                                        class="material-symbols-outlined text-lg">check_circle</span>
-                                    <p id="voucher-message" class="font-medium"></p>
-                                </div>
-                                <div class="space-y-2">
-                                    <p class="text-xs font-semibold text-[#cbad90] uppercase tracking-widest mb-2">
-                                        Available Vouchers</p>
-                                    <div class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar-h">
-                                        <div
-                                            class="flex-shrink-0 w-48 p-3 rounded-lg border border-dashed border-[#493622] bg-[#2d2114] hover:border-primary transition-colors cursor-pointer group">
-                                            <div class="flex justify-between items-start mb-1">
-                                                <span class="text-xs font-bold text-primary">FREESHIP</span>
-                                                <span class="text-[10px] text-[#cbad90]">Min $50</span>
-                                            </div>
-                                            <p class="text-xs text-white/90">Free standard shipping on all orders</p>
-                                        </div>
-                                        <div
-                                            class="flex-shrink-0 w-48 p-3 rounded-lg border border-dashed border-[#493622] bg-[#2d2114] hover:border-primary transition-colors cursor-pointer group">
-                                            <div class="flex justify-between items-start mb-1">
-                                                <span class="text-xs font-bold text-primary">NEWPLAYER</span>
-                                                <span class="text-[10px] text-[#cbad90]">1st Order</span>
-                                            </div>
-                                            <p class="text-xs text-white/90">Get $15 off your first sportswear purchase
-                                            </p>
-                                        </div>
-                                        <div
-                                            class="flex-shrink-0 w-48 p-3 rounded-lg border border-dashed border-[#493622] bg-[#2d2114] hover:border-primary transition-colors cursor-pointer group">
-                                            <div class="flex justify-between items-start mb-1">
-                                                <span class="text-xs font-bold text-primary">SUMMER24</span>
-                                                <span class="text-[10px] text-[#cbad90]">Exp: Jul</span>
-                                            </div>
-                                            <p class="text-xs text-white/90">Extra 10% off on all summer collections</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-3 mb-8">
-                                <div class="flex justify-between text-[#cbad90]">
-                                    <span>Subtotal</span>
-                                    <span id="summary-subtotal"
-                                        th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}"
-                                        th:data-subtotal="${subtotal != null ? subtotal : 0}">$0.00</span>
-                                </div>
-                                <div class="flex justify-between text-[#cbad90]">
-                                    <span>Shipping</span>
-                                    <span
-                                        class="text-green-500 font-medium text-xs border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10">FREE</span>
-                                </div>
-                                <div class="flex justify-between text-green-500">
-                                    <span id="summary-discount-label">Discount</span>
-                                    <span id="summary-discount">-$0.00</span>
-                                </div>
-                                <div
-                                    class="flex justify-between text-white text-xl font-extrabold pt-2 border-t border-[#493622]">
-                                    <span>Total</span>
-                                    <span id="summary-total" class="text-primary"
-                                        th:text="${'$' + #numbers.formatDecimal(subtotal != null ? subtotal : 0, 1, 2)}">$0.00</span>
-                                </div>
-                            </div>
-                            <button type="submit" id="submit-order-btn" th:disabled="${#lists.isEmpty(cartItems)}"
-                                class="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white text-lg font-extrabold py-5 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
-                                <span id="submit-btn-text">Complete Purchase</span>
-                                <span id="submit-btn-icon" class="material-symbols-outlined">arrow_forward</span>
-                            </button>
-                            <p class="text-center text-[#cbad90] text-xs mt-4">
-                                By completing your purchase, you agree to our <a class="underline" href="#">Terms of
-                                    Service</a>.
-                            </p>
-                        </div>
+                    <div class="flex-1">
+                      <p class="font-bold text-white" th:text="${item.name}">
+                        Product Name
+                      </p>
+                      <p class="text-sm text-[#cbad90]">
+                        <span
+                          th:text="'Size: ' + ${item.size} + ' | ' + ${item.color}"
+                          >Size details</span
+                        >
+                      </p>
+                      <div class="flex justify-between items-center mt-1">
+                        <p class="text-sm" th:text="'Qty: ' + ${item.quantity}">
+                          Qty: 1
+                        </p>
+                        <p
+                          class="font-bold text-primary"
+                          th:text="${#numbers.formatInteger(item.price, 1, 'POINT')} + 'đ'"
+                        >
+                          0đ
+                        </p>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </form>
-        </main>
+                <hr class="border-[#493622] mb-6" />
+                <div class="mb-8">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined text-primary text-xl"
+                      >confirmation_number</span
+                    >
+                    <h3 class="font-bold text-white">Voucher &amp; Promo</h3>
+                  </div>
+                  <div class="flex gap-2 mb-3">
+                    <!-- prevent submit on button click  -->
+                    <input
+                      id="voucher-input"
+                      class="flex-1 bg-background-dark border border-[#493622] rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none text-sm"
+                      placeholder="Enter promo code"
+                      type="text"
+                    />
+                    <button
+                      type="button"
+                      id="apply-voucher-btn"
+                      onclick="applyVoucher()"
+                      class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition-colors whitespace-nowrap text-sm uppercase tracking-wider"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  <div
+                    id="voucher-message-container"
+                    class="hidden flex items-center gap-2 px-3 py-2 rounded-lg text-sm mb-4"
+                  >
+                    <span
+                      id="voucher-icon"
+                      class="material-symbols-outlined text-lg"
+                      >check_circle</span
+                    >
+                    <p id="voucher-message" class="font-medium"></p>
+                  </div>
+                  <div class="space-y-2">
+                    <p
+                      class="text-xs font-semibold text-[#cbad90] uppercase tracking-widest mb-2"
+                    >
+                      Available Vouchers
+                    </p>
+                    <div
+                      class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar-h"
+                    >
+                      <div
+                        class="flex-shrink-0 w-48 p-3 rounded-lg border border-dashed border-[#493622] bg-[#2d2114] hover:border-primary transition-colors cursor-pointer group"
+                      >
+                        <div class="flex justify-between items-start mb-1">
+                          <span class="text-xs font-bold text-primary"
+                            >FREESHIP</span
+                          >
+                          <span class="text-[10px] text-[#cbad90]"
+                            >Min $50</span
+                          >
+                        </div>
+                        <p class="text-xs text-white/90">
+                          Free standard shipping on all orders
+                        </p>
+                      </div>
+                      <div
+                        class="flex-shrink-0 w-48 p-3 rounded-lg border border-dashed border-[#493622] bg-[#2d2114] hover:border-primary transition-colors cursor-pointer group"
+                      >
+                        <div class="flex justify-between items-start mb-1">
+                          <span class="text-xs font-bold text-primary"
+                            >NEWPLAYER</span
+                          >
+                          <span class="text-[10px] text-[#cbad90]"
+                            >1st Order</span
+                          >
+                        </div>
+                        <p class="text-xs text-white/90">
+                          Get $15 off your first sportswear purchase
+                        </p>
+                      </div>
+                      <div
+                        class="flex-shrink-0 w-48 p-3 rounded-lg border border-dashed border-[#493622] bg-[#2d2114] hover:border-primary transition-colors cursor-pointer group"
+                      >
+                        <div class="flex justify-between items-start mb-1">
+                          <span class="text-xs font-bold text-primary"
+                            >SUMMER24</span
+                          >
+                          <span class="text-[10px] text-[#cbad90]"
+                            >Exp: Jul</span
+                          >
+                        </div>
+                        <p class="text-xs text-white/90">
+                          Extra 10% off on all summer collections
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-3 mb-8">
+                  <div class="flex justify-between text-[#cbad90]">
+                    <span>Tạm tính</span>
+                    <span
+                      id="summary-subtotal"
+                      th:text="${#numbers.formatInteger(subtotal != null ? subtotal : 0, 1, 'POINT')} + 'đ'"
+                      th:data-subtotal="${subtotal != null ? subtotal : 0}"
+                      >0đ</span
+                    >
+                  </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                initPaymentMethodSelection();
-                initCheckoutForm();
+                  <div class="flex justify-between text-[#cbad90]">
+                    <span>Phí vận chuyển</span>
+                    <span
+                      id="summary-shipping"
+                      th:if="${shippingFee == null or shippingFee == 0}"
+                      class="text-green-500 font-medium text-xs border border-green-500/30 px-2 py-0.5 rounded bg-green-500/10"
+                      th:data-shipping="0"
+                      >FREE</span
+                    >
+                    <span
+                      id="summary-shipping"
+                      th:unless="${shippingFee == null or shippingFee == 0}"
+                      class="font-medium text-white"
+                      th:text="${#numbers.formatInteger(shippingFee, 1, 'POINT')} + 'đ'"
+                      th:data-shipping="${shippingFee}"
+                      >30.000đ</span
+                    >
+                  </div>
+
+                  <div class="flex justify-between text-green-500">
+                    <span id="summary-discount-label">Voucher giảm giá</span>
+                    <span id="summary-discount">-0đ</span>
+                  </div>
+
+                  <div
+                    class="flex justify-between text-white text-xl font-extrabold pt-2 border-t border-[#493622]"
+                  >
+                    <span>Tổng cộng</span>
+                    <span
+                      id="summary-total"
+                      class="text-primary"
+                      th:text="${#numbers.formatInteger(total != null ? total : 0, 1, 'POINT')} + 'đ'"
+                      >0đ</span
+                    >
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  id="submit-order-btn"
+                  th:disabled="${#lists.isEmpty(cartItems)}"
+                  class="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white text-lg font-extrabold py-5 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                >
+                  <span id="submit-btn-text">Complete Purchase</span>
+                  <span id="submit-btn-icon" class="material-symbols-outlined"
+                    >arrow_forward</span
+                  >
+                </button>
+                <p class="text-center text-[#cbad90] text-xs mt-4">
+                  By completing your purchase, you agree to our
+                  <a class="underline" href="#">Terms of Service</a>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          initPaymentMethodSelection();
+          initCheckoutForm();
+        });
+
+        function initPaymentMethodSelection() {
+          const paymentRadios = document.querySelectorAll(
+            'input[name="payment"]',
+          );
+
+          function updateSelection() {
+            paymentRadios.forEach((r) => {
+              const label = r.closest("label");
+              if (r.checked) {
+                label.classList.remove(
+                  "border",
+                  "border-[#493622]",
+                  "hover:border-[#684d31]",
+                );
+                label.classList.add("border-2", "border-primary");
+              } else {
+                label.classList.remove("border-2", "border-primary");
+                label.classList.add(
+                  "border",
+                  "border-[#493622]",
+                  "hover:border-[#684d31]",
+                );
+              }
             });
+          }
 
-            function initPaymentMethodSelection() {
-                const paymentRadios = document.querySelectorAll('input[name="payment"]');
+          paymentRadios.forEach((radio) => {
+            radio.addEventListener("change", updateSelection);
+          });
 
-                function updateSelection() {
-                    paymentRadios.forEach(r => {
-                        const label = r.closest('label');
-                        if (r.checked) {
-                            label.classList.remove('border', 'border-[#493622]', 'hover:border-[#684d31]');
-                            label.classList.add('border-2', 'border-primary');
-                        } else {
-                            label.classList.remove('border-2', 'border-primary');
-                            label.classList.add('border', 'border-[#493622]', 'hover:border-[#684d31]');
-                        }
-                    });
-                }
+          // Set initial state based on checked radio
+          updateSelection();
+        }
 
-                paymentRadios.forEach(radio => {
-                    radio.addEventListener('change', updateSelection);
+        function initCheckoutForm() {
+          const form = document.getElementById("checkout-form");
+          const btn = document.getElementById("submit-order-btn");
+          const btnText = document.getElementById("submit-btn-text");
+          const btnIcon = document.getElementById("submit-btn-icon");
+
+          if (form && btn) {
+            form.addEventListener("submit", async function (e) {
+              // 1. Chặn hành động load lại trang mặc định của form
+              e.preventDefault();
+
+              // 2. Hiển thị trạng thái đang xử lý
+              btn.disabled = true;
+              btnText.textContent = "Processing...";
+              btnIcon.textContent = "progress_activity";
+              btnIcon.classList.add("animate-spin");
+
+              // 3. Thu thập dữ liệu từ các ô input
+              const fullName = document.getElementById("fullName").value.trim();
+              const streetAddress = document
+                .getElementById("streetAddress")
+                .value.trim();
+              const city = document.getElementById("city").value.trim();
+              const phoneNumber = document
+                .getElementById("phoneNumber")
+                .value.trim();
+              const paymentMethod = document.querySelector(
+                'input[name="payment"]:checked',
+              ).value;
+              const voucherCode = document
+                .getElementById("voucher-input")
+                .value.trim();
+
+              // Ghép địa chỉ
+              const fullShippingAddress = streetAddress + ", " + city;
+
+              // ⚠️ LƯU Ý: Giả lập userId = 1 (Giống như cartId lúc nãy)
+              // Sau này bạn cần lấy ID thật từ người dùng đang đăng nhập
+
+              // 1. Lấy thông tin "Mua ngay" từ URL hiện tại
+              const urlParams = new URLSearchParams(window.location.search);
+              const isBuyNowFromUrl = urlParams.get("buyNow") === "true";
+              const variantIdFromUrl = urlParams.get("variantId");
+              const qtyFromUrl = urlParams.get("qty");
+
+              // 2. Tạo Payload gửi cho Backend
+              const payload = {
+                fullName: document.getElementById("fullName").value,
+                phone: document.getElementById("phoneNumber").value,
+                shippingAddress:
+                  document.getElementById("streetAddress").value +
+                  ", " +
+                  document.getElementById("city").value,
+                paymentMethod: document.querySelector(
+                  'input[name="payment"]:checked',
+                ).value,
+                voucherCode: document.getElementById("voucher-input").value,
+
+                // CÁC TRƯỜNG QUAN TRỌNG ĐỂ PHÂN BIỆT MUA NGAY
+                isBuyNow: isBuyNowFromUrl,
+                productDetailId: variantIdFromUrl
+                  ? parseInt(variantIdFromUrl)
+                  : null,
+                quantity: qtyFromUrl ? parseInt(qtyFromUrl) : null,
+              };
+
+              // 5. Gửi request qua API
+              try {
+                const response = await fetch("/api/orders/checkout", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(payload),
                 });
 
-                // Set initial state based on checked radio
-                updateSelection();
-            }
-
-            function initCheckoutForm() {
-                const form = document.getElementById('checkout-form');
-                const btn = document.getElementById('submit-order-btn');
-                const btnText = document.getElementById('submit-btn-text');
-                const btnIcon = document.getElementById('submit-btn-icon');
-
-                if (form && btn) {
-                    form.addEventListener('submit', function (e) {
-                        // Change button state
-                        btn.disabled = true;
-                        btnText.textContent = "Processing...";
-                        btnIcon.textContent = "progress_activity";
-                        btnIcon.classList.add("animate-spin");
-                        // Form will submit naturally
-                    });
-                }
-            }
-
-            let currentDiscountTotal = 0.00;
-
-            function applyVoucher() {
-                const voucherInput = document.getElementById('voucher-input');
-                if (!voucherInput) return;
-
-                const voucherCode = voucherInput.value.trim().toUpperCase();
-                const container = document.getElementById('voucher-message-container');
-                const messageEl = document.getElementById('voucher-message');
-                const iconEl = document.getElementById('voucher-icon');
-
-                // Simulate fetch request to backend to validate voucher
-                const btn = document.getElementById('apply-voucher-btn');
-                const originalText = btn.textContent;
-                btn.textContent = "Checking...";
-                btn.disabled = true;
-
-                // Base subtotal from thymeleaf data attribute
-                const subtotalEl = document.getElementById('summary-subtotal');
-                const subtotal = parseFloat(subtotalEl.getAttribute('data-subtotal')) || 0;
-
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.disabled = false;
-
-                    container.classList.remove('hidden');
-
-                    if (voucherCode === 'FREESHIP' || voucherCode === 'NEWPLAYER' || voucherCode === 'SUMMER24' || voucherCode === 'BROSPORT20') {
-                        // Success simulation
-                        container.className = 'flex items-center gap-2 text-green-500 bg-green-500/10 border border-green-500/20 px-3 py-2 rounded-lg text-sm mb-4';
-                        iconEl.textContent = 'check_circle';
-
-                        let discountRate = 0;
-                        if (voucherCode === 'FREESHIP') {
-                            messageEl.textContent = 'Voucher Applied: Free Shipping';
-                        } else if (voucherCode === 'NEWPLAYER') {
-                            currentDiscountTotal = Math.min(15.00, subtotal);
-                            messageEl.textContent = 'Voucher Applied: -$15';
-                        } else if (voucherCode === 'SUMMER24') {
-                            discountRate = 0.10;
-                            messageEl.textContent = 'Voucher Applied: -10%';
-                        } else if (voucherCode === 'BROSPORT20') {
-                            discountRate = 0.20;
-                            messageEl.textContent = 'Voucher Applied: -20%';
-                        }
-
-                        if (discountRate > 0) {
-                            currentDiscountTotal = subtotal * discountRate;
-                        }
-
-                        updateTotals(subtotal);
-
+                if (response.ok) {
+                  const data = await response.json();
+                  console.log("Dữ liệu BE trả về:", data);
+                  // Nếu chọn VNPay và BE trả về link thanh toán (tuỳ thuộc vào OrderResponse của bạn)
+                  if (paymentMethod === "vnpay" && data.paymentUrl) {
+                    window.location.href = data.paymentUrl;
+                  } else {
+                    // Nếu là COD hoặc BE cấu hình trả về thành công
+                    if (data.orderNumber) {
+                      window.location.href =
+                        "/order-success?orderCode=" + data.orderNumber;
                     } else {
-                        // Error fallback
-                        container.className = 'flex items-center gap-2 text-red-500 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg text-sm mb-4';
-                        iconEl.textContent = 'error';
-                        messageEl.textContent = 'Invalid or expired voucher code';
-                        currentDiscountTotal = 0;
-                        updateTotals(subtotal);
+                      window.location.href = "/order-success";
                     }
-                }, 800);
+                  }
+                } else {
+                  const errorData = await response.json();
+                  // Đổi chữ "message" thành "Message" (viết hoa chữ M) để bắt đúng dữ liệu Backend trả về
+                  alert(
+                    "Lỗi đặt hàng: " +
+                      (errorData.Message ||
+                        errorData.message ||
+                        "Vui lòng kiểm tra lại thông tin!"),
+                  );
+                  resetButton();
+                }
+              } catch (error) {
+                console.error("Lỗi:", error);
+                alert("Mất kết nối đến máy chủ. Vui lòng thử lại!");
+                resetButton();
+              }
+
+              // Hàm reset lại nút bấm nếu có lỗi
+              function resetButton() {
+                btn.disabled = false;
+                btnText.textContent = "Complete Purchase";
+                btnIcon.textContent = "arrow_forward";
+                btnIcon.classList.remove("animate-spin");
+              }
+            });
+          }
+        }
+
+        let currentDiscountTotal = 0.0;
+        let isFreeShippingVoucher = false;
+
+        function applyVoucher() {
+          const voucherInput = document.getElementById("voucher-input");
+          if (!voucherInput) return;
+
+          const voucherCode = voucherInput.value.trim().toUpperCase();
+          const container = document.getElementById(
+            "voucher-message-container",
+          );
+          const messageEl = document.getElementById("voucher-message");
+          const iconEl = document.getElementById("voucher-icon");
+
+          const btn = document.getElementById("apply-voucher-btn");
+          const originalText = btn.textContent;
+          btn.textContent = "Đang kiểm tra...";
+          btn.disabled = true;
+
+          const subtotalEl = document.getElementById("summary-subtotal");
+          const subtotal =
+            parseFloat(subtotalEl.getAttribute("data-subtotal")) || 0;
+
+          // Lấy phí ship gốc từ giao diện
+          const shippingEl = document.getElementById("summary-shipping");
+          const baseShipping =
+            parseFloat(shippingEl.getAttribute("data-shipping")) || 0;
+
+          setTimeout(() => {
+            btn.textContent = "Áp dụng";
+            btn.disabled = false;
+            container.classList.remove("hidden");
+
+            isFreeShippingVoucher = false; // Reset cờ freeship
+            currentDiscountTotal = 0; // Reset giảm giá
+
+            if (
+              voucherCode === "FREESHIP" ||
+              voucherCode === "NEWPLAYER" ||
+              voucherCode === "SUMMER24" ||
+              voucherCode === "BROSPORT20"
+            ) {
+              container.className =
+                "flex items-center gap-2 text-green-500 bg-green-500/10 border border-green-500/20 px-3 py-2 rounded-lg text-sm mb-4";
+              iconEl.textContent = "check_circle";
+
+              let discountRate = 0;
+              if (voucherCode === "FREESHIP") {
+                isFreeShippingVoucher = true;
+                currentDiscountTotal = baseShipping; // Giảm đúng bằng tiền ship
+                messageEl.textContent = "Áp dụng mã: Miễn phí vận chuyển";
+              } else if (voucherCode === "NEWPLAYER") {
+                currentDiscountTotal = Math.min(150000, subtotal); // Giảm 150k
+                messageEl.textContent = "Áp dụng mã: -150.000đ";
+              } else if (voucherCode === "SUMMER24") {
+                discountRate = 0.1;
+                messageEl.textContent = "Áp dụng mã: Giảm 10%";
+              } else if (voucherCode === "BROSPORT20") {
+                discountRate = 0.2;
+                messageEl.textContent = "Áp dụng mã: Giảm 20%";
+              }
+
+              if (discountRate > 0) {
+                currentDiscountTotal = subtotal * discountRate;
+              }
+              updateTotals(subtotal, baseShipping);
+            } else {
+              container.className =
+                "flex items-center gap-2 text-red-500 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg text-sm mb-4";
+              iconEl.textContent = "error";
+              messageEl.textContent = "Mã không hợp lệ hoặc đã hết hạn";
+              updateTotals(subtotal, baseShipping);
             }
+          }, 800);
+        }
 
-            function updateTotals(subtotal) {
-                const discountEl = document.getElementById('summary-discount');
-                const totalEl = document.getElementById('summary-total');
+        function updateTotals(subtotal, baseShipping) {
+          const discountEl = document.getElementById("summary-discount");
+          const totalEl = document.getElementById("summary-total");
 
-                const total = Math.max(0, subtotal - currentDiscountTotal);
+          // Tổng tiền = Tạm tính + Phí ship - Giảm giá
+          const total = Math.max(
+            0,
+            subtotal + baseShipping - currentDiscountTotal,
+          );
 
-                discountEl.textContent = `-$${currentDiscountTotal.toFixed(2)}`;
-                totalEl.textContent = `$${total.toFixed(2)}`;
-            }
-        </script>
-        <footer class="mt-20 border-t border-[#493622] py-10 px-10">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-2 text-primary">
-                    <div class="size-5">
-                        <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-white font-bold">Brosport</h3>
-                </div>
-                <div class="flex gap-8 text-[#cbad90] text-sm">
-                    <a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
-                    <a class="hover:text-white transition-colors" href="#">Help Center</a>
-                    <a class="hover:text-white transition-colors" href="#">Track Order</a>
-                </div>
-                <p class="text-[#cbad90] text-xs">© 2024 Brosport. All rights reserved.</p>
+          // Format theo chuẩn VNĐ
+          discountEl.textContent = `-${new Intl.NumberFormat("vi-VN").format(Math.round(currentDiscountTotal))}đ`;
+          totalEl.textContent = `${new Intl.NumberFormat("vi-VN").format(Math.round(total))}đ`;
+        }
+      </script>
+      <footer
+        class="mt-auto border-t border-white/10 bg-surface/50 px-6 lg:px-20 py-12"
+      >
+        <div
+          class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12"
+        >
+          <div class="md:col-span-1">
+            <div class="flex items-center gap-3 text-primary mb-6">
+              <div
+                class="size-6 bg-primary text-background-dark flex items-center justify-center rounded"
+              >
+                <span class="material-symbols-outlined font-bold text-[16px]"
+                  >bolt</span
+                >
+              </div>
+              <h2
+                class="text-white text-xl font-extrabold uppercase tracking-tight"
+              >
+                Brosport
+              </h2>
             </div>
-        </footer>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">
+              Elevating performance for athletes who dare to be great. Premium
+              gear for the next generation of champions.
+            </p>
+            <div class="flex gap-4">
+              <a class="text-slate-400 hover:text-primary" href="#"
+                ><span class="material-symbols-outlined">public</span></a
+              >
+              <a class="text-slate-400 hover:text-primary" href="#"
+                ><span class="material-symbols-outlined">chat</span></a
+              >
+              <a class="text-slate-400 hover:text-primary" href="#"
+                ><span class="material-symbols-outlined">share</span></a
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-white font-bold mb-4 uppercase tracking-widest text-xs"
+            >
+              Shop
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >New Arrivals</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Bestsellers</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Sale</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Gear Guide</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4
+              class="text-white font-bold mb-4 uppercase tracking-widest text-xs"
+            >
+              Support
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Order Tracking</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Returns &amp; Exchanges</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >Shipping Policy</a
+                >
+              </li>
+              <li>
+                <a class="hover:text-primary transition-colors" href="#"
+                  >FAQs</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4
+              class="text-white font-bold mb-4 uppercase tracking-widest text-xs"
+            >
+              Join the Elite
+            </h4>
+            <p class="text-slate-400 text-sm mb-4">
+              Subscribe for exclusive drops and athlete insights.
+            </p>
+            <form class="flex gap-2">
+              <input
+                class="flex-1 bg-background-dark border-none rounded-lg text-xs p-3 focus:ring-1 focus:ring-primary"
+                placeholder="Your email"
+                type="email"
+              />
+              <button
+                class="bg-primary text-background-dark px-4 rounded-lg font-bold text-xs uppercase tracking-tighter"
+              >
+                Join
+              </button>
+            </form>
+          </div>
+        </div>
+        <div
+          class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-white/5 text-center text-xs text-slate-500"
+        >
+          © 2024 Brosport Performance. All Rights Reserved. Designed for the
+          Elite.
+        </div>
+      </footer>
     </div>
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
 
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #493622;
-            border-radius: 10px;
-        }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #493622;
+        border-radius: 10px;
+      }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #f48c25;
-        }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #f48c25;
+      }
 
-        .custom-scrollbar-h::-webkit-scrollbar {
-            height: 4px;
-        }
+      .custom-scrollbar-h::-webkit-scrollbar {
+        height: 4px;
+      }
 
-        .custom-scrollbar-h::-webkit-scrollbar-track {
-            background: transparent;
-        }
+      .custom-scrollbar-h::-webkit-scrollbar-track {
+        background: transparent;
+      }
 
-        .custom-scrollbar-h::-webkit-scrollbar-thumb {
-            background: #493622;
-            border-radius: 10px;
-        }
+      .custom-scrollbar-h::-webkit-scrollbar-thumb {
+        background: #493622;
+        border-radius: 10px;
+      }
 
-        .custom-scrollbar-h::-webkit-scrollbar-thumb:hover {
-            background: #f48c25;
-        }
+      .custom-scrollbar-h::-webkit-scrollbar-thumb:hover {
+        background: #f48c25;
+      }
     </style>
-
-</body>
-
+  </body>
 </html>

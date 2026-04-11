@@ -1,737 +1,898 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - Brosport</title>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ff6600",
+              "background-light": "#f8f7f5",
+              "background-dark": "#000000",
+              "surface-dark": "#121212",
+              "border-dark": "#ffffff10",
+            },
+            fontFamily: { display: ["Lexend"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .filled {
+        font-variation-settings: "FILL" 1;
+      }
+      #chat-toggle:checked ~ #chat-window {
+        display: flex;
+      }
+      #chat-toggle:checked ~ #chat-trigger .open-icon {
+        display: none;
+      }
+      #chat-toggle:checked ~ #chat-trigger .close-icon {
+        display: block;
+      }
+      .close-icon {
+        display: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .nav-link {
+        @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
+      }
+    </style>
 
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+            rel="stylesheet"
+    />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#ff6600",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#000000",
+                        "surface-dark": "#121212",
+                        "border-dark": "#ffffff10",
+                    },
+                    fontFamily: { display: ["Lexend"] },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
     <style>
-        :root {
-            --bg: #050505;
-            --panel: #111214;
-            --panel-2: #17181b;
-            --border: #23252b;
-            --border-soft: rgba(255,255,255,0.06);
-            --text: #f5f5f5;
-            --muted: #8f949c;
-            --muted-2: #6f7680;
-            --orange: #ff6a00;
-            --orange-2: #ff962d;
-            --white: #ffffff;
-            --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-            --radius-lg: 18px;
-            --radius-md: 12px;
-            --radius-sm: 10px;
-        }
+      :root {
+        --bg: #050505;
+        --panel: #111214;
+        --panel-2: #17181b;
+        --border: #23252b;
+        --border-soft: rgba(255, 255, 255, 0.06);
+        --text: #f5f5f5;
+        --muted: #8f949c;
+        --muted-2: #6f7680;
+        --orange: #ff6a00;
+        --orange-2: #ff962d;
+        --white: #ffffff;
+        --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --radius-sm: 10px;
+      }
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: var(--text) !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                    radial-gradient(circle at top, rgba(255,106,0,0.06), transparent 20%),
-                    linear-gradient(180deg, #080808 0%, #050505 100%);
-            color: var(--text);
-        }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(
+            circle at top,
+            rgba(255, 106, 0, 0.06),
+            transparent 20%
+          ),
+          linear-gradient(180deg, #080808 0%, #050505 100%);
+        color: var(--text);
+      }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
 
-        button, input {
-            font: inherit;
-        }
+      button,
+      input {
+        font: inherit;
+      }
 
-        .page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+      .page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-        .match-text {
-            display: block;
-            margin-top: 6px;
-            font-size: 12px;
-        }
+      .match-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+      }
 
-        .match-text.ok {
-            color: #86efac;
-        }
+      .match-text.ok {
+        color: #86efac;
+      }
 
-        .match-text.error {
-            color: #f87171;
-        }
+      .match-text.error {
+        color: #f87171;
+      }
 
-        .strength-bars span.weak {
-            background: #ef4444;
-        }
+      .strength-bars span.weak {
+        background: #ef4444;
+      }
 
-        .strength-bars span.medium {
-            background: #f59e0b;
-        }
+      .strength-bars span.medium {
+        background: #f59e0b;
+      }
 
-        .strength-bars span.strong {
-            background: #ff962d;
-        }
+      .strength-bars span.strong {
+        background: #ff962d;
+      }
 
-        .strength-text.weak {
-            color: #f87171;
-        }
+      .strength-text.weak {
+        color: #f87171;
+      }
 
-        .strength-text.medium {
-            color: #fbbf24;
-        }
+      .strength-text.medium {
+        color: #fbbf24;
+      }
 
-        .strength-text.strong {
-            color: var(--orange-2);
-        }
+      .strength-text.strong {
+        color: var(--orange-2);
+      }
 
-        /* HEADER */
-        .topbar {
-            height: 72px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            background: rgba(8, 8, 8, 0.92);
-        }
+      /* HEADER */
+      .topbar {
+        height: 72px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        background: rgba(8, 8, 8, 0.92);
+      }
 
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 34px;
-        }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 34px;
+      }
 
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            letter-spacing: 0.6px;
-        }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+      }
 
-        .logo-badge {
-            width: 20px;
-            height: 20px;
-            border-radius: 5px;
-            background: var(--orange);
-            color: var(--white);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-        }
+      .logo-badge {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        background: var(--orange);
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
 
-        .logo-text {
-            font-size: 15px;
-        }
+      .logo-text {
+        font-size: 15px;
+      }
 
+      .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        flex-wrap: wrap;
+      }
+
+      .main-nav a {
+        font-size: 12px;
+        font-weight: 700;
+        color: #d5d7db;
+      }
+
+      .main-nav a.sale {
+        color: var(--orange-2);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .search-box {
+        width: 280px;
+        height: 40px;
+        border-radius: 999px;
+        background: #111214;
+        border: 1px solid #1d1f23;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        color: #848a93;
+      }
+
+      .search-box input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text);
+        width: 100%;
+        font-size: 13px;
+      }
+
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: 1px solid #202229;
+        background: transparent;
+        color: #d1d4d9;
+        cursor: pointer;
+      }
+
+      .cart-btn {
+        position: relative;
+      }
+
+      .dot {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--orange);
+        color: var(--white);
+        font-size: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* MAIN */
+      .register-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 36px 16px 32px;
+      }
+
+      .register-content {
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+      }
+
+      .register-head {
+        margin-bottom: 18px;
+      }
+
+      .register-head h1 {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      .register-head p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .register-card {
+        background:
+          radial-gradient(
+            circle at top,
+            rgba(255, 106, 0, 0.06),
+            transparent 28%
+          ),
+          linear-gradient(180deg, #17181b 0%, #121315 100%);
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        text-align: left;
+        padding: 24px 24px 20px;
+      }
+
+      .form-group {
+        margin-bottom: 14px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 12px;
+        color: #e4e6eb;
+        font-weight: 600;
+      }
+
+      .input-wrap {
+        height: 46px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #101113;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        color: #727885;
+        transition: 0.2s ease;
+      }
+
+      .input-wrap:focus-within {
+        border-color: rgba(255, 106, 0, 0.75);
+        box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.1);
+      }
+
+      .input-wrap input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 14px;
+      }
+
+      .input-wrap input:focus {
+        outline: none;
+        box-shadow: none;
+      }
+
+      .input-wrap input::placeholder {
+        color: #6e7580;
+      }
+
+      .toggle-password {
+        cursor: pointer;
+        color: #7e848f;
+        font-size: 13px;
+      }
+
+      .password-strength {
+        margin: 10px 0 14px;
+      }
+
+      .strength-bars {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+
+      .strength-bars span {
+        height: 3px;
+        border-radius: 999px;
+        background: #3a3d43;
+        display: block;
+      }
+
+      .strength-bars span.active {
+        background: var(--orange-2);
+      }
+
+      .strength-text {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--orange-2);
+      }
+
+      .submit-btn {
+        width: 100%;
+        height: 48px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #f28b25 0%, #f79a2e 100%);
+        color: #111;
+        font-weight: 800;
+        font-size: 13px;
+        cursor: pointer;
+        margin-top: 8px;
+        box-shadow: 0 10px 24px rgba(242, 139, 37, 0.18);
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .divider {
+        position: relative;
+        text-align: center;
+        margin: 18px 0 14px;
+        color: #6f7680;
+        font-size: 10px;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 38%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .divider::before {
+        left: 0;
+      }
+
+      .divider::after {
+        right: 0;
+      }
+
+      .social-login {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .social-btn {
+        height: 42px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .social-btn.google i {
+        color: #ea4335;
+      }
+
+      .social-btn.facebook i {
+        color: #1877f2;
+      }
+
+      .auth-bottom {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .auth-bottom a {
+        color: var(--orange-2);
+        font-weight: 700;
+      }
+
+      .policy-links {
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .policy-links a {
+        font-size: 10px;
+        color: #5f6670;
+        letter-spacing: 0.8px;
+      }
+
+      /* FOOTER */
+      .footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 14px 16px;
+      }
+
+      .footer-bottom {
+        max-width: 1280px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .footer-bottom p {
+        color: #5f6670;
+        font-size: 11px;
+      }
+
+      .error-text {
+        display: block;
+        margin-top: 6px;
+        color: #f87171;
+        font-size: 12px;
+      }
+
+      .success-box {
+        margin-bottom: 14px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.28);
+        color: #86efac;
+        font-size: 13px;
+      }
+
+      .error-box {
+        margin-bottom: 14px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        color: #fca5a5;
+        font-size: 13px;
+      }
+
+      @media (max-width: 1100px) {
         .main-nav {
-            display: flex;
-            align-items: center;
-            gap: 22px;
-            flex-wrap: wrap;
+          display: none;
         }
+      }
 
-        .main-nav a {
-            font-size: 12px;
-            font-weight: 700;
-            color: #d5d7db;
-        }
-
-        .main-nav a.sale {
-            color: var(--orange-2);
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+      @media (max-width: 768px) {
+        .topbar {
+          padding: 0 16px;
         }
 
         .search-box {
-            width: 280px;
-            height: 40px;
-            border-radius: 999px;
-            background: #111214;
-            border: 1px solid #1d1f23;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0 14px;
-            color: #848a93;
+          display: none;
         }
 
-        .search-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text);
-            width: 100%;
-            font-size: 13px;
-        }
-
-        .icon-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 999px;
-            border: 1px solid #202229;
-            background: transparent;
-            color: #d1d4d9;
-            cursor: pointer;
-        }
-
-        .cart-btn {
-            position: relative;
-        }
-
-        .dot {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--orange);
-            color: var(--white);
-            font-size: 10px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* MAIN */
         .register-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 36px 16px 32px;
-        }
-
-        .register-content {
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .register-head {
-            margin-bottom: 18px;
-        }
-
-        .register-head h1 {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .register-head p {
-            color: var(--muted);
-            font-size: 14px;
+          padding-top: 24px;
         }
 
         .register-card {
-            background:
-                    radial-gradient(circle at top, rgba(255,106,0,0.06), transparent 28%),
-                    linear-gradient(180deg, #17181b 0%, #121315 100%);
-            border: 1px solid var(--border-soft);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            text-align: left;
-            padding: 24px 24px 20px;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-            color: #e4e6eb;
-            font-weight: 600;
-        }
-
-        .input-wrap {
-            height: 46px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #101113;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0 14px;
-            color: #727885;
-            transition: 0.2s ease;
-        }
-
-        .input-wrap:focus-within {
-            border-color: rgba(255, 106, 0, 0.75);
-            box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.10);
-        }
-
-        .input-wrap input {
-            width: 100%;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: var(--text);
-            font-size: 14px;
-        }
-
-        .input-wrap input::placeholder {
-            color: #6e7580;
-        }
-
-        .toggle-password {
-            cursor: pointer;
-            color: #7e848f;
-            font-size: 13px;
-        }
-
-        .password-strength {
-            margin: 10px 0 14px;
-        }
-
-        .strength-bars {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-
-        .strength-bars span {
-            height: 3px;
-            border-radius: 999px;
-            background: #3a3d43;
-            display: block;
-        }
-
-        .strength-bars span.active {
-            background: var(--orange-2);
-        }
-
-        .strength-text {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            color: var(--orange-2);
-        }
-
-        .submit-btn {
-            width: 100%;
-            height: 48px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #f28b25 0%, #f79a2e 100%);
-            color: #111;
-            font-weight: 800;
-            font-size: 13px;
-            cursor: pointer;
-            margin-top: 8px;
-            box-shadow: 0 10px 24px rgba(242, 139, 37, 0.18);
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .divider {
-            position: relative;
-            text-align: center;
-            margin: 18px 0 14px;
-            color: #6f7680;
-            font-size: 10px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 38%;
-            height: 1px;
-            background: rgba(255,255,255,0.06);
-        }
-
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
+          padding: 18px;
         }
 
         .social-login {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+          grid-template-columns: 1fr;
         }
-
-        .social-btn {
-            height: 42px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .social-btn.google i {
-            color: #ea4335;
-        }
-
-        .social-btn.facebook i {
-            color: #1877f2;
-        }
-
-        .auth-bottom {
-            text-align: center;
-            margin-top: 18px;
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .auth-bottom a {
-            color: var(--orange-2);
-            font-weight: 700;
-        }
-
-        .policy-links {
-            margin-top: 18px;
-            display: flex;
-            justify-content: center;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
-
-        .policy-links a {
-            font-size: 10px;
-            color: #5f6670;
-            letter-spacing: 0.8px;
-        }
-
-        /* FOOTER */
-        .footer {
-            border-top: 1px solid rgba(255,255,255,0.04);
-            padding: 14px 16px;
-        }
-
-        .footer-bottom {
-            max-width: 1280px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .footer-bottom p {
-            color: #5f6670;
-            font-size: 11px;
-        }
-
-        .error-text {
-            display: block;
-            margin-top: 6px;
-            color: #f87171;
-            font-size: 12px;
-        }
-
-        .success-box {
-            margin-bottom: 14px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            background: rgba(34,197,94,0.12);
-            border: 1px solid rgba(34,197,94,0.28);
-            color: #86efac;
-            font-size: 13px;
-        }
-
-        .error-box {
-            margin-bottom: 14px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            background: rgba(239,68,68,0.10);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #fca5a5;
-            font-size: 13px;
-        }
-
-        @media (max-width: 1100px) {
-            .main-nav {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .topbar {
-                padding: 0 16px;
-            }
-
-            .search-box {
-                display: none;
-            }
-
-            .register-wrapper {
-                padding-top: 24px;
-            }
-
-            .register-card {
-                padding: 18px;
-            }
-
-            .social-login {
-                grid-template-columns: 1fr;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-<div class="page">
+  </head>
+  <body>
+    <div class="page">
+      <div th:replace="~{fragments/header :: site-header}"></div>
 
-    <div th:replace="~{fragments/header :: site-header}"></div>
-
-    <main class="register-wrapper">
+      <main class="register-wrapper">
         <section class="register-content">
-            <div class="register-head">
-                <h1>Join the Team</h1>
-                <p>Elevate your performance with premium gear.</p>
-            </div>
+          <div class="register-head">
+            <h1>Join the Team</h1>
+            <p>Elevate your performance with premium gear.</p>
+          </div>
 
-            <div class="register-card">
-                <div th:if="${errorMessage}" class="error-box" th:text="${errorMessage}"></div>
-                <div th:if="${successMessage}" class="success-box" th:text="${successMessage}"></div>
+          <div class="register-card">
+            <div
+              th:if="${errorMessage}"
+              class="error-box"
+              th:text="${errorMessage}"
+            ></div>
+            <div
+              th:if="${successMessage}"
+              class="success-box"
+              th:text="${successMessage}"
+            ></div>
 
-                <form th:action="@{/register}"
-                      th:object="${registerRequest}"
-                      method="post">
+            <form
+              th:action="@{/register}"
+              th:object="${registerRequest}"
+              method="post"
+            >
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <div class="input-wrap">
+                  <i class="fa-regular fa-user"></i>
+                  <input
+                    id="fullName"
+                    th:field="*{fullName}"
+                    type="text"
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <small
+                  th:if="${#fields.hasErrors('fullName')}"
+                  th:errors="*{fullName}"
+                  class="error-text"
+                ></small>
+              </div>
 
-                    <div class="form-group">
-                        <label for="fullName">Full Name</label>
-                        <div class="input-wrap">
-                            <i class="fa-regular fa-user"></i>
-                            <input id="fullName"
-                                   th:field="*{fullName}"
-                                   type="text"
-                                   placeholder="Enter your name">
-                        </div>
-                        <small th:if="${#fields.hasErrors('fullName')}"
-                               th:errors="*{fullName}"
-                               class="error-text"></small>
-                    </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrap">
+                  <i class="fa-regular fa-envelope"></i>
+                  <input
+                    id="email"
+                    th:field="*{email}"
+                    type="email"
+                    placeholder="athlete@brosport.com"
+                  />
+                </div>
+                <small
+                  th:if="${#fields.hasErrors('email')}"
+                  th:errors="*{email}"
+                  class="error-text"
+                ></small>
+              </div>
 
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <div class="input-wrap">
-                            <i class="fa-regular fa-envelope"></i>
-                            <input id="email"
-                                   th:field="*{email}"
-                                   type="email"
-                                   placeholder="athlete@brosport.com">
-                        </div>
-                        <small th:if="${#fields.hasErrors('email')}"
-                               th:errors="*{email}"
-                               class="error-text"></small>
-                    </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-lock"></i>
+                  <input
+                    id="password"
+                    th:field="*{password}"
+                    type="password"
+                    placeholder="Minimum 8 characters"
+                  />
+                  <i
+                    class="fa-regular fa-eye toggle-password"
+                    data-target="password"
+                  ></i>
+                </div>
+                <small
+                  th:if="${#fields.hasErrors('password')}"
+                  th:errors="*{password}"
+                  class="error-text"
+                ></small>
 
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="input-wrap">
-                            <i class="fa-solid fa-lock"></i>
-                            <input id="password"
-                                   th:field="*{password}"
-                                   type="password"
-                                   placeholder="Minimum 8 characters">
-                            <i class="fa-regular fa-eye toggle-password" data-target="password"></i>
-                        </div>
-                        <small th:if="${#fields.hasErrors('password')}"
-                               th:errors="*{password}"
-                               class="error-text"></small>
+                <div class="password-strength">
+                  <div class="strength-bars" id="strengthBars">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <div class="strength-text" id="strengthText">
+                    ENTER PASSWORD
+                  </div>
+                </div>
+              </div>
 
-                        <div class="password-strength">
-                            <div class="strength-bars" id="strengthBars">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                            <div class="strength-text" id="strengthText">ENTER PASSWORD</div>
-                        </div>
-                    </div>
+              <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <input
+                    id="confirmPassword"
+                    th:field="*{confirmPassword}"
+                    type="password"
+                    placeholder="Repeat password"
+                  />
+                  <i
+                    class="fa-regular fa-eye toggle-password"
+                    data-target="confirmPassword"
+                  ></i>
+                </div>
+                <small
+                  th:if="${#fields.hasErrors('confirmPassword')}"
+                  th:errors="*{confirmPassword}"
+                  class="error-text"
+                ></small>
+                <small id="confirmPasswordHint" class="match-text"></small>
+              </div>
 
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm Password</label>
-                        <div class="input-wrap">
-                            <i class="fa-solid fa-shield-halved"></i>
-                            <input id="confirmPassword"
-                                   th:field="*{confirmPassword}"
-                                   type="password"
-                                   placeholder="Repeat password">
-                            <i class="fa-regular fa-eye toggle-password" data-target="confirmPassword"></i>
-                        </div>
-                        <small th:if="${#fields.hasErrors('confirmPassword')}"
-                               th:errors="*{confirmPassword}"
-                               class="error-text"></small>
-                        <small id="confirmPasswordHint" class="match-text"></small>
-                    </div>
+              <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
 
-                    <button type="submit" class="submit-btn">
-                        CREATE ACCOUNT
-                    </button>
+              <div class="divider">OR SIGN UP WITH</div>
 
-                    <div class="divider">OR SIGN UP WITH</div>
+              <div class="social-login">
+                <button type="button" class="social-btn google">
+                  <i class="fa-brands fa-google"></i>
+                  <span>Google</span>
+                </button>
 
-                    <div class="social-login">
-                        <button type="button" class="social-btn google">
-                            <i class="fa-brands fa-google"></i>
-                            <span>Google</span>
-                        </button>
+                <button type="button" class="social-btn facebook">
+                  <i class="fa-brands fa-facebook-f"></i>
+                  <span>Facebook</span>
+                </button>
+              </div>
+            </form>
+          </div>
 
-                        <button type="button" class="social-btn facebook">
-                            <i class="fa-brands fa-facebook-f"></i>
-                            <span>Facebook</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+          <div class="auth-bottom">
+            Already have an account?
+            <a th:href="@{/login}">Log In</a>
+          </div>
 
-            <div class="auth-bottom">
-                Already have an account?
-                <a th:href="@{/login}">Log In</a>
-            </div>
-
-            <div class="policy-links">
-                <a href="#">TERMS OF SERVICE</a>
-                <a href="#">PRIVACY POLICY</a>
-                <a href="#">COOKIES</a>
-            </div>
+          <div class="policy-links">
+            <a href="#">TERMS OF SERVICE</a>
+            <a href="#">PRIVACY POLICY</a>
+            <a href="#">COOKIES</a>
+          </div>
         </section>
-    </main>
-</div>
+      </main>
+    </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         const toggleIcons = document.querySelectorAll(".toggle-password");
         const passwordInput = document.getElementById("password");
         const confirmPasswordInput = document.getElementById("confirmPassword");
-        const confirmPasswordHint = document.getElementById("confirmPasswordHint");
+        const confirmPasswordHint = document.getElementById(
+          "confirmPasswordHint",
+        );
         const strengthBars = document.querySelectorAll("#strengthBars span");
         const strengthText = document.getElementById("strengthText");
 
         toggleIcons.forEach(function (icon) {
-            icon.addEventListener("click", function () {
-                const input = document.getElementById(this.dataset.target);
-                if (!input) return;
+          icon.addEventListener("click", function () {
+            const input = document.getElementById(this.dataset.target);
+            if (!input) return;
 
-                if (input.type === "password") {
-                    input.type = "text";
-                    this.classList.remove("fa-eye");
-                    this.classList.add("fa-eye-slash");
-                } else {
-                    input.type = "password";
-                    this.classList.remove("fa-eye-slash");
-                    this.classList.add("fa-eye");
-                }
-            });
+            if (input.type === "password") {
+              input.type = "text";
+              this.classList.remove("fa-eye");
+              this.classList.add("fa-eye-slash");
+            } else {
+              input.type = "password";
+              this.classList.remove("fa-eye-slash");
+              this.classList.add("fa-eye");
+            }
+          });
         });
 
         function evaluatePasswordStrength(password) {
-            let score = 0;
+          let score = 0;
 
-            if (password.length >= 8) score++;
-            if (/[a-zA-Z]/.test(password)) score++;
-            if (/\d/.test(password)) score++;
-            if (/[^A-Za-z0-9]/.test(password)) score++;
+          if (password.length >= 8) score++;
+          if (/[a-zA-Z]/.test(password)) score++;
+          if (/\d/.test(password)) score++;
+          if (/[^A-Za-z0-9]/.test(password)) score++;
 
-            if (password.length === 0) {
-                return { level: 0, text: "ENTER PASSWORD", className: "" };
-            }
+          if (password.length === 0) {
+            return { level: 0, text: "ENTER PASSWORD", className: "" };
+          }
 
-            if (score <= 1) {
-                return { level: 1, text: "WEAK PASSWORD", className: "weak" };
-            }
+          if (score <= 1) {
+            return { level: 1, text: "WEAK PASSWORD", className: "weak" };
+          }
 
-            if (score <= 3) {
-                return { level: 2, text: "MEDIUM PASSWORD", className: "medium" };
-            }
+          if (score <= 3) {
+            return { level: 2, text: "MEDIUM PASSWORD", className: "medium" };
+          }
 
-            return { level: 3, text: "STRONG PASSWORD", className: "strong" };
+          return { level: 3, text: "STRONG PASSWORD", className: "strong" };
         }
 
         function resetStrengthUI() {
-            strengthBars.forEach(function (bar) {
-                bar.classList.remove("active", "weak", "medium", "strong");
-            });
+          strengthBars.forEach(function (bar) {
+            bar.classList.remove("active", "weak", "medium", "strong");
+          });
 
-            if (strengthText) {
-                strengthText.textContent = "ENTER PASSWORD";
-                strengthText.classList.remove("weak", "medium", "strong");
-            }
+          if (strengthText) {
+            strengthText.textContent = "ENTER PASSWORD";
+            strengthText.classList.remove("weak", "medium", "strong");
+          }
         }
 
         function updateStrengthUI(password) {
-            const result = evaluatePasswordStrength(password);
-            resetStrengthUI();
+          const result = evaluatePasswordStrength(password);
+          resetStrengthUI();
 
-            if (result.level === 0) return;
+          if (result.level === 0) return;
 
-            for (let i = 0; i < result.level; i++) {
-                if (strengthBars[i]) {
-                    strengthBars[i].classList.add("active", result.className);
-                }
+          for (let i = 0; i < result.level; i++) {
+            if (strengthBars[i]) {
+              strengthBars[i].classList.add("active", result.className);
             }
+          }
 
-            if (strengthText) {
-                strengthText.textContent = result.text;
-                strengthText.classList.add(result.className);
-            }
+          if (strengthText) {
+            strengthText.textContent = result.text;
+            strengthText.classList.add(result.className);
+          }
         }
 
         function updateConfirmPasswordHint() {
-            if (!passwordInput || !confirmPasswordInput || !confirmPasswordHint) return;
+          if (!passwordInput || !confirmPasswordInput || !confirmPasswordHint)
+            return;
 
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
+          const password = passwordInput.value;
+          const confirmPassword = confirmPasswordInput.value;
 
-            confirmPasswordHint.textContent = "";
-            confirmPasswordHint.classList.remove("ok", "error");
+          confirmPasswordHint.textContent = "";
+          confirmPasswordHint.classList.remove("ok", "error");
 
-            if (confirmPassword.length === 0) return;
+          if (confirmPassword.length === 0) return;
 
-            if (password === confirmPassword) {
-                confirmPasswordHint.textContent = "Mật khẩu xác nhận khớp";
-                confirmPasswordHint.classList.add("ok");
-            } else {
-                confirmPasswordHint.textContent = "Mật khẩu xác nhận chưa khớp";
-                confirmPasswordHint.classList.add("error");
-            }
+          if (password === confirmPassword) {
+            confirmPasswordHint.textContent = "Mật khẩu xác nhận khớp";
+            confirmPasswordHint.classList.add("ok");
+          } else {
+            confirmPasswordHint.textContent = "Mật khẩu xác nhận chưa khớp";
+            confirmPasswordHint.classList.add("error");
+          }
         }
 
         if (passwordInput) {
-            updateStrengthUI(passwordInput.value);
-            passwordInput.addEventListener("input", function () {
-                updateStrengthUI(this.value);
-                updateConfirmPasswordHint();
-            });
+          updateStrengthUI(passwordInput.value);
+          passwordInput.addEventListener("input", function () {
+            updateStrengthUI(this.value);
+            updateConfirmPasswordHint();
+          });
         }
 
         if (confirmPasswordInput) {
-            confirmPasswordInput.addEventListener("input", updateConfirmPasswordHint);
+          confirmPasswordInput.addEventListener(
+            "input",
+            updateConfirmPasswordHint,
+          );
         }
-    });
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>

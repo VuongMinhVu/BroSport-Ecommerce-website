@@ -1,7 +1,6 @@
 package com.se2.demo.model.entity;
 
 import jakarta.persistence.Id;
-import lombok.NoArgsConstructor;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -34,8 +33,6 @@ public class ProductDocument {
   @Field(type = FieldType.Double)
   Double showPrice;
 
-  Double originPrice;
-
   @Field(type = FieldType.Keyword)
   String brandName;
 
@@ -48,7 +45,7 @@ public class ProductDocument {
   @Field(type = FieldType.Keyword)
   String categoryName;
 
-  @Field(type = FieldType.Text, index = false)  // ảnh
+  @Field(type = FieldType.Text, index = false) // ảnh
   String thumbnail;
 
   @Field(type = FieldType.Keyword)
@@ -57,4 +54,6 @@ public class ProductDocument {
   @Field(type = FieldType.Keyword)
   List<String> availableSizes;
 
+  @Field(type = FieldType.Double) // Thêm dòng này
+  Double originPrice;
 }

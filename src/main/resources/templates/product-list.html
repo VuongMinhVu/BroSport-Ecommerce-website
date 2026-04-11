@@ -5,12 +5,9 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Brosport Product Listing Page</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <!-- Google Fonts: Lexend -->
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap"
     rel="stylesheet" />
-  <!-- Material Symbols Outlined -->
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
@@ -39,94 +36,125 @@
       },
     };
   </script>
-  <style>
+  <style type="text/tailwindcss">
     body {
-      font-family: "Lexend", sans-serif;
-    }
-
-    .product-card:hover .quick-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .quick-view {
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-    }
-  </style>
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .filled {
+        font-variation-settings: "FILL" 1;
+      }
+      #chat-toggle:checked ~ #chat-window {
+        display: flex;
+      }
+      #chat-toggle:checked ~ #chat-trigger .open-icon {
+        display: none;
+      }
+      #chat-toggle:checked ~ #chat-trigger .close-icon {
+        display: block;
+      }
+      .close-icon {
+        display: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .nav-link {
+        @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
+      }
+    </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
   <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-    <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#121212]/90 backdrop-blur-xl">
-      <div class="mx-auto flex max-w-[1600px] items-center justify-between px-6 h-20">
-        <a class="flex items-center gap-2 group flex-shrink-0" href="/homepage">
-          <div
-            class="flex size-9 items-center justify-center rounded bg-primary text-white transition-transform group-hover:rotate-12">
-            <span class="material-symbols-outlined font-bold">bolt</span>
-          </div>
-          <h1 class="text-2xl font-black tracking-tighter uppercase italic text-white">Brosport</h1>
-        </a>
+    <div th:replace="~{fragments/header :: site-header}"></div>
 
-        <nav class="hidden xl:flex items-center gap-8 h-full">
-          <a class="nav-link" th:href="@{/products/new-arrivals}">New Arrivals</a>
-          <a class="nav-link" th:href="@{/products/men}"
-            th:classappend="${categorySlug == 'men' ? 'text-primary' : ''}">Men</a>
-          <a class="nav-link" th:href="@{/products/women}"
-            th:classappend="${categorySlug == 'women' ? 'text-primary' : ''}">Women</a>
-          <a class="nav-link" th:href="@{/products/accessories}"
-            th:classappend="${categorySlug == 'accessories' ? 'text-primary' : ''}">Accessories</a>
-          <a class="nav-link" th:href="@{/products/brands}"
-            th:classappend="${categorySlug == 'brands' ? 'text-primary' : ''}">Brands</a>
-          <a class="nav-link" th:href="@{/products/sports}"
-            th:classappend="${categorySlug == 'sports' ? 'text-primary' : ''}">Sports</a>
-          <a class="text-[13px] font-black uppercase tracking-wider text-primary hover:brightness-125 transition-all"
-            th:href="@{/products/sales}" th:classappend="${categorySlug == 'sales' ? 'brightness-125' : ''}">Sales</a>
-        </nav>
-
-        <div class="flex items-center gap-4">
-          <div class="relative hidden lg:block group">
-            <span
-              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-primary transition-colors">search</span>
-            <input id="searchInput"
-              class="h-11 w-64 rounded-full border-none bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:ring-primary focus:w-80 transition-all"
-              placeholder="Search elite gear..." type="text" />
-          </div>
-
-          <div class="flex items-center gap-2">
-            <a href="/profile"
-              class="overflow-hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 border-2 border-transparent hover:border-primary transition-all">
-              <div class="h-full w-full bg-cover bg-center"
-                th:style="'background-image: url(' + ${user?.avatarUrl} + ')'"
-                th:if="${user != null and user.avatarUrl != null}">
-              </div>
-              <span th:unless="${user != null and user.avatarUrl != null}"
-                class="material-symbols-outlined text-2xl">person</span>
-            </a>
-
-            <a href="/cart"
-              class="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10 text-white transition-colors">
-              <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-              <span
-                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-lg"
-                th:text="${cartItems != null ? #lists.size(cartItems) : 0}">0</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </header>
-    <!-- Main Content Area -->
     <main class="flex-1 w-full max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-8 px-6 lg:px-20 py-8">
-      <!-- Sidebar Filters -->
       <aside class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-8">
         <div>
           <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">filter_list</span>
             Filters
           </h3>
-          <!-- Category Section -->
+          <div class="mb-8">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
+              Gender
+            </h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox gender-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Men" />
+                <span class="text-sm group-hover:text-primary transition-colors">Men</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox gender-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Women" />
+                <span class="text-sm group-hover:text-primary transition-colors">Women</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox gender-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Kids" />
+                <span class="text-sm group-hover:text-primary transition-colors">Kids</span>
+              </label>
+            </div>
+          </div>
+          <div class="mb-8">
+            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
+              Sport
+            </h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox sports-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Football" />
+                <span class="text-sm group-hover:text-primary transition-colors">Football</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox sports-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Running" />
+                <span class="text-sm group-hover:text-primary transition-colors">Running</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox sports-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Basketball" />
+                <span class="text-sm group-hover:text-primary transition-colors">Basketball</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox sports-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Gym & Training" />
+                <span class="text-sm group-hover:text-primary transition-colors">Gym & Training</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox sports-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Tennis" />
+                <span class="text-sm group-hover:text-primary transition-colors">Tennis</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  class="filter-checkbox sports-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Badminton" />
+                <span class="text-sm group-hover:text-primary transition-colors">Badminton</span>
+              </label>
+            </div>
+          </div>
+
           <div class="mb-8">
             <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
               Category
@@ -135,60 +163,59 @@
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="1" />
-                <span class="text-sm group-hover:text-primary transition-colors">Giày Thể Thao</span>
+                  type="checkbox" value="Sports Shoes" />
+                <span class="text-sm group-hover:text-primary transition-colors">Sports Shoes</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="2" />
-                <span class="text-sm group-hover:text-primary transition-colors">Quần Áo</span>
+                  type="checkbox" value="Apparel" />
+                <span class="text-sm group-hover:text-primary transition-colors">Apparel</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="3" />
-                <span class="text-sm group-hover:text-primary transition-colors">Phụ Kiện</span>
+                  type="checkbox" value="Accessories" />
+                <span class="text-sm group-hover:text-primary transition-colors">Accessories</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="4" />
-                <span class="text-sm group-hover:text-primary transition-colors">Giày Chạy Bộ</span>
+                  type="checkbox" value="Running Shoes" />
+                <span class="text-sm group-hover:text-primary transition-colors">Running Shoes</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
-                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                        type="checkbox" value="5" />
-                <span class="text-sm group-hover:text-primary transition-colors">Giày Đá Bóng</span>
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Football Shoes" />
+                <span class="text-sm group-hover:text-primary transition-colors">Football Shoes</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
-                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                        type="checkbox" value="6" />
-                <span class="text-sm group-hover:text-primary transition-colors">Giày Bóng Rổ</span>
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Basketball Shoes" />
+                <span class="text-sm group-hover:text-primary transition-colors">Basketball Shoes</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
-                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                        type="checkbox" value="7" />
-                <span class="text-sm group-hover:text-primary transition-colors">Áo Thun</span>
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="T-Shirts" />
+                <span class="text-sm group-hover:text-primary transition-colors">T-Shirts</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
-                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                        type="checkbox" value="8" />
-                <span class="text-sm group-hover:text-primary transition-colors">Quần Dài</span>
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Pants" />
+                <span class="text-sm group-hover:text-primary transition-colors">Pants</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
-                        class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                        type="checkbox" value="9" />
-                <span class="text-sm group-hover:text-primary transition-colors">Quần Short</span>
+                  class="filter-checkbox category-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="Shorts" />
+                <span class="text-sm group-hover:text-primary transition-colors">Shorts</span>
               </label>
             </div>
           </div>
-          <!-- Brand Section -->
           <div class="mb-8">
             <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
               Brand
@@ -197,36 +224,35 @@
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="1" />
+                  type="checkbox" value="Nike" />
                 <span class="text-sm group-hover:text-primary transition-colors">Nike</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="2" />
+                  type="checkbox" value="Adidas" />
                 <span class="text-sm group-hover:text-primary transition-colors">Adidas</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="3" />
+                  type="checkbox" value="Puma" />
                 <span class="text-sm group-hover:text-primary transition-colors">Puma</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
                   class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                  type="checkbox" value="4" />
+                  type="checkbox" value="Under Armour" />
                 <span class="text-sm group-hover:text-primary transition-colors">Under Armour</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer group">
                 <input
-                        class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
-                        type="checkbox" value="5" />
+                  class="filter-checkbox brand-filter rounded border-slate-700 bg-surface text-primary focus:ring-primary"
+                  type="checkbox" value="New Balance" />
                 <span class="text-sm group-hover:text-primary transition-colors">New Balance</span>
               </label>
             </div>
           </div>
-          <!-- Price Range -->
           <div class="mb-8">
             <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
               Price Range
@@ -234,101 +260,141 @@
             <div class="px-2">
               <input id="priceRange"
                 class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="500"
-                min="0" type="range" value="500" />
+                step="10" min="0" type="range" value="500" />
+              <div class="mt-3 text-center text-sm font-semibold text-primary">
+                Up to <span id="priceDisplay">500$</span>
+              </div>
               <div class="flex justify-between mt-3 text-xs font-medium text-slate-400">
-                <span>$0</span>
-                <span>$500+</span>
+                <span>0$</span>
+                <span>500$</span>
               </div>
             </div>
+            <button id="applyFiltersBtn"
+              class="w-full py-3 rounded-lg bg-primary text-background-dark font-bold text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 mt-4">
+              Apply Filters
+            </button>
+            <button id="resetFiltersBtn"
+              class="w-full py-3 mt-2 rounded-lg bg-surface text-white font-bold text-sm uppercase tracking-widest border border-white/5 hover:bg-white/5 transition-all">
+              Reset
+            </button>
           </div>
-          <button id="applyFiltersBtn"
-            class="w-full py-3 rounded-lg bg-primary text-background-dark font-bold text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-            Apply Filters
-          </button>
-          <button id="resetFiltersBtn"
-            class="w-full py-3 mt-2 rounded-lg bg-surface text-white font-bold text-sm uppercase tracking-widest border border-white/5 hover:bg-white/5 transition-all">
-            Reset
-          </button>
         </div>
       </aside>
-      <!-- Product Display Area -->
+
       <div class="flex-1">
-        <!-- Header Controls -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <h1 class="text-3xl lg:text-4xl font-black tracking-tight text-white uppercase"
               th:text="${pageTitle ?: 'Performance Gear'}">
               Performance Gear
             </h1>
-
           </div>
 
-          <div class="flex bg-surface rounded-lg p-1 border border-white/5">
-            <button id="btn-grid-view" class="p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors">
-              <span class="material-symbols-outlined text-[20px]">grid_view</span>
-            </button>
-            <button id="btn-list-view" class="p-1.5 text-slate-500 hover:text-white transition-colors rounded">
-              <span class="material-symbols-outlined text-[20px]">view_list</span>
-            </button>
-          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex bg-surface rounded-lg p-1 border border-white/5">
+              <button id="btn-grid-view" class="p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors">
+                <span class="material-symbols-outlined text-[20px]">grid_view</span>
+              </button>
+              <button id="btn-list-view" class="p-1.5 text-slate-500 hover:text-white transition-colors rounded">
+                <span class="material-symbols-outlined text-[20px]">view_list</span>
+              </button>
+            </div>
 
+            <div class="relative" id="sort-dropdown-container">
+              <button id="btn-sort-toggle" onclick="document.getElementById('sort-options').classList.toggle('hidden')"
+                class="flex items-center justify-center gap-2 h-[42px] px-4 rounded-[10px] border border-[#23252b] bg-[#090909] text-[#c0c4ca] hover:text-white hover:border-primary transition-colors text-[13px] font-bold">
+                <span class="material-symbols-outlined text-[16px]">swap_vert</span> <span id="sort-label">Sort:
+                  Default</span>
+              </button>
+              <div id="sort-options"
+                class="absolute right-0 top-full mt-2 w-48 bg-[#090909] border border-[#23252b] rounded-[10px] shadow-xl hidden z-[50] overflow-hidden">
+                <button
+                  class="sort-option w-full text-left px-4 py-2.5 text-[13px] text-[#c0c4ca] hover:text-white hover:bg-[#23252b] transition-colors"
+                  data-sort="default">Default Sorting</button>
+                <button
+                  class="sort-option w-full text-left px-4 py-2.5 text-[13px] text-[#c0c4ca] hover:text-white hover:bg-[#23252b] transition-colors"
+                  data-sort="priceAsc">Price: Low to High</button>
+                <button
+                  class="sort-option w-full text-left px-4 py-2.5 text-[13px] text-[#c0c4ca] hover:text-white hover:bg-[#23252b] transition-colors"
+                  data-sort="priceDesc">Price: High to Low</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- Product Grid -->
         <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <div th:each="product : ${products}"
+          <div th:each="product : ${products}" data-product-card
             class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col">
-            <div
+            <a th:href="@{'/product/' + ${product.slug}}" class="absolute inset-0 z-10 cursor-pointer block"></a>
+
+            <div data-product-image-wrapper
               class="img-wrapper aspect-square bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
               <img
                 th:src="${product.productImages != null and !product.productImages.isEmpty() ? product.productImages[0].imageUrl : 'https://via.placeholder.com/400x500/2a2118/ffffff?text=' + product.name}"
                 th:alt="${product.name}"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+
               <div
-                class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button
-                  class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors">
+                class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <span
+                  class="bg-primary text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-primary/30 pointer-events-none">
                   Quick View
-                </button>
+                </span>
               </div>
             </div>
-            <div class="details-wrapper p-4 flex-1 flex flex-col justify-center">
+
+            <div data-product-details
+              class="details-wrapper p-4 flex-1 flex flex-col justify-center relative z-20 pointer-events-none">
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <h3 class="font-bold text-white text-lg leading-tight" th:text="${product.name}">
+                  <h3
+                    class="font-bold text-white text-lg leading-tight pointer-events-auto hover:text-primary transition-colors"
+                    th:text="${product.name}">
                     Product Name
                   </h3>
-                  <p class="text-slate-400 text-sm" th:text="${product.brand ?: 'Brand'}">
+                  <p class="text-slate-400 text-sm mt-1 pointer-events-auto" th:text="${product.brand ?: 'Brand'}">
                     Brand
                   </p>
                 </div>
-                <div class="flex items-center gap-1">
-                  <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
-                  <span class="text-slate-400 text-sm">4.5</span>
-                </div>
               </div>
-              <div class="flex items-center justify-between mt-auto pt-4">
-                <span class="text-2xl font-black text-primary"
-                  th:text="${#numbers.formatDecimal(product.showPrice, 0, 'COMMA', 0, 'POINT')} + '$'">99$</span>
+
+              <div class="mt-auto pt-4 flex flex-col gap-3 pointer-events-auto">
+                <div class="flex items-center justify-between">
+                  <div class="flex flex-col">
+                    <span class="text-2xl font-black text-primary" th:if="${product.showPrice != null}"
+                      th:text="${#numbers.formatInteger(product.showPrice, 1, 'POINT')} + 'đ'">0đ</span>
+                    <span class="text-[11px] text-slate-500 line-through font-bold"
+                      th:if="${product.originPrice != null and product.showPrice != null and product.originPrice > product.showPrice}"
+                      th:text="${#numbers.formatInteger(product.originPrice, 1, 'POINT')} + 'đ'">0đ</span>
+                  </div>
+
+                  <button
+                    th:data-detail-id="${product.productDetails != null and !product.productDetails.isEmpty() ? product.productDetails[0].id : ''}"
+                    class="btn-add-to-cart relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                  </button>
+                </div>
+
                 <button
-                  th:data-detail-id="${product.productDetails != null and !product.productDetails.isEmpty() ? product.productDetails[0].id : ''}"
-                  class="btn-add-to-cart bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
-                  <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                  th:attr="data-id=${product.id}, data-name=${product.name}, data-image=${product.productImages != null and !product.productImages.isEmpty() ? product.productImages[0].imageUrl : ''}"
+                  class="compare-btn w-full py-2 rounded-lg border border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
+                  onclick="toggleCompareBtn(this)">
+                  <span class="material-symbols-outlined text-[16px]">compare_arrows</span>
+                  Compare
                 </button>
               </div>
             </div>
           </div>
-          <div th:if="${#lists.isEmpty(products)}" class="col-span-full text-center py-12">
+
+          <div th:if="${#lists.isEmpty(products)}" class="col-span-full text-center py-12 z-20">
             <span class="material-symbols-outlined text-4xl text-slate-500 mb-4">inventory_2</span>
             <p class="text-slate-400">
-              No products found matching your criteria.
+              Không tìm thấy sản phẩm nào phù hợp với bộ lọc.
             </p>
           </div>
         </div>
-        <!-- Pagination -->
         <div id="pagination-container" th:if="${totalPages != null and totalPages > 1}"
           class="mt-16 flex items-center justify-center gap-2"
           th:with="baseUrl=${categorySlug != null ? '/products/' + categorySlug : '/products'}">
-
           <a th:href="@{__${baseUrl}__(page=${currentPage - 1}, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
             th:attr="data-page=${currentPage - 1}"
             th:classappend="${currentPage == 0} ? 'pointer-events-none opacity-50' : ''"
@@ -336,14 +402,10 @@
             <span class="material-symbols-outlined text-sm">chevron_left</span>
           </a>
 
-          <th:block th:with="
-    start=${currentPage - 2 < 0 ? 0 : (currentPage + 2 >= totalPages ? totalPages - 5 : currentPage - 2)},
-    end=${currentPage + 2 >= totalPages ? totalPages - 1 : (currentPage - 2 < 0 ? 4 : currentPage + 2)}">
-
-            <th:block th:with="
-      finalStart=${start < 0 ? 0 : start}, 
-      finalEnd=${end >= totalPages ? totalPages - 1 : end}">
-
+          <th:block
+            th:with="start=${currentPage - 2 < 0 ? 0 : (currentPage + 2 >= totalPages ? totalPages - 5 : currentPage - 2)}, end=${currentPage + 2 >= totalPages ? totalPages - 1 : (currentPage - 2 < 0 ? 4 : currentPage + 2)}">
+            <th:block
+              th:with="finalStart=${start < 0 ? 0 : start}, finalEnd=${end >= totalPages ? totalPages - 1 : end}">
               <div th:if="${finalStart > 0}" class="flex gap-2">
                 <a th:href="@{__${baseUrl}__(page=0, keyword=${filter?.keyword}, categoryId=${filter?.categoryId}, brandId=${filter?.brandId}, minPrice=${filter?.minPrice}, maxPrice=${filter?.maxPrice}, sortBy=${filter?.sortBy}, sortDir=${filter?.sortDir})}"
                   data-page="0"
@@ -379,7 +441,6 @@
         </div>
       </div>
     </main>
-    <!-- Newsletter / Footer Bottom -->
     <footer class="mt-auto border-t border-white/10 bg-surface/50 px-6 lg:px-20 py-12">
       <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div class="md:col-span-1">
@@ -464,7 +525,7 @@
         Elite.
       </div>
     </footer>
-    <!-- Add to Cart Toast Notification -->
+
     <div id="toast-success"
       class="fixed inset-0 flex items-center justify-center z-[100] hidden opacity-0 transition-opacity duration-300 pointer-events-none">
       <div
@@ -476,47 +537,398 @@
         <span class="text-lg font-medium tracking-wide">Sản phẩm đã được thêm vào Giỏ hàng</span>
       </div>
     </div>
+
+    <div id="compare-bar"
+      class="fixed bottom-0 left-0 right-0 bg-[#161616]/95 backdrop-blur-md border-t border-white/10 z-[60] transform translate-y-full transition-all duration-500 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] hidden">
+      <div class="max-w-[1600px] mx-auto px-6 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <div class="flex flex-col">
+            <span id="compare-count" class="text-2xl font-black text-primary leading-none">0</span>
+            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Selected</span>
+          </div>
+          <div id="compare-items-preview" class="flex gap-3"></div>
+        </div>
+        <div class="flex items-center gap-6">
+          <button onclick="clearAllCompare()"
+            class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-[0.2em] transition-colors">
+            Remove All
+          </button>
+          <button onclick="goToCompareDetails()" id="btn-compare-now"
+            class="bg-primary text-background-dark px-10 py-3.5 rounded-xl font-black uppercase text-xs tracking-[0.2em] hover:scale-105 active:scale-95 transition-all opacity-50 pointer-events-none shadow-lg shadow-primary/20">
+            Compare Now
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const gridBtn = document.getElementById('btn-grid-view');
-      const listBtn = document.getElementById('btn-list-view');
-      const container = document.getElementById('product-container');
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. CÁC NÚT VÀ INPUT BỘ LỌC
+      const applyBtn = document.getElementById("applyFiltersBtn");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+      const priceRange = document.getElementById("priceRange");
 
-      if (gridBtn && listBtn && container) {
-        gridBtn.addEventListener('click', () => {
-          gridBtn.className = 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors';
-          listBtn.className = 'p-1.5 text-slate-500 hover:text-white transition-colors rounded';
-          container.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
-
-          document.querySelectorAll('.product-card').forEach(card => {
-            card.className = "product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col";
-          });
-          document.querySelectorAll('.product-card .img-wrapper').forEach(wrapper => {
-            wrapper.className = "img-wrapper aspect-square bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full";
-          });
-          document.querySelectorAll('.product-card .details-wrapper').forEach(details => {
-            details.className = "details-wrapper p-4 flex-1 flex flex-col justify-center";
-          });
-        });
-
-        listBtn.addEventListener('click', () => {
-          listBtn.className = 'p-1.5 bg-primary/20 text-primary rounded shadow-sm transition-colors';
-          gridBtn.className = 'p-1.5 text-slate-500 hover:text-white transition-colors rounded';
-          container.className = 'grid grid-cols-1 gap-6';
-
-          document.querySelectorAll('.product-card').forEach(card => {
-            card.className = "product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col md:flex-row md:items-center";
-          });
-          document.querySelectorAll('.product-card .img-wrapper').forEach(wrapper => {
-            wrapper.className = "img-wrapper relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5 bg-gradient-to-br from-slate-800 to-slate-900";
-          });
-          document.querySelectorAll('.product-card .details-wrapper').forEach(details => {
-            details.className = "details-wrapper p-4 md:p-6 flex-1 flex flex-col justify-center";
-          });
+      // Lắng nghe thay đổi của input range để đổi text hiển thị
+      const priceDisplay = document.getElementById("priceDisplay");
+      if (priceRange && priceDisplay) {
+        priceRange.addEventListener("input", (e) => {
+          const val = parseInt(e.target.value).toLocaleString() + "$";
+          priceDisplay.textContent = val;
         });
       }
+
+      // MAP TỪ ĐIỂN: Chuyển đổi String sang Integer ID để Spring Boot không bị lỗi
+      const genderMap = { Men: 1, Women: 2, Kids: 3 };
+      const sportMap = {
+        Football: 1,
+        Running: 2,
+        Basketball: 3,
+        "Gym & Training": 4,
+        Tennis: 5,
+        Badminton: 6,
+      };
+      const categoryMap = {
+        "Sports Shoes": 1,
+        Apparel: 2,
+        Accessories: 3,
+        "Running Shoes": 4,
+        "Football Shoes": 5,
+        "Basketball Shoes": 6,
+        "T-Shirts": 7,
+        Pants: 8,
+        Shorts: 9,
+      };
+      const brandMap = {
+        Nike: 1,
+        Adidas: 2,
+        Puma: 3,
+        "Under Armour": 4,
+        "New Balance": 5,
+      };
+
+      function getMappedValue(val, map) {
+        if (!isNaN(val)) return val; // Nếu HTML đã sửa thành số thì trả về luôn
+        return map[val] || ""; // Nếu đang là chữ thì map sang số tương ứng
+      }
+
+      // 2. XỬ LÝ SỰ KIỆN BẤM NÚT "APPLY FILTERS"
+      if (applyBtn) {
+        applyBtn.addEventListener("click", () => {
+          const currentUrlParams = new URLSearchParams(
+            window.location.search,
+          );
+          const newParams = new URLSearchParams();
+
+          if (currentUrlParams.has("keyword")) {
+            newParams.set("keyword", currentUrlParams.get("keyword"));
+          }
+
+          // Lấy Filter Gender
+          const selectedGender = document.querySelector(
+            ".gender-filter:checked",
+          );
+          if (selectedGender) {
+            const val = getMappedValue(selectedGender.value, genderMap);
+            if (val) newParams.set("genderId", val);
+          }
+
+          // Lấy Filter Sport
+          const selectedSport = document.querySelector(
+            ".sports-filter:checked",
+          );
+          if (selectedSport) {
+            const val = getMappedValue(selectedSport.value, sportMap);
+            if (val) newParams.set("sportId", val);
+          }
+
+          // Lấy Filter Category
+          const selectedCategory = document.querySelector(
+            ".category-filter:checked",
+          );
+          if (selectedCategory) {
+            const val = getMappedValue(selectedCategory.value, categoryMap);
+            if (val) newParams.set("categoryId", val);
+          }
+
+          // Lấy Filter Brand
+          const selectedBrand = document.querySelector(
+            ".brand-filter:checked",
+          );
+          if (selectedBrand) {
+            const val = getMappedValue(selectedBrand.value, brandMap);
+            if (val) newParams.set("brandId", val);
+          }
+
+          // Lấy giá trị thanh kéo giá
+          if (priceRange && priceRange.value < 500) {
+            newParams.set("minPrice", 0);
+            newParams.set("maxPrice", priceRange.value);
+          }
+
+          // Chuyển hướng trang kèm tham số chuẩn (ID số)
+          window.location.href =
+            window.location.pathname + "?" + newParams.toString();
+        });
+      }
+
+      // 3. XỬ LÝ SỰ KIỆN BẤM NÚT "RESET"
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          const currentUrlParams = new URLSearchParams(
+            window.location.search,
+          );
+          const keyword = currentUrlParams.get("keyword");
+          if (keyword) {
+            window.location.href =
+              window.location.pathname +
+              "?keyword=" +
+              encodeURIComponent(keyword);
+          } else {
+            window.location.href = window.location.pathname;
+          }
+        });
+      }
+
+      // 4. PHỤC HỒI TRẠNG THÁI GIAO DIỆN (Tích lại checkbox sau khi tải trang)
+      const urlParams = new URLSearchParams(window.location.search);
+
+      document.querySelectorAll(".filter-checkbox").forEach((cb) => {
+        let paramName = "";
+        let mapToCheck = {};
+
+        if (cb.classList.contains("gender-filter")) {
+          paramName = "genderId";
+          mapToCheck = genderMap;
+        }
+        if (cb.classList.contains("sports-filter")) {
+          paramName = "sportId";
+          mapToCheck = sportMap;
+        }
+        if (cb.classList.contains("category-filter")) {
+          paramName = "categoryId";
+          mapToCheck = categoryMap;
+        }
+        if (cb.classList.contains("brand-filter")) {
+          paramName = "brandId";
+          mapToCheck = brandMap;
+        }
+
+        if (paramName && urlParams.has(paramName)) {
+          const urlVal = urlParams.get(paramName);
+          // Kiểm tra xem giá trị trên URL có khớp với ID đã quy đổi không
+          if (
+            cb.value === urlVal ||
+            getMappedValue(cb.value, mapToCheck).toString() === urlVal
+          ) {
+            cb.checked = true;
+          }
+        }
+
+        // Bổ sung: hỗ trợ tick tự động khi truyền URL có parameter chữ (vd: ?categories=Sports+Shoes)
+        if (cb.classList.contains("category-filter") && urlParams.has("categories")) {
+          if (cb.value.toLowerCase() === urlParams.get("categories").toLowerCase()) {
+            cb.checked = true;
+          }
+        }
+        if (cb.classList.contains("gender-filter") && urlParams.has("gender")) {
+          if (cb.value.toLowerCase() === urlParams.get("gender").toLowerCase()) {
+            cb.checked = true;
+          }
+        }
+        if (cb.classList.contains("sports-filter") && urlParams.has("sports")) {
+          if (cb.value.toLowerCase() === urlParams.get("sports").toLowerCase()) {
+            cb.checked = true;
+          }
+        }
+        if (cb.classList.contains("brand-filter") && urlParams.has("brands")) {
+          if (cb.value.toLowerCase() === urlParams.get("brands").toLowerCase()) {
+            cb.checked = true;
+          }
+        }
+      });
+
+      if (urlParams.has("maxPrice") && priceRange) {
+        priceRange.value = urlParams.get("maxPrice");
+        const priceDisplay = document.getElementById("priceDisplay");
+        if (priceDisplay) {
+          priceDisplay.textContent =
+            parseInt(urlParams.get("maxPrice")).toLocaleString() + "$";
+        }
+      }
     });
+
+    // ========== ĐOẠN SCRIPT XỬ LÝ TÍNH NĂNG COMPARE (DÙNG LOCAL STORAGE) ==========
+    let compareList =
+      JSON.parse(localStorage.getItem("brosport_compare_list")) || [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateCompareUI();
+      syncCompareButtons();
+    });
+
+    function toggleCompareBtn(btn) {
+      const id = btn.getAttribute("data-id");
+      const name = btn.getAttribute("data-name");
+      const img = btn.getAttribute("data-image");
+
+      const index = compareList.findIndex((item) => item.id === id);
+
+      if (index === -1) {
+        if (compareList.length >= 4) {
+          alert("Bạn chỉ có thể so sánh tối đa 4 sản phẩm.");
+          return;
+        }
+        compareList.push({ id, name, img });
+      } else {
+        compareList.splice(index, 1);
+      }
+
+      // Lưu vào bộ nhớ để không mất dữ liệu khi Filter/Chuyển trang
+      localStorage.setItem(
+        "brosport_compare_list",
+        JSON.stringify(compareList),
+      );
+
+      updateCompareUI();
+      syncCompareButtons();
+    }
+
+    function syncCompareButtons() {
+      document.querySelectorAll(".compare-btn").forEach((btn) => {
+        const id = btn.getAttribute("data-id");
+        const isSelected = compareList.some((item) => item.id === id);
+
+        if (isSelected) {
+          btn.classList.add(
+            "border-primary",
+            "text-primary",
+            "bg-primary/10",
+          );
+          btn.classList.remove("border-white/10", "text-slate-400");
+          btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">check</span> Selected`;
+        } else {
+          btn.classList.remove(
+            "border-primary",
+            "text-primary",
+            "bg-primary/10",
+          );
+          btn.classList.add("border-white/10", "text-slate-400");
+          btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">compare_arrows</span> Compare`;
+        }
+      });
+    }
+
+    function updateCompareUI() {
+      const bar = document.getElementById("compare-bar");
+      const preview = document.getElementById("compare-items-preview");
+      const btn = document.getElementById("btn-compare-now");
+      const countDisplay = document.getElementById("compare-count");
+
+      if (!bar) return;
+
+      countDisplay.innerText = compareList.length;
+
+      if (compareList.length > 0) {
+        bar.classList.remove("hidden");
+        setTimeout(() => bar.classList.remove("translate-y-full"), 10);
+      } else {
+        bar.classList.add("translate-y-full");
+        setTimeout(() => bar.classList.add("hidden"), 500);
+      }
+
+      preview.innerHTML = compareList
+        .map(
+          (item) => `
+          <div class="w-14 h-14 rounded-lg border border-white/10 bg-slate-800 overflow-hidden relative shadow-inner">
+              <img src="${item.img}" class="w-full h-full object-cover">
+          </div>
+      `,
+        )
+        .join("");
+
+      if (compareList.length >= 2) {
+        btn.classList.remove("opacity-50", "pointer-events-none");
+      } else {
+        btn.classList.add("opacity-50", "pointer-events-none");
+      }
+    }
+
+    function goToCompareDetails() {
+      const ids = compareList.map((item) => item.id).join(",");
+      if (ids) {
+        window.location.href = `/product-comparison/details?ids=${ids}`;
+      }
+    }
+
+    function clearAllCompare() {
+      compareList = [];
+      localStorage.removeItem("brosport_compare_list");
+      updateCompareUI();
+      syncCompareButtons();
+    }
+  </script>
+  <!-- Login Required Modal -->
+  <div id="login-modal"
+    class="fixed inset-0 flex items-center justify-center z-[200] hidden opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto" onclick="hideLoginModal()"></div>
+    <div
+      class="bg-[#121212] border border-[#2a2a2a] rounded-2xl flex flex-col items-center justify-center p-8 w-[90%] max-w-sm shadow-[0_0_50px_rgba(255,102,0,0.1)] relative z-10 transform scale-95 transition-transform duration-300"
+      id="login-modal-content">
+      <div
+        class="w-14 h-14 bg-[#ff6600]/10 rounded-full flex items-center justify-center mb-6 border border-[#ff6600]/20">
+        <div
+          class="w-10 h-10 bg-[#ff6600] rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,102,0,0.5)]">
+          <span class="text-black font-black text-xl">!</span>
+        </div>
+      </div>
+
+      <h2 class="text-white text-xl font-bold mb-3 tracking-wide">Login Required</h2>
+
+      <p class="text-slate-400 text-sm text-center mb-8 px-2 font-medium">
+        Please log in to add items to your cart and continue your performance journey.
+      </p>
+
+      <a href="/login"
+        class="w-full bg-[#ff6600] text-black font-bold py-3 rounded-lg flex justify-center items-center hover:bg-[#ff7a1f] hover:scale-[1.02] transition-all shadow-[0_4px_14px_0_rgba(255,102,0,0.39)] mb-3">
+        Log In Now
+      </a>
+
+      <button onclick="hideLoginModal()"
+        class="w-full bg-transparent border border-[#ff6600]/30 text-[#ff6600] font-bold py-3 rounded-lg hover:bg-[#ff6600]/10 transition-colors">
+        Dismiss
+      </button>
+
+      <div class="w-full flex items-center justify-center gap-3 mt-8 opacity-60">
+        <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[#ff6600]/30"></div>
+        <p class="text-[8px] font-black tracking-[0.2em] uppercase text-slate-500">Brosport Secure Protocol</p>
+        <div class="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[#ff6600]/30"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showLoginModal() {
+      const modal = document.getElementById("login-modal");
+      const content = document.getElementById("login-modal-content");
+      if (!modal) return;
+      modal.classList.remove("hidden");
+      setTimeout(() => {
+        modal.classList.remove("opacity-0");
+        content.classList.remove("scale-95");
+      }, 10);
+    }
+
+    function hideLoginModal() {
+      const modal = document.getElementById("login-modal");
+      const content = document.getElementById("login-modal-content");
+      if (!modal) return;
+      modal.classList.add("opacity-0");
+      content.classList.add("scale-95");
+      setTimeout(() => {
+        modal.classList.add("hidden");
+      }, 300);
+    }
   </script>
   <script src="/js/product-list.js"></script>
 </body>

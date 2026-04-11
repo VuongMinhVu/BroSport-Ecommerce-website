@@ -19,6 +19,7 @@ public class OrderResponse {
     private String paymentUrl;       // Chỉ dùng khi chọn VNPAY
     private String estimatedDelivery;
     private String message;
+    private String orderCode;
 
     private BigDecimal subtotal;
     private BigDecimal shipping;

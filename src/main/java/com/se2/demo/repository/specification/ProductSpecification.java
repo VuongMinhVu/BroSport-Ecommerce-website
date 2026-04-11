@@ -9,7 +9,9 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductSpecification {
     public static Specification<Product> filterProducts(ProductFilterRequest filter) {
@@ -24,25 +26,43 @@ public class ProductSpecification {
             if (filter.getCategoryId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("category").get("id"), filter.getCategoryId()));
             }
+            if (filter.getCategories() != null && !filter.getCategories().trim().isEmpty()) {
+                predicates.add(criteriaBuilder.lower(root.get("category").get("name"))
+                        .in(splitValues(filter.getCategories())));
+            }
 
             if (filter.getBrandId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("brand").get("id"), filter.getBrandId()));
+            }
+            if (filter.getBrands() != null && !filter.getBrands().trim().isEmpty()) {
+                predicates
+                        .add(criteriaBuilder.lower(root.get("brand").get("name")).in(splitValues(filter.getBrands())));
             }
 
             if (filter.getGenderId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("gender").get("id"), filter.getGenderId()));
             }
+            if (filter.getGender() != null && !filter.getGender().trim().isEmpty()) {
+                predicates
+                        .add(criteriaBuilder.lower(root.get("gender").get("name")).in(splitValues(filter.getGender())));
+            }
 
             if (filter.getSportId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("sport").get("id"), filter.getSportId()));
             }
-
-            if (filter.getMinPrice() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), filter.getMinPrice()));
+            if (filter.getSports() != null && !filter.getSports().trim().isEmpty()) {
+                predicates
+                        .add(criteriaBuilder.lower(root.get("sport").get("name")).in(splitValues(filter.getSports())));
             }
 
+            // ĐÃ SỬA: Đổi "price" thành "showPrice" cho khớp với Entity Product
+            if (filter.getMinPrice() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("showPrice"), filter.getMinPrice()));
+            }
+
+            // ĐÃ SỬA: Đổi "price" thành "showPrice" cho khớp với Entity Product
             if (filter.getMaxPrice() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), filter.getMaxPrice()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("showPrice"), filter.getMaxPrice()));
             }
 
             // JOIN with ProductDetail to filter by variations (color, size)
@@ -65,5 +85,13 @@ public class ProductSpecification {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    private static List<String> splitValues(String rawValues) {
+        return Arrays.stream(rawValues.split(","))
+                .map(String::trim)
+                .filter(value -> !value.isEmpty())
+                .map(value -> value.toLowerCase(Locale.ROOT))
+                .toList();
     }
 }

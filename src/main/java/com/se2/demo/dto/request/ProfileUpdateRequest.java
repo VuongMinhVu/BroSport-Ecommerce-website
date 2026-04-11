@@ -18,6 +18,9 @@ public class ProfileUpdateRequest {
     @Size(max = 20, message = "Số điện thoại không được vượt quá 20 ký tự")
     String phone;
 
+    @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
+    String address;
+
     @Size(max = 255, message = "Avatar URL không được vượt quá 255 ký tự")
     String avatarUrl;
 }
