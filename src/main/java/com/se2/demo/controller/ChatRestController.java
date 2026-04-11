@@ -21,6 +21,14 @@ public class ChatRestController {
     return ResponseEntity.ok(chatService.getConversationsForAdmin());
   }
 
+  @GetMapping("/my-conversation")
+  public ResponseEntity<ConversationResponse> getMyConversation(java.security.Principal principal) {
+    if (principal == null) {
+      return ResponseEntity.status(401).build();
+    }
+    return ResponseEntity.ok(chatService.getMyConversation(principal.getName()));
+  }
+
   @GetMapping("/history/{conversationId}")
   public ResponseEntity<List<MessageResponse>> getHistory(@PathVariable Long conversationId) {
     return ResponseEntity.ok(chatService.getMessageHistory(conversationId));

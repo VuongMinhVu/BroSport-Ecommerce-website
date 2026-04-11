@@ -29,15 +29,21 @@ public class ChatController {
       senderEmail = principal.getName();
     }
     
-    String recipientEmail = incomingMsg.getRecipientId(); // Nếu user gửi, recipient = "admin"
+    String recipientEmail = incomingMsg.getRecipientId();
 
-    // 1. Lưu vào Database thông qua Service
     ChatMessage savedMsg = chatService.saveMessage(senderEmail, recipientEmail, incomingMsg.getContent());
 
-    // 2. Gửi tin nhắn real-time tới người nhận
+    com.se2.demo.dto.response.MessageResponse responseDTO = com.se2.demo.dto.response.MessageResponse.builder()
+            .id(savedMsg.getId())
+            .senderEmail(savedMsg.getSenderEmail())
+            .content(savedMsg.getContent())
+            .timestamp(savedMsg.getTimestamp())
+            .isRead(savedMsg.isRead())
+            .build();
+
     messagingTemplate.convertAndSend(
             "/topic/messages/" + recipientEmail,
-            savedMsg
+            responseDTO
     );
   }
 }

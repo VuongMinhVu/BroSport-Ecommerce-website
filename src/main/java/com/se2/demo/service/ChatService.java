@@ -33,7 +33,12 @@ public class ChatService {
     User clientUser = userRepo.findByEmail(senderEmail).orElse(null);
     boolean isAdminSending = false;
 
-    if (clientUser == null || clientUser.getRole().equals("ROLE_ADMIN")) {
+    if (clientUser == null || 
+        "ROLE_ADMIN".equals(clientUser.getRole()) || 
+        "ADMIN".equalsIgnoreCase(clientUser.getRole()) || 
+        senderEmail.equals("admin@brosport.com") || 
+        senderEmail.equals("admin")) {
+        
       clientUser = userRepo.findByEmail(recipientEmail).orElseThrow();
       isAdminSending = true;
     }
@@ -94,6 +99,31 @@ public class ChatService {
                     .updatedAt(conv.getUpdatedAt())
                     .build()
     ).collect(Collectors.toList());
+  }
+
+  @Transactional
+  public ConversationResponse getMyConversation(String userEmail) {
+    User clientUser = userRepo.findByEmail(userEmail).orElseThrow();
+    ChatConversation conversation = conversationRepo.findByUser(clientUser)
+            .orElseGet(() -> ChatConversation.builder()
+                    .user(clientUser)
+                    .userUnreadCount(0)
+                    .adminUnreadCount(0)
+                    .build());
+    
+    // Lưu ngay nếu là hội thoại mới
+    if (conversation.getId() == null) {
+        conversation = conversationRepo.save(conversation);
+    }
+
+    return ConversationResponse.builder()
+            .id(conversation.getId())
+            .userEmail(userEmail)
+            .userFullName(clientUser.getFullName())
+            .lastMessage(conversation.getLastMessage())
+            .unreadCount(conversation.getUserUnreadCount())
+            .updatedAt(conversation.getUpdatedAt())
+            .build();
   }
 
   @Transactional
