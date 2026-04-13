@@ -40,8 +40,13 @@ public class AuthController {
     }
 
     @GetMapping("/verify-otp")
-    public String verifyOtp(Model model) {
+    public String verifyOtp(Model model, HttpSession session) {
         model.addAttribute("verifyOtpRequest", new VerifyOtpRequest());
+        String email = (String) session.getAttribute("RESET_EMAIL");
+        if (email != null && !email.isBlank()) {
+            model.addAttribute("email", email);
+            model.addAttribute("maskedDestination", maskEmail(email));
+        }
         return "auth/verify-otp";
     }
 
@@ -79,11 +84,17 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String handleForgotPassword(@RequestParam("email") String email, HttpSession session, RedirectAttributes redirect) {
+    public String handleForgotPassword(
+            @RequestParam("email") String email,
+            @RequestParam(name = "resend", defaultValue = "false") boolean resend,
+            HttpSession session,
+            RedirectAttributes redirect) {
         try {
             authService.processForgotPassword(email, session);
-            String maskedEmail = maskEmail(email);
-            redirect.addFlashAttribute("maskedDestination", maskedEmail);
+            redirect.addFlashAttribute("maskedDestination", maskEmail(email));
+            if (resend) {
+                redirect.addFlashAttribute("successMessage", "Mã OTP mới đã được gửi.");
+            }
             return "redirect:/verify-otp";
         } catch (RuntimeException e) {
             redirect.addFlashAttribute("errorMessage", e.getMessage());

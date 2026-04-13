@@ -30,6 +30,7 @@ public class ProductFilterRequest {
     Integer sizeId;
     BigDecimal minPrice;
     BigDecimal maxPrice;
+    Boolean discountOnly;
 
     // Pagination parameters
     @Builder.Default
