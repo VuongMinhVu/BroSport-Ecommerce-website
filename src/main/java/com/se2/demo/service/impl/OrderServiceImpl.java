@@ -39,9 +39,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
 
     public OrderResponse checkout(User user, OrderRequest request, HttpServletRequest httpServletRequest) {
-        // 1. Lấy giỏ hàng của User (Dùng user.getId() trực tiếp từ tham số)
-        Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RuntimeException("Giỏ hàng trống!"));
 
         double subtotalVal = 0;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -183,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Thanh toán thất bại hoặc sai chữ ký!");
 
         String orderCode = request.getParameter("vnp_TxnRef");
-        Order order = orderRepository.findByOrderCode(orderCode)    
+        Order order = orderRepository.findByOrderCode(orderCode)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng: " + orderCode));
 
         order.setPaymentStatus("PAID");
@@ -195,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
         });
 
         Cart cart = cartRepository.findByUserId(order.getUser().getId()).orElse(null);
-        if (cart != null && !cart.getCartDetails().isEmpty()){
+        if (cart != null && !cart.getCartDetails().isEmpty()) {
             recreateEmptyCart(order.getUser());
             cartRepository.delete(cart);
         }

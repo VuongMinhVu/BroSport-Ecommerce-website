@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sports: [],
         minPrice: null,
         maxPrice: null,
+        discountOnly: false,
         page: 0,
         sortBy: null,
         sortDir: null,
@@ -68,6 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.filters.minPrice = params.get("minPrice");
       if (params.has("maxPrice"))
         this.filters.maxPrice = params.get("maxPrice");
+      if (params.has("discountOnly"))
+        this.filters.discountOnly = params.get("discountOnly") === "true";
       if (params.has("page"))
         this.filters.page = parseInt(params.get("page")) || 0;
       if (params.has("sortBy")) this.filters.sortBy = params.get("sortBy");
@@ -94,6 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.filters.categories.length === 0
       ) {
         this.filters.categories = ["Accessories"];
+      } else if (categorySlug === "sales") {
+        this.filters.discountOnly = true;
       }
     }
 
@@ -111,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (this.filters.minPrice) params.set("minPrice", this.filters.minPrice);
       if (this.filters.maxPrice && Number(this.filters.maxPrice) < PRICE_MAX)
         params.set("maxPrice", this.filters.maxPrice);
+      if (this.filters.discountOnly) params.set("discountOnly", "true");
       if (this.filters.page > 0) params.set("page", this.filters.page);
       if (this.filters.sortBy) params.set("sortBy", this.filters.sortBy);
       if (this.filters.sortDir) params.set("sortDir", this.filters.sortDir);
@@ -198,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (filters.minPrice) {
           params.append("minPrice", filters.minPrice);
         }
+        if (filters.discountOnly) params.append("discountOnly", "true");
         if (filters.sortBy) params.append("sortBy", filters.sortBy);
         if (filters.sortDir) params.append("sortDir", filters.sortDir);
         params.append("page", filters.page);
@@ -337,19 +344,36 @@ document.addEventListener("DOMContentLoaded", () => {
       this.container.innerHTML = products
         .map((product) => {
           let imageUrl = `https://via.placeholder.com/400x500/2a2118/ffffff?text=${encodeURIComponent(product.name)}`;
+          let hoverImageUrl = imageUrl;
           if (product.thumbnail) {
             imageUrl = product.thumbnail;
+            hoverImageUrl = product.thumbnail;
           } else if (
             product.productImages &&
             product.productImages.length > 0
           ) {
             imageUrl = product.productImages[0].imageUrl;
+            hoverImageUrl =
+              product.productImages.length > 1
+                ? product.productImages[1].imageUrl
+                : product.productImages[0].imageUrl;
           }
           const brand =
             product.brandName ||
             product.brand?.name ||
             product.brand ||
             "Brand";
+          const hasDiscount =
+            product.originPrice != null &&
+            product.showPrice != null &&
+            Number(product.originPrice) !== Number(product.showPrice);
+          const currentPrice =
+            product.showPrice != null
+              ? `${new Intl.NumberFormat("en-US").format(Math.round(product.showPrice))}$`
+              : "Contact";
+          const originalPrice = hasDiscount
+            ? `${new Intl.NumberFormat("en-US").format(Math.round(product.originPrice))}$`
+            : "";
 
           return `
           <div data-product-card class="product-card group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${isList ? "md:flex-row md:items-center" : ""}">
@@ -357,7 +381,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <a href="/product/${product.slug}" class="absolute inset-0 z-10 cursor-pointer block"></a>
 
             <div data-product-image-wrapper class="img-wrapper ${isList ? "relative overflow-hidden shrink-0 w-full md:w-64 md:h-64 aspect-square md:aspect-auto border-b md:border-b-0 md:border-r border-white/5" : "aspect-square"} bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden shrink-0 w-full">
-              <img src="${imageUrl}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src="${imageUrl}" alt="${product.name}" class="absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:scale-105" />
+              <img src="${hoverImageUrl}" alt="${product.name}" class="absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-110" />
 
               <div class="quick-view absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                 <span class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30 pointer-events-none">
@@ -377,7 +402,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
               <div class="mt-auto pt-4 flex flex-col gap-3 pointer-events-auto">
                 <div class="flex items-center justify-between">
-                  <span class="text-2xl font-black text-primary">${new Intl.NumberFormat("en-US").format(Math.round(product.showPrice))}$</span>
+                  <div class="flex items-center gap-3 flex-wrap">
+                    <span class="text-2xl font-black text-primary">${currentPrice}</span>
+                    ${originalPrice ? `<span class="text-lg font-black text-slate-500 line-through">${originalPrice}</span>` : ""}
+                  </div>
                   <button data-detail-id="${product.productDetails && product.productDetails.length > 0 ? product.productDetails[0].id : ""}" class="btn-add-to-cart relative z-20 bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors shrink-0">
                     <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                   </button>

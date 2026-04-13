@@ -60,6 +60,9 @@ public class WebController {
                 case "sports":
                     filter.setCategoryId(4);
                     break;
+                case "sales":
+                    filter.setDiscountOnly(true);
+                    break;
             }
             model.addAttribute("categorySlug", categorySlug);
         }
@@ -188,7 +191,7 @@ public class WebController {
         return "redirect:/order-success";
     }
 
-    @GetMapping("/")
+    @GetMapping({ "/", "/homepage" })
     public String showHomePage() {
         return "pages/homepage";
     }

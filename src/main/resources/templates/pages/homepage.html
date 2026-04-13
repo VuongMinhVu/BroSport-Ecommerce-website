@@ -452,7 +452,7 @@
         </div>
         <!-- Skeleton loader -->
         <div id="brands-skeleton" class="flex items-center justify-between gap-12 overflow-x-auto no-scrollbar py-2">
-          <div th:each="i : ${#numbers.sequence(1,7)}" class="skeleton h-10 w-24 rounded flex-shrink-0"></div>
+          <div th:each="i : ${#numbers.sequence(1,7)}" class="skeleton h-16 w-40 rounded flex-shrink-0"></div>
         </div>
         <!-- Brands list (populated by JS) -->
         <div id="brands-list" class="hidden flex items-center justify-between gap-12 overflow-x-auto no-scrollbar py-2">
@@ -817,6 +817,13 @@
       return "https://via.placeholder.com/300x300?text=No+Image";
     }
 
+    function getProductHoverImage(product) {
+      if (product.productImages && product.productImages.length > 1) {
+        return product.productImages[1].imageUrl;
+      }
+      return getProductImage(product);
+    }
+
     // Format currency
     function formatVND(amount) {
       return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
@@ -825,6 +832,13 @@
     // Format USD
     function formatUSD(amount) {
       return "$" + parseFloat(amount).toFixed(2);
+    }
+
+    function hasDifferentPrice(product) {
+      if (product == null || product.originPrice == null || product.showPrice == null) {
+        return false;
+      }
+      return Number(product.originPrice) !== Number(product.showPrice);
     }
 
     // Extract unique colors from productDetails
@@ -966,10 +980,10 @@
       const brands = Array.isArray(data) ? data : data.content || [];
 
       list.innerHTML = brands.map(brand => `
-              <div class="flex-shrink-0 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all flex items-center gap-2 cursor-default">
+              <div class="flex-shrink-0 opacity-100 transition-all flex items-center justify-center gap-2 cursor-default min-w-[140px] px-3">
                 ${brand.logoUrl
-          ? `<img alt="${brand.name}" class="h-10 w-auto invert" src="${brand.logoUrl}" />`
-          : `<span class="font-black text-white uppercase tracking-widest text-sm">${brand.name}</span>`
+          ? `<img alt="${brand.name}" class="h-14 md:h-16 w-auto max-w-[160px] object-contain invert contrast-125 brightness-125" src="${brand.logoUrl}" />`
+          : `<span class="font-black text-white uppercase tracking-widest text-base">${brand.name}</span>`
         }
             </div>
         `).join('');
@@ -978,10 +992,10 @@
     }
 
     /* =========================================================
-     3. FLASH SALE PRODUCTS — GET /api/v1/products?size=12&sort=id,desc
+     3. FLASH SALE PRODUCTS — GET /api/v1/products?size=15&sort=id,desc
      ========================================================= */
     async function loadFlashProducts() {
-      const data = await apiFetch("/products?size=12&sort=id,desc");
+      const data = await apiFetch("/products?discountOnly=true&size=15&sort=id,desc");
       const grid = document.getElementById("flash-products-grid");
       const empty = document.getElementById("flash-products-empty");
 
@@ -1001,14 +1015,13 @@
         .map((product) => {
           const colors = getUniqueColors(product);
           const image = getProductImage(product);
+          const hoverImage = getProductHoverImage(product);
           const colorsHtml = renderColorDots(colors, product.id, image);
 
           // Xử lý giá: Format sang USD và lấy giá gốc (nếu có giảm giá)
-          // Lấy originPrice (từ Backend đang là giá thấp) làm giá bán chính
-          const showPriceFmt = product.originPrice ? formatUSD(product.originPrice) : "Contact";
+          const showPriceFmt = product.showPrice ? formatUSD(product.showPrice) : "Contact";
 
-          // Lấy showPrice (từ Backend đang là giá cao) làm giá gốc gạch ngang
-          const originPriceFmt = product.showPrice ? formatUSD(product.showPrice) : "";
+          const originPriceFmt = hasDifferentPrice(product) ? formatUSD(product.originPrice) : "";
           const brand = product.brand || "BROSPORT";
 
           return `
@@ -1018,14 +1031,15 @@
 
             <div class="relative aspect-square w-full overflow-hidden mb-4 bg-[#f3f4f6]">
                 <img id="img-prod-${product.id}" src="${image}" alt="${product.name}"
-                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                     class="absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:scale-105"
                      onerror="this.src='https://via.placeholder.com/500x625?text=Product'">
+                <img src="${hoverImage}" alt="${product.name}"
+                     class="absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-110"
+                     onerror="this.src='${image}'">
             </div>
 
             <div class="flex flex-col flex-1">
-                <div class="flex gap-2 mb-4 min-h-[20px] items-center">
-                    ${colorsHtml}
-                </div>
+
                 <p class="text-[11px] text-gray-500 font-bold uppercase tracking-widest transition-colors duration-200 group-hover:text-[#FF7A00]">
                     ${brand}
                 </p>
@@ -1247,10 +1261,10 @@
      (fallback to GET /api/v1/products?size=4)
      ========================================================= */
     async function loadAccessories() {
-      // 1. Gọi API lấy 10 sản phẩm
-      let data = await apiFetch("/products?categorySlug=accessories&size=12");
+      // 1. Gọi API lấy 15 sản phẩm
+      let data = await apiFetch("/products?categorySlug=accessories&size=15");
       if (!data || (data.content || data).length === 0) {
-        data = await apiFetch("/products?size=12");
+        data = await apiFetch("/products?size=");
       }
 
       const grid = document.getElementById("accessories-grid");
@@ -1265,14 +1279,13 @@
       grid.innerHTML = products.map(product => {
         const colors = getUniqueColors(product);
         const image = getProductImage(product);
+        const hoverImage = getProductHoverImage(product);
         const colorsHtml = renderColorDots(colors, product.id, image);
 
         // Xử lý giá: Format sang USD và lấy giá gốc (nếu có giảm giá)
-        // Lấy originPrice (từ Backend đang là giá thấp) làm giá bán chính
-        const showPriceFmt = product.originPrice ? formatUSD(product.originPrice) : "Contact";
+        const showPriceFmt = product.showPrice ? formatUSD(product.showPrice) : "Contact";
 
-        // Lấy showPrice (từ Backend đang là giá cao) làm giá gốc gạch ngang
-        const originPriceFmt = product.showPrice ? formatUSD(product.showPrice) : "";
+        const originPriceFmt = hasDifferentPrice(product) ? formatUSD(product.originPrice) : "";
         const brand = product.brand || 'BROSPORT';
 
         return `
@@ -1281,16 +1294,18 @@
 
             <div class="relative aspect-square w-full overflow-hidden mb-4 bg-surface-dark rounded-xl">
                 <img id="img-prod-${product.id}" src="${image}" alt="${product.name}"
-     class="w-full h-full object-cover block transform-gpu transition-transform duration-700 ease-in-out group-hover:scale-110"
+     class="absolute inset-0 w-full h-full object-cover block transform-gpu transition-all duration-700 ease-in-out opacity-100 group-hover:opacity-0 group-hover:scale-105"
      style="backface-visibility: hidden; will-change: transform;"
      onerror="this.src='https://via.placeholder.com/500x625?text=Product'">
+                <img src="${hoverImage}" alt="${product.name}"
+     class="absolute inset-0 w-full h-full object-cover block transform-gpu transition-all duration-700 ease-in-out opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-110"
+     style="backface-visibility: hidden; will-change: transform;"
+     onerror="this.src='${image}'">
 
             </div>
 
             <div class="flex flex-col flex-1">
-                <div class="flex gap-2 mb-4 min-h-[20px] items-center">
-                    ${colorsHtml}
-                </div>
+
                 <p class="text-[11px] text-gray-500 font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
                     ${brand}
                 </p>
