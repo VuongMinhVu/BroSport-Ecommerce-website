@@ -1,0 +1,282 @@
+<div th:fragment="chatbox" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <!-- CSS for Chatbox -->
+  <style>
+    .chatbox-wrapper {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .chat-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #ff6600; /* Orange */
+      color: white;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      transition: transform 0.2s;
+    }
+
+    .chat-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .chat-panel {
+      position: absolute;
+      bottom: 75px;
+      right: 0;
+      width: 320px;
+      height: 400px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background-color: #000000; /* Black */
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .msg-customer {
+      background-color: #ff6600;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-admin {
+      background-color: #e5e7eb;
+      color: black;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-input-area {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #eee;
+      background-color: white;
+    }
+
+    .chat-input {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 8px 15px;
+      outline: none;
+      transition: border-color 0.2s;
+
+      color: #000000;
+      background-color: #ffffff;
+    }
+
+    .chat-input:focus {
+      border-color: #ff6600;
+    }
+
+    .chat-send-btn {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin-left: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+    }
+  </style>
+
+  <div class="chatbox-wrapper" sec:authorize="isAuthenticated()">
+    <!-- Chat Button -->
+    <button class="chat-btn" id="chatBtn" onclick="toggleChat()">
+      <i class="fas fa-comment-dots"></i>💬
+    </button>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-header">
+        <span><i class="fas fa-headset mr-2"></i> Hỗ Trợ BroSport</span>
+        <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+      </div>
+      <div class="chat-messages" id="chatMessagesArea">
+        <div class="text-center text-xs text-gray-500 mb-2">Đang kết nối...</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInputBox" class="chat-input" placeholder="Viết tin nhắn..." onkeypress="handleEnter(event)">
+        <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chatbox-wrapper" sec:authorize="!isAuthenticated()">
+     <button class="chat-btn" onclick="requestLoginForChat()">
+      <i class="fas fa-comment-dots"></i>💬
+    </button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+  <script th:inline="javascript">
+    var isChatOpen = false;
+    var stompClient = null;
+    var currentConvId = null;
+
+    // Thay thế đoạn cũ bằng đoạn này
+    var isUserAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+    var currentUserEmail = [[${#authentication.name}]];
+
+    function requestLoginForChat() {
+      alert("Vui lòng đăng nhập để sử dụng tính năng Chat hỗ trợ!");
+      window.location.href = "/login";
+    }
+
+    function toggleChat() {
+      // Redirect Admin directly to management page
+      if (currentUserEmail === 'admin@brosport.com') {
+         window.location.href = '/admin/chat';
+         return;
+      }
+      
+      var panel = document.getElementById('chatPanel');
+      isChatOpen = !isChatOpen;
+      panel.style.display = isChatOpen ? 'flex' : 'none';
+
+      if (isChatOpen && stompClient === null && isUserAuthenticated && currentUserEmail !== 'anonymousUser') {
+        connectChat();
+      }
+    }
+
+    function connectChat() {
+      // 1. Fetch history first
+      fetch('/api/chat/my-conversation')
+        .then(response => {
+           if (!response.ok) throw Error("Unauthenticated");
+           return response.json();
+        })
+        .then(data => {
+            currentConvId = data.id;
+            return fetch('/api/chat/history/' + currentConvId);
+        })
+        .then(res => res.json())
+        .then(history => {
+            var msgArea = document.getElementById('chatMessagesArea');
+            msgArea.innerHTML = '';
+            history.forEach(msg => {
+                var isMe = msg.senderEmail === currentUserEmail;
+                appendMessage(msg.content, isMe);
+            });
+            scrollToBottom();
+
+            // 2. Connect WebSocket after history loaded
+            initWebSocket();
+        }).catch(err => {
+            console.error("Lỗi lấy lịch sử chat: ", err);
+        });
+    }
+
+    function initWebSocket() {
+      var socket = new SockJS('/ws');
+      stompClient = Stomp.over(socket);
+      stompClient.debug = null; // Tắt debug log
+
+      stompClient.connect({}, function (frame) {
+        // Lắng nghe tin nhắn
+        stompClient.subscribe('/topic/messages/' + currentUserEmail, function (msg) {
+          var data = JSON.parse(msg.body);
+          if (data.senderEmail !== currentUserEmail) {
+              appendMessage(data.content, false);
+          }
+        });
+      }, function(error) {
+         console.error("Disconnect WS: " + error);
+         setTimeout(initWebSocket, 5000); // Reconnect
+      });
+    }
+
+    function sendChatMessage() {
+      var input = document.getElementById('chatInputBox');
+      var content = input.value.trim();
+
+      if (content && stompClient && stompClient.connected) {
+        var msgPayload = {
+          senderEmail: currentUserEmail,
+          recipientId: 'admin@brosport.com',
+          content: content
+        };
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(msgPayload));
+
+        appendMessage(content, true);
+        input.value = '';
+      }
+    }
+
+    function handleEnter(e) {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
+    }
+
+    function appendMessage(text, isMe) {
+      var msgArea = document.getElementById('chatMessagesArea');
+      var cls = isMe ? 'msg-customer' : 'msg-admin';
+      var el = document.createElement('div');
+      el.className = 'msg-bubble ' + cls;
+      el.textContent = text;
+      msgArea.appendChild(el);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      var msgArea = document.getElementById('chatMessagesArea');
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }
+  </script>
+</div>

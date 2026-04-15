@@ -40,6 +40,8 @@ public class DataSeeder {
                         CartRepository cartRepository,
                         CartDetailRepository cartDetailRepository,
                         ReviewRepository reviewRepository,
+                        ChatConversationRepository chatConversationRepository,
+                        ChatMessageRepository chatMessageRepository,
                         PasswordEncoder passwordEncoder) {
 
                 return args -> {
@@ -75,21 +77,21 @@ public class DataSeeder {
                         if (brandRepository.count() == 0) {
                                 brands = Arrays.asList(
                                                 Brand.builder().name("Nike")
-                                                                .logoUrl("https://picsum.photos/seed/nike/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/SP_BR_NIKE_c3a940f1-9d42-47a2-bec3-04a47aa62e04.jpg?v=1715040392&width=286")
                                                                 .description("Just do it").build(),
                                                 Brand.builder().name("Adidas")
-                                                                .logoUrl("https://picsum.photos/seed/adidas/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/SP_BR_DAS_29f333f3-037a-4340-b15c-91e290153a20.jpg?v=1715040392&width=287")
                                                                 .description("Impossible is nothing")
                                                                 .build(),
                                                 Brand.builder().name("Puma")
-                                                                .logoUrl("https://picsum.photos/seed/puma/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/PUMA_a7d5855f-754a-4f63-a630-fbea0a3822c2.jpg?v=1759909814&width=285")
                                                                 .description("Forever Faster").build(),
                                                 Brand.builder().name("Under Armour")
-                                                                .logoUrl("https://picsum.photos/seed/ua/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/SP_BR_UA_971a481e-3d35-4376-b5a3-332e2d34165d.jpg?v=1715040392&width=286")
                                                                 .description("Protect This House")
                                                                 .build(),
                                                 Brand.builder().name("New Balance")
-                                                                .logoUrl("https://picsum.photos/seed/nb/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/ON_black.jpg?v=1730194141&width=285")
                                                                 .description("Fearlessly Independent")
                                                                 .build());
                                 brandRepository.saveAll(brands);
@@ -222,22 +224,22 @@ public class DataSeeder {
                         if (sportRepository.count() == 0) {
                                 sports = Arrays.asList(
                                                 Sport.builder().name("Football").description("King of sports")
-                                                                .logoUrl("https://picsum.photos/seed/football/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/HP_S26_SPORT_FOOT_VN.png?v=1767689298&width=352")
                                                                 .build(),
                                                 Sport.builder().name("Running").description("Fitness conditioning")
-                                                                .logoUrl("https://picsum.photos/seed/running/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/HP_S26_SPORT_RUN_VN.png?v=1767689298&width=352")
                                                                 .build(),
                                                 Sport.builder().name("Basketball").description("Team sports")
-                                                                .logoUrl("https://picsum.photos/seed/basketball/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/HP_S26_SPORT_BASKET_VN.png?v=1767689298&width=352")
                                                                 .build(),
                                                 Sport.builder().name("Gym & Training").description("Weight training")
-                                                                .logoUrl("https://picsum.photos/seed/gym/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/HP_S26_SPORT_FIT_VN.png?v=1767689298&width=352")
                                                                 .build(),
                                                 Sport.builder().name("Tennis").description("Royal sports")
-                                                                .logoUrl("https://picsum.photos/seed/tennis/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/HP_S26_SPORT_TENNIS_VN.png?v=1767689298&width=352")
                                                                 .build(),
                                                 Sport.builder().name("Badminton").description("Popular sports")
-                                                                .logoUrl("https://picsum.photos/seed/badminton/400/400")
+                                                                .logoUrl("//supersports.com.vn/cdn/shop/files/HP_S26_SPORT_OUTDOOR_VN.png?v=1767689298&width=352")
                                                                 .build());
                                 sportRepository.saveAll(sports);
                         } else {
@@ -269,8 +271,17 @@ public class DataSeeder {
                                                         + randomBrand.getName().toLowerCase() + "-"
                                                         + i;
 
-                                        BigDecimal price = BigDecimal.valueOf((random.nextInt(20) + 5) * 10);
-                                        BigDecimal comparePrice = price.multiply(BigDecimal.valueOf(1.2));
+                                        BigDecimal basePrice = BigDecimal.valueOf((random.nextInt(20) + 5) * 100000);
+                                        BigDecimal originPrice = basePrice;
+                                        BigDecimal showPrice = basePrice;
+
+                                        // 30% có giá khuyến mại (giá bán thấp hơn giá gốc)
+                                        if (random.nextInt(100) < 30) {
+                                                originPrice = basePrice.multiply(BigDecimal.valueOf(1.2)); // Tăng giá
+                                                                                                           // gốc lên
+                                                                                                           // 20%
+                                                showPrice = basePrice; // Bán giá hiện tại (giảm giá)
+                                        }
 
                                         Product product = Product.builder()
                                                         .name(productName)
@@ -286,8 +297,8 @@ public class DataSeeder {
                                                         .category(randomCategory)
                                                         .gender(randomGender)
                                                         .sport(randomSport)
-                                                        .originPrice(price)
-                                                        .showPrice(comparePrice)
+                                                        .originPrice(originPrice)
+                                                        .showPrice(showPrice)
                                                         .build();
 
                                         Product savedProduct = productRepository.save(product);
@@ -549,6 +560,77 @@ public class DataSeeder {
                                                 }
                                                 reviewRepository.saveAll(adminReplies);
                                         }
+                                }
+
+                                // 10. Seed Chatbox
+                                if (chatConversationRepository.count() == 0) {
+                                        log.info("Seeding Chatbox Data...");
+
+                                        ChatConversation conv1 = ChatConversation.builder()
+                                                        .user(customer1)
+                                                        .userUnreadCount(1)
+                                                        .adminUnreadCount(0)
+                                                        .lastMessage("We've shipped your order!")
+                                                        .updatedAt(LocalDateTime.now())
+                                                        .build();
+                                        chatConversationRepository.save(conv1);
+
+                                        chatMessageRepository.save(ChatMessage.builder()
+                                                        .conversation(conv1)
+                                                        .senderEmail(customer1.getEmail())
+                                                        .content("Hello, do you have size 42 for the Nike running shoes?")
+                                                        .timestamp(LocalDateTime.now().minusHours(2))
+                                                        .isRead(true)
+                                                        .build());
+
+                                        chatMessageRepository.save(ChatMessage.builder()
+                                                        .conversation(conv1)
+                                                        .senderEmail(admin.getEmail())
+                                                        .content("Yes we do! You can place an order directly.")
+                                                        .timestamp(LocalDateTime.now().minusHours(1))
+                                                        .isRead(true)
+                                                        .build());
+
+                                        chatMessageRepository.save(ChatMessage.builder()
+                                                        .conversation(conv1)
+                                                        .senderEmail(admin.getEmail())
+                                                        .content("We've shipped your order!")
+                                                        .timestamp(LocalDateTime.now().minusMinutes(5))
+                                                        .isRead(false)
+                                                        .build());
+
+                                        ChatConversation conv2 = ChatConversation.builder()
+                                                        .user(customer2)
+                                                        .userUnreadCount(0)
+                                                        .adminUnreadCount(1)
+                                                        .lastMessage("How can I return an item?")
+                                                        .updatedAt(LocalDateTime.now())
+                                                        .build();
+                                        chatConversationRepository.save(conv2);
+
+                                        chatMessageRepository.save(ChatMessage.builder()
+                                                        .conversation(conv2)
+                                                        .senderEmail(customer2.getEmail())
+                                                        .content("Hi Admin!")
+                                                        .timestamp(LocalDateTime.now().minusDays(1))
+                                                        .isRead(true)
+                                                        .build());
+
+                                        chatMessageRepository.save(ChatMessage.builder()
+                                                        .conversation(conv2)
+                                                        .senderEmail(admin.getEmail())
+                                                        .content("Hello, how can I help you?")
+                                                        .timestamp(LocalDateTime.now().minusDays(1).plusMinutes(5))
+                                                        .isRead(true)
+                                                        .build());
+
+                                        chatMessageRepository.save(ChatMessage.builder()
+                                                        .conversation(conv2)
+                                                        .senderEmail(customer2.getEmail())
+                                                        .content("How can I return an item?")
+                                                        .timestamp(LocalDateTime.now().minusMinutes(30))
+                                                        .isRead(false)
+                                                        .build());
                                 }
                         }
 

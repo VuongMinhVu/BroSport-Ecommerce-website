@@ -105,11 +105,13 @@ public class ProfileController {
             @Valid @ModelAttribute("changePasswordRequest") ChangePasswordRequest request,
             BindingResult bindingResult,
             Model model,
+
             Principal principal,
             RedirectAttributes redirectAttributes,
             HttpServletRequest httpServletRequest) {
         try {
             String email = principal.getName();
+
             if (bindingResult.hasErrors()) {
                 User user = userService.getUserByEmail(email);
                 model.addAttribute("user", user);
@@ -119,6 +121,7 @@ public class ProfileController {
             userService.changePassword(email, request);
             redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công");
             return "redirect:/profile/change-password";
+
         } catch (RuntimeException e) {
             User user = userService.getUserByEmail(principal.getName());
             model.addAttribute("user", user);

@@ -22,6 +22,7 @@ public class Order {
     private User user;
 
     private BigDecimal totalPrice;
+    @Column(name = "shipping_fee")
     private BigDecimal shippingFee;
     private BigDecimal discountPrice;
     private String paymentMethod;

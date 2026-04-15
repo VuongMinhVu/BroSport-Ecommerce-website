@@ -14,7 +14,7 @@ import java.util.*;
 @Component
 public class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "/vnpay-payment";
+    public static String vnp_Returnurl = "/api/orders/vnpay-callback";
     public static String vnp_TmnCode = "8NTZXW3G";
     public static String vnp_HashSecret = "2XK4K5JREKPY0DFHRN0Y35CJ8Q1L5V6N";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
@@ -55,7 +55,6 @@ public class VNPayConfig {
         return digest;
     }
 
-    //Util for VNPAY
     public static String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
@@ -67,13 +66,17 @@ public class VNPayConfig {
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 sb.append(fieldName);
                 sb.append("=");
-                sb.append(fieldValue);
+                try {
+                    sb.append(java.net.URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             if (itr.hasNext()) {
                 sb.append("&");
             }
         }
-        return hmacSHA512(vnp_HashSecret,sb.toString());
+        return hmacSHA512(vnp_HashSecret, sb.toString());
     }
 
     public static String hmacSHA512(final String key, final String data) {
@@ -90,7 +93,7 @@ public class VNPayConfig {
             byte[] result = hmac512.doFinal(dataBytes);
             StringBuilder sb = new StringBuilder(2 * result.length);
             for (byte b : result) {
-                sb.append(String.format("%02X", b & 0xff));
+                sb.append(String.format("%02x", b & 0xff));
             }
             return sb.toString();
 

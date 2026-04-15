@@ -264,4 +264,12 @@ public class WebController {
         model.addAttribute("compareList", compareList);
         return "pages/product_compare_details";
     }
+
+    @GetMapping("/admin/chat")
+    public String showAdminChatPage(Principal principal) {
+        if (principal == null) {
+            return "redirect:/login"; // Must be admin, actually Spring Security might handle it
+        }
+        return "pages/admin-chat";
+    }
 }

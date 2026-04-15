@@ -58,13 +58,13 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("Email không tồn tại trong hệ thống."));
 
         String otp = String.format("%06d", new Random().nextInt(999999));
-
         session.setAttribute("RESET_EMAIL", email);
         session.setAttribute("RESET_OTP", otp);
         session.setAttribute("OTP_VERIFIED", false);
 
         log.info("[MOCK EMAIL] Đã gửi mã OTP: {} đến email: {}", otp, email);
         // Gọi hàm gửi email thực sự ở đây
+
         emailService.sendOtpEmail(email, otp);
     }
 
