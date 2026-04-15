@@ -193,6 +193,18 @@
         font-size: 12px;
       }
 
+      .resend-form {
+        margin: 0;
+      }
+
+      .resend-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
       .resend-link {
         display: inline-flex;
         align-items: center;
@@ -202,6 +214,19 @@
         letter-spacing: 1px;
         text-transform: uppercase;
         margin-bottom: 10px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+      }
+
+      .resend-link[disabled] {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .resend-status {
+        margin-top: 12px;
+        text-align: left;
       }
 
       .expire {
@@ -330,6 +355,7 @@
         <div class="verify-card">
           <h1>Security Verification</h1>
           <p>Enter the 6-digit code sent to your email</p>
+          <div th:if="${errorMessage}" class="error-box" th:text="${errorMessage}"></div>
           <div
             class="masked-email"
             th:text="${maskedDestination != null ? maskedDestination : 'name@***.com'}"
@@ -337,7 +363,7 @@
             name@***.com
           </div>
 
-          <form th:action="@{/verify-otp}" method="post">
+          <form th:action="@{/verify-otp}" method="post" id="verifyOtpForm">
             <input type="hidden" name="email" th:value="${email}" />
 
             <div class="otp-group">
@@ -381,19 +407,42 @@
 
             <input type="hidden" name="otpCode" id="otpValue" />
 
-            <div class="resend-box">
-              <p>Didn't receive the code?</p>
-              <a href="#" class="resend-link">
-                <i class="fa-solid fa-rotate-right"></i>
-                <span th:href="@{/resend-otp}">Resend Code</span>
-              </a>
-              <div class="expire" id="expireTimer">Expires in 00:59</div>
-            </div>
-
             <button type="submit" class="submit-btn">
               VERIFY &amp; PROCEED <i class="fa-solid fa-arrow-right"></i>
             </button>
           </form>
+
+          <div class="resend-box">
+            <p>Didn't receive the code?</p>
+            <div class="resend-row">
+              <form
+                th:action="@{/forgot-password}"
+                method="post"
+                class="resend-form"
+                id="resendOtpForm"
+              >
+                <input type="hidden" name="email" th:value="${email}" />
+                <input type="hidden" name="resend" value="true" />
+                <button
+                  type="submit"
+                  class="resend-link"
+                  id="resendOtpButton"
+                  th:disabled="${email == null or #strings.isEmpty(email)}"
+                >
+                  <i class="fa-solid fa-rotate-right"></i>
+                  <span id="resendOtpLabel">Resend Code</span>
+                </button>
+              </form>
+              <div class="expire" id="expireTimer">Expires in 00:59</div>
+            </div>
+            <div
+              class="success-box resend-status"
+              id="resendStatus"
+              aria-live="polite"
+              th:if="${successMessage}"
+              th:text="${successMessage}"
+            ></div>
+          </div>
 
           <a th:href="@{/login}" class="back-link">
             <i class="fa-solid fa-arrow-left"></i>
@@ -416,11 +465,36 @@
     <script>
       const otpInputs = document.querySelectorAll(".otp-input");
       const otpValue = document.getElementById("otpValue");
+      const verifyOtpForm = document.getElementById("verifyOtpForm");
+      const resendOtpForm = document.getElementById("resendOtpForm");
+      const resendOtpButton = document.getElementById("resendOtpButton");
+      const resendOtpLabel = document.getElementById("resendOtpLabel");
+      const resendStatus = document.getElementById("resendStatus");
+      let seconds = 59;
+      const expireTimer = document.getElementById("expireTimer");
 
       function updateOtpHiddenValue() {
         let value = "";
         otpInputs.forEach((input) => (value += input.value));
         otpValue.value = value;
+      }
+
+      function renderExpireTimer() {
+        if (!expireTimer) return;
+        const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+        const ss = String(seconds % 60).padStart(2, "0");
+        expireTimer.textContent = `Expires in ${mm}:${ss}`;
+      }
+
+      function resetExpireTimer() {
+        seconds = 59;
+        renderExpireTimer();
+      }
+
+      function setResendStatus(message) {
+        if (resendStatus) {
+          resendStatus.textContent = message;
+        }
       }
 
       otpInputs.forEach((input, index) => {
@@ -459,16 +533,43 @@
         });
       });
 
-      let seconds = 59;
-      const expireTimer = document.getElementById("expireTimer");
+      if (verifyOtpForm) {
+        verifyOtpForm.addEventListener("submit", function (e) {
+          updateOtpHiddenValue();
+          if (otpValue.value.length !== otpInputs.length) {
+            e.preventDefault();
+            otpInputs[Math.min(otpValue.value.length, otpInputs.length - 1)].focus();
+          }
+        });
+      }
+
+      if (resendOtpForm) {
+        resendOtpForm.addEventListener("submit", function () {
+          resetExpireTimer();
+          setResendStatus("Sending a new OTP...");
+          if (resendOtpButton) {
+            resendOtpButton.disabled = true;
+          }
+          if (resendOtpLabel) {
+            resendOtpLabel.textContent = "Sending...";
+          }
+        });
+      }
+
+      if (resendOtpButton && resendOtpButton.disabled) {
+        setResendStatus("Email is required to resend OTP.");
+      }
+
+      if (resendStatus) {
+        setResendStatus(resendStatus.textContent.trim());
+      }
 
       if (expireTimer) {
+        renderExpireTimer();
         setInterval(() => {
           if (seconds <= 0) return;
           seconds--;
-          const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
-          const ss = String(seconds % 60).padStart(2, "0");
-          expireTimer.textContent = `Expires in ${mm}:${ss}`;
+          renderExpireTimer();
         }, 1000);
       }
     </script>

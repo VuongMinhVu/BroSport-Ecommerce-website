@@ -65,6 +65,12 @@ public class ProductSpecification {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("showPrice"), filter.getMaxPrice()));
             }
 
+            if (Boolean.TRUE.equals(filter.getDiscountOnly())) {
+                predicates.add(criteriaBuilder.isNotNull(root.get("originPrice")));
+                predicates.add(criteriaBuilder.isNotNull(root.get("showPrice")));
+                predicates.add(criteriaBuilder.notEqual(root.get("originPrice"), root.get("showPrice")));
+            }
+
             // JOIN with ProductDetail to filter by variations (color, size)
             if (filter.getColorId() != null || filter.getSizeId() != null) {
 
