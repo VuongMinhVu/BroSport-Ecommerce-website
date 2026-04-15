@@ -9,8 +9,9 @@ import java.math.BigDecimal;
 @Builder
 public class OrderItemResponse {
     String productName;
-    String variantInfo; // Size: L | Color: Midnight Black
+    String variantInfo;
     Integer quantity;
     BigDecimal price;
     String imageUrl;
+    String productSlug;
 }

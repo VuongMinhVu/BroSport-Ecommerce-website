@@ -1,4 +1,8 @@
-<div th:fragment="chatbox" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div
+  th:fragment="chatbox"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <!-- CSS for Chatbox -->
   <style>
     .chatbox-wrapper {
@@ -6,7 +10,7 @@
       bottom: 20px;
       right: 20px;
       z-index: 9999;
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
     }
 
     .chat-btn {
@@ -142,21 +146,27 @@
     <!-- Chat Panel -->
     <div class="chat-panel" id="chatPanel">
       <div class="chat-header">
-        <span><i class="fas fa-headset mr-2"></i> Hỗ Trợ BroSport</span>
+        <span><i class="fas fa-headset mr-2"></i> Support BroSport</span>
         <button class="chat-close-btn" onclick="toggleChat()">✕</button>
       </div>
       <div class="chat-messages" id="chatMessagesArea">
-        <div class="text-center text-xs text-gray-500 mb-2">Đang kết nối...</div>
+        <div class="text-center text-xs text-gray-500 mb-2">Connecting...</div>
       </div>
       <div class="chat-input-area">
-        <input type="text" id="chatInputBox" class="chat-input" placeholder="Viết tin nhắn..." onkeypress="handleEnter(event)">
+        <input
+          type="text"
+          id="chatInputBox"
+          class="chat-input"
+          placeholder="Chat with us..."
+          onkeypress="handleEnter(event)"
+        />
         <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
       </div>
     </div>
   </div>
 
   <div class="chatbox-wrapper" sec:authorize="!isAuthenticated()">
-     <button class="chat-btn" onclick="requestLoginForChat()">
+    <button class="chat-btn" onclick="requestLoginForChat()">
       <i class="fas fa-comment-dots"></i>💬
     </button>
   </div>
@@ -169,113 +179,129 @@
     var stompClient = null;
     var currentConvId = null;
 
-    // Thay thế đoạn cũ bằng đoạn này
-    var isUserAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
-    var currentUserEmail = [[${#authentication.name}]];
+    var isUserAuthenticated = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
+    var currentUserEmail = /*[[${#authentication.name}]]*/ "";
 
     function requestLoginForChat() {
-      alert("Vui lòng đăng nhập để sử dụng tính năng Chat hỗ trợ!");
+      alert("Please log in to use the Chat support feature!");
       window.location.href = "/login";
     }
 
     function toggleChat() {
       // Redirect Admin directly to management page
-      if (currentUserEmail === 'admin@brosport.com') {
-         window.location.href = '/admin/chat';
-         return;
+      if (currentUserEmail === "admin@brosport.com") {
+        window.location.href = "/admin/chat";
+        return;
       }
-      
-      var panel = document.getElementById('chatPanel');
-      isChatOpen = !isChatOpen;
-      panel.style.display = isChatOpen ? 'flex' : 'none';
 
-      if (isChatOpen && stompClient === null && isUserAuthenticated && currentUserEmail !== 'anonymousUser') {
+      var panel = document.getElementById("chatPanel");
+      isChatOpen = !isChatOpen;
+      panel.style.display = isChatOpen ? "flex" : "none";
+
+      if (
+        isChatOpen &&
+        stompClient === null &&
+        isUserAuthenticated &&
+        currentUserEmail !== "anonymousUser"
+      ) {
         connectChat();
       }
     }
 
     function connectChat() {
       // 1. Fetch history first
-      fetch('/api/chat/my-conversation')
-        .then(response => {
-           if (!response.ok) throw Error("Unauthenticated");
-           return response.json();
+      fetch("/api/chat/my-conversation")
+        .then((response) => {
+          if (!response.ok) throw Error("Unauthenticated");
+          return response.json();
         })
-        .then(data => {
-            currentConvId = data.id;
-            return fetch('/api/chat/history/' + currentConvId);
+        .then((data) => {
+          currentConvId = data.id;
+          return fetch("/api/chat/history/" + currentConvId);
         })
-        .then(res => res.json())
-        .then(history => {
-            var msgArea = document.getElementById('chatMessagesArea');
-            msgArea.innerHTML = '';
-            history.forEach(msg => {
-                var isMe = msg.senderEmail === currentUserEmail;
-                appendMessage(msg.content, isMe);
-            });
-            scrollToBottom();
+        .then((res) => res.json())
+        .then((history) => {
+          var msgArea = document.getElementById("chatMessagesArea");
+          msgArea.innerHTML = "";
+          history.forEach((msg) => {
+            var isMe = msg.senderEmail === currentUserEmail;
+            appendMessage(msg.content, isMe);
+          });
+          scrollToBottom();
 
-            // 2. Connect WebSocket after history loaded
-            initWebSocket();
-        }).catch(err => {
-            console.error("Lỗi lấy lịch sử chat: ", err);
+          // 2. Connect WebSocket after history loaded
+          initWebSocket();
+        })
+        .catch((err) => {
+          console.error("Error retrieving chat history:", err);
         });
     }
 
     function initWebSocket() {
-      var socket = new SockJS('/ws');
+      var socket = new SockJS("/ws");
       stompClient = Stomp.over(socket);
       stompClient.debug = null; // Tắt debug log
 
-      stompClient.connect({}, function (frame) {
-        // Lắng nghe tin nhắn
-        stompClient.subscribe('/topic/messages/' + currentUserEmail, function (msg) {
-          var data = JSON.parse(msg.body);
-          if (data.senderEmail !== currentUserEmail) {
-              appendMessage(data.content, false);
-          }
-        });
-      }, function(error) {
-         console.error("Disconnect WS: " + error);
-         setTimeout(initWebSocket, 5000); // Reconnect
-      });
+      stompClient.connect(
+        {},
+        function (frame) {
+          // Lắng nghe tin nhắn
+          stompClient.subscribe(
+            "/topic/messages/" + currentUserEmail,
+            function (msg) {
+              var data = JSON.parse(msg.body);
+              if (data.senderEmail !== currentUserEmail) {
+                appendMessage(data.content, false);
+              }
+            },
+          );
+        },
+        function (error) {
+          console.error("Disconnect WS: " + error);
+          setTimeout(initWebSocket, 5000); // Reconnect
+        },
+      );
     }
 
     function sendChatMessage() {
-      var input = document.getElementById('chatInputBox');
+      var input = document.getElementById("chatInputBox");
       var content = input.value.trim();
 
       if (content && stompClient && stompClient.connected) {
         var msgPayload = {
           senderEmail: currentUserEmail,
-          recipientId: 'admin@brosport.com',
-          content: content
+          recipientId: "admin@brosport.com",
+          content: content,
         };
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(msgPayload));
+        stompClient.send(
+          "/app/chat.sendMessage",
+          {},
+          JSON.stringify(msgPayload),
+        );
 
         appendMessage(content, true);
-        input.value = '';
+        input.value = "";
       }
     }
 
     function handleEnter(e) {
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         sendChatMessage();
       }
     }
 
     function appendMessage(text, isMe) {
-      var msgArea = document.getElementById('chatMessagesArea');
-      var cls = isMe ? 'msg-customer' : 'msg-admin';
-      var el = document.createElement('div');
-      el.className = 'msg-bubble ' + cls;
+      var msgArea = document.getElementById("chatMessagesArea");
+      var cls = isMe ? "msg-customer" : "msg-admin";
+      var el = document.createElement("div");
+      el.className = "msg-bubble " + cls;
       el.textContent = text;
       msgArea.appendChild(el);
       scrollToBottom();
     }
 
     function scrollToBottom() {
-      var msgArea = document.getElementById('chatMessagesArea');
+      var msgArea = document.getElementById("chatMessagesArea");
       msgArea.scrollTop = msgArea.scrollHeight;
     }
   </script>

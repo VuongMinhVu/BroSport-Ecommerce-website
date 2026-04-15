@@ -89,7 +89,7 @@ public class ProfileController {
         return "account/profile-edit";
     }
 
-    @GetMapping("/change-password")
+    @GetMapping("/profile/change-password")
     public String showChangePasswordPage(Model model, Principal principal) {
         String email = principal.getName();
         User user = userService.getUserByEmail(email);
@@ -104,8 +104,9 @@ public class ProfileController {
     public String processChangePassword(
             @Valid @ModelAttribute("changePasswordRequest") ChangePasswordRequest request,
             BindingResult bindingResult,
-            Principal principal,
             Model model,
+
+            Principal principal,
             RedirectAttributes redirectAttributes,
             HttpServletRequest httpServletRequest) {
         try {
@@ -117,10 +118,10 @@ public class ProfileController {
                 model.addAttribute("changePasswordRequest", request);
                 return "account/change-password";
             }
-
             userService.changePassword(email, request);
-            redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công!");
-            return "redirect:/change-password";
+            redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công");
+            return "redirect:/profile/change-password";
+
         } catch (RuntimeException e) {
             User user = userService.getUserByEmail(principal.getName());
             model.addAttribute("user", user);

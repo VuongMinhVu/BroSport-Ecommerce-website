@@ -15,32 +15,31 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
       rel="stylesheet"
-    />
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#ff6600",
-              "background-light": "#f8f7f5",
-              "background-dark": "#000000",
-              "surface-dark": "#121212",
-              "border-dark": "#ffffff10",
-            },
-            fontFamily: { display: ["Lexend"] },
-            borderRadius: {
-              DEFAULT: "0.25rem",
-              lg: "0.5rem",
-              xl: "0.75rem",
-              full: "9999px",
-            },
+    />  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#ff6600",
+            "background-light": "#f8f7f5",
+            "background-dark": "#000000",
+            "surface-dark": "#121212",
+            "border-dark": "#ffffff10",
+          },
+          fontFamily: { display: ["Lexend"] },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px",
           },
         },
-      };
-    </script>
-    <style>
-      body {
+      },
+    };
+  </script>
+  <style type="text/tailwindcss">
+    body {
         font-family: "Lexend", sans-serif;
       }
       .material-symbols-outlined {
@@ -50,10 +49,32 @@
           "GRAD" 0,
           "opsz" 24;
       }
-      .review-bar-fill {
-        transition: width 0.5s ease-in-out;
+      .filled {
+        font-variation-settings: "FILL" 1;
       }
-    </style>
+      #chat-toggle:checked ~ #chat-window {
+        display: flex;
+      }
+      #chat-toggle:checked ~ #chat-trigger .open-icon {
+        display: none;
+      }
+      #chat-toggle:checked ~ #chat-trigger .close-icon {
+        display: block;
+      }
+      .close-icon {
+        display: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .nav-link {
+        @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
+      }
+  </style>
   </head>
   <body
     class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300"
@@ -63,7 +84,7 @@
       <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
         <a class="hover:text-primary" href="/">Home</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
-        <a class="hover:text-primary" href="/products">Sản phẩm</a>
+        <a class="hover:text-primary" href="/products">Product list</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
         <span class="text-white font-medium" th:text="${product.name}"
           >Apex Pro Runner v2</span
@@ -115,34 +136,39 @@
                 class="text-primary font-bold tracking-widest uppercase text-xs"
                 >Elite Performance</span
               >
-              <div class="flex items-center gap-1 text-primary">
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
+
+              <div class="flex items-center gap-1">
+                <div
+                  id="top-avg-rating-stars"
+                  class="flex items-center text-primary"
                 >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                  <span class="material-symbols-outlined text-sm">star</span>
+                </div>
+                <span
+                  id="top-avg-rating-number"
+                  class="text-white text-xs font-bold ml-1"
+                  >0.0</span
                 >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
+                <span
+                  id="top-total-reviews"
+                  class="text-slate-500 text-xs font-medium ml-1"
+                  >(0 đánh giá)</span
                 >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
-                >
-                <span class="material-symbols-outlined text-sm fill-1"
-                  >star</span
-                >
-                <span class="text-white text-xs font-medium ml-1">5.0</span>
               </div>
             </div>
             <h2
               class="text-4xl md:text-5xl font-black mb-4 leading-none"
               th:text="${product.name}"
             >
-              Tên sản phẩm
+              Product Name
             </h2>
             <p
               class="text-slate-400 text-lg leading-relaxed"
-              th:text="${product.description != null ? product.description : 'Sản phẩm này hiện chưa có mô tả chi tiết.'}"
+              th:text="${product.description != null ? product.description : 'This product currently does not have a detailed description.'}"
             ></p>
           </div>
           <div class="flex items-baseline gap-3">
@@ -169,11 +195,11 @@
           </div>
           <div class="space-y-4">
             <p class="text-sm font-bold uppercase tracking-wider">
-              Màu sắc:
+              Color:
               <span
                 class="text-slate-400 font-normal color-name"
                 id="selectedColorName"
-                >Vui lòng chọn</span
+                >Please choose</span
               >
             </p>
             <div class="flex flex-wrap gap-3">
@@ -197,15 +223,15 @@
           <div class="space-y-4 mt-6">
             <div class="flex justify-between items-center">
               <p class="text-sm font-bold uppercase tracking-wider">
-                Chọn Kích thước
+                Choose size
               </p>
               <a
                 th:if="${product.sizeGuide != null}"
-                th:href="${product.sizeGuide}"
-                target="_blank"
+                href="javascript:void(0)"
+                onclick="showSizeGuideModal()"
                 class="text-xs text-primary font-semibold underline underline-offset-4 hover:text-white transition-colors"
               >
-                Hướng dẫn Size
+                Size guide
               </a>
             </div>
             <div class="grid grid-cols-4 gap-2">
@@ -223,7 +249,7 @@
               class="w-full py-5 bg-primary text-white font-black text-lg uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-transform active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 buy-now-btn"
             >
               <span class="material-symbols-outlined">bolt</span>
-              Mua ngay
+              Buy now
             </button>
             <div class="flex gap-3">
               <button
@@ -232,7 +258,7 @@
                 <span class="material-symbols-outlined text-xl"
                   >shopping_cart</span
                 >
-                Thêm vào giỏ
+                Add to cart
               </button>
             </div>
           </div>
@@ -241,13 +267,13 @@
               <span class="material-symbols-outlined text-primary"
                 >local_shipping</span
               >
-              <span class="text-xs text-slate-400">Giao hàng Hỏa Tốc</span>
+              <span class="text-xs text-slate-400">Express delivery</span>
             </div>
             <div class="flex items-center gap-3">
               <span class="material-symbols-outlined text-primary"
                 >verified</span
               >
-              <span class="text-xs text-slate-400">Bảo hành chính hãng</span>
+              <span class="text-xs text-slate-400">Genuine warranty</span>
             </div>
           </div>
         </div>
@@ -256,7 +282,7 @@
       <div class="mt-20 border-t border-white/10 pt-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div>
-            <h3 class="text-2xl font-black mb-6">ĐẶC ĐIỂM NỔI BẬT</h3>
+            <h3 class="text-2xl font-black mb-6">HIGHLIGHTS</h3>
             <p
               class="text-slate-400 leading-relaxed"
               th:text="${product.feature} ?: 'Chưa có thông tin.'"
@@ -264,7 +290,7 @@
           </div>
 
           <div>
-            <h3 class="text-2xl font-black mb-6">THÔNG TIN CHI TIẾT</h3>
+            <h3 class="text-2xl font-black mb-6">DETAILED INFORMATION</h3>
             <div class="space-y-4">
               <div
                 th:each="info : ${product.information}"
@@ -287,13 +313,13 @@
         <div class="flex flex-col md:flex-row gap-16">
           <div class="md:w-1/3 space-y-8">
             <div>
-              <h3 class="text-3xl font-black mb-2">ĐÁNH GIÁ SẢN PHẨM</h3>
+              <h3 class="text-3xl font-black mb-2">PRODUCT REVIEWS</h3>
               <p class="text-slate-400 text-sm">
-                Dựa trên
+                Based on
                 <span id="total-reviews-text" class="font-bold text-white"
                   >0</span
                 >
-                lượt đánh giá
+                reviews
               </p>
             </div>
             <div class="flex items-center gap-4">
@@ -336,7 +362,7 @@
               id="toggle-review-form-btn"
               class="w-full py-4 border border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-colors"
             >
-              Viết Đánh Giá
+              Write Reviews
             </button>
 
             <div
@@ -346,7 +372,7 @@
               <p
                 class="text-sm font-bold uppercase tracking-widest text-slate-300"
               >
-                Đánh giá của bạn
+                Your review
               </p>
               <div
                 class="flex gap-2 text-3xl text-slate-500 cursor-pointer"
@@ -381,20 +407,20 @@
               <input
                 type="text"
                 id="review-title"
-                placeholder="Tiêu đề (Ví dụ: Sản phẩm rất tốt!)"
+                placeholder="Title (Example: Great product!)"
                 class="bg-transparent border border-white/10 rounded p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary"
               />
               <textarea
                 id="review-comment"
                 rows="3"
-                placeholder="Chia sẻ thêm cảm nhận của bạn về sản phẩm..."
+                placeholder="Share your thoughts about the product..."
                 class="bg-transparent border border-white/10 rounded p-3 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary"
               ></textarea>
               <button
                 id="submit-review-btn"
                 class="bg-primary text-white font-bold py-3 rounded-lg hover:bg-primary/90 transition-colors"
               >
-                Gửi Đánh Giá
+                Send Review
               </button>
             </div>
           </div>
@@ -407,16 +433,17 @@
                 <span
                   class="text-sm font-bold text-white border-b-2 border-primary pb-1"
                 >
-                  Mới nhất
+                  Latest Reviews
+                </span>
                 </span>
               </div>
               <div class="flex items-center gap-2 text-sm font-medium">
-                <span class="text-slate-400">Lọc:</span>
+                <span class="text-slate-400">Filter:</span>
                 <select
                   id="rating-filter"
                   class="bg-background-dark border border-white/10 focus:ring-1 focus:ring-primary text-sm py-1.5 px-3 rounded text-white outline-none"
                 >
-                  <option value="">Tất cả đánh giá</option>
+                  <option value="">All Stars</option>
                   <option value="5">5 Sao</option>
                   <option value="4">4 Sao</option>
                   <option value="3">3 Sao</option>
@@ -432,12 +459,133 @@
               id="load-more-reviews-btn"
               class="w-full py-4 text-sm font-bold text-slate-400 hover:text-white uppercase tracking-widest hidden"
             >
-              Tải thêm đánh giá
+              Load more reviews
             </button>
           </div>
         </div>
       </section>
     </main>
+    <div
+      id="login-modal"
+      class="fixed inset-0 flex items-center justify-center z-[200] hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto"
+        onclick="hideLoginModal()"
+      ></div>
+      <div
+        class="bg-[#121212] border border-[#2a2a2a] rounded-2xl flex flex-col items-center justify-center p-8 w-[90%] max-w-sm shadow-[0_0_50px_rgba(255,102,0,0.1)] relative z-10 transform scale-95 transition-transform duration-300"
+        id="login-modal-content"
+      >
+        <div
+          class="w-14 h-14 bg-[#ff6600]/10 rounded-full flex items-center justify-center mb-6 border border-[#ff6600]/20"
+        >
+          <div
+            class="w-10 h-10 bg-[#ff6600] rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,102,0,0.5)]"
+          >
+            <span class="text-black font-black text-xl">!</span>
+          </div>
+        </div>
+
+        <h2 class="text-white text-xl font-bold mb-3 tracking-wide">
+          Login Required
+        </h2>
+
+        <p class="text-slate-400 text-sm text-center mb-8 px-2 font-medium">
+          Please log in to add items to your cart and continue your performance
+          journey.
+        </p>
+
+        <a
+          href="/login"
+          class="w-full bg-[#ff6600] text-black font-bold py-3 rounded-lg flex justify-center items-center hover:bg-[#ff7a1f] hover:scale-[1.02] transition-all shadow-[0_4px_14px_0_rgba(255,102,0,0.39)] mb-3"
+        >
+          Log In Now
+        </a>
+
+        <button
+          onclick="hideLoginModal()"
+          class="w-full bg-transparent border border-[#ff6600]/30 text-[#ff6600] font-bold py-3 rounded-lg hover:bg-[#ff6600]/10 transition-colors"
+        >
+          Dismiss
+        </button>
+
+        <div
+          class="w-full flex items-center justify-center gap-3 mt-8 opacity-60"
+        >
+          <div
+            class="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[#ff6600]/30"
+          ></div>
+          <p
+            class="text-[8px] font-black tracking-[0.2em] uppercase text-slate-500"
+          >
+            Brosport Secure Protocol
+          </p>
+          <div
+            class="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[#ff6600]/30"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="size-guide-modal"
+      class="fixed inset-0 flex items-center justify-center z-[250] hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto"
+        onclick="hideSizeGuideModal()"
+      ></div>
+
+      <div
+        class="bg-[#121212] border border-[#2a2a2a] rounded-2xl flex flex-col w-[95%] max-w-3xl shadow-[0_0_50px_rgba(255,102,0,0.1)] relative z-10 transform scale-95 transition-transform duration-300 overflow-hidden"
+        id="size-guide-content"
+      >
+        <div
+          class="flex items-center justify-between p-4 md:p-5 border-b border-white/10"
+        >
+          <h3
+            class="text-white text-lg font-bold tracking-wide uppercase flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >straighten</span
+            >
+            Size guide table
+          </h3>
+          <button
+            onclick="hideSizeGuideModal()"
+            class="text-slate-400 hover:text-primary transition-colors p-1 rounded-full hover:bg-white/5"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div
+          class="p-4 md:p-6 overflow-y-auto max-h-[70vh] bg-[#0a0a0a] text-center"
+        >
+          <img
+            th:if="${product.sizeGuide != null}"
+            th:src="${product.sizeGuide}"
+            alt="Bảng hướng dẫn chọn size"
+            class="max-w-full h-auto mx-auto rounded-lg object-contain block"
+          />
+          <p
+            th:unless="${product.sizeGuide != null}"
+            class="text-slate-500 italic py-10"
+          >
+            There is no size chart information for this product.
+          </p>
+        </div>
+
+        <div class="p-4 border-t border-white/10 flex justify-end bg-[#121212]">
+          <button
+            onclick="hideSizeGuideModal()"
+            class="bg-primary text-black font-bold py-2.5 px-8 rounded-lg hover:bg-[#ff7a1f] transition-colors uppercase tracking-widest text-xs"
+          >
+            Understood
+          </button>
+        </div>
+      </div>
+    </div>
     <div th:replace="~{fragments/footer :: site-footer}"></div>
 
     <script th:inline="javascript">
@@ -528,7 +676,7 @@
             buyNowBtn.disabled = false;
             buyNowBtn.classList.remove("opacity-50", "cursor-not-allowed");
             buyNowBtn.innerHTML =
-              '<span class="material-symbols-outlined">bolt</span> Mua ngay';
+              '<span class="material-symbols-outlined">bolt</span> Buy now';
           } else {
             addToCartBtn.disabled = true;
             addToCartBtn.classList.add("opacity-50", "cursor-not-allowed");
@@ -549,9 +697,33 @@
       }
 
       // 5. HÀM GỌI API CHUẨN SECURITY
+      // Các hàm điều khiển Modal Đăng nhập
+      function showLoginModal() {
+        const modal = document.getElementById("login-modal");
+        const content = document.getElementById("login-modal-content");
+        if (!modal) return;
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+        }, 10);
+      }
+
+      function hideLoginModal() {
+        const modal = document.getElementById("login-modal");
+        const content = document.getElementById("login-modal-content");
+        if (!modal) return;
+        modal.classList.add("opacity-0");
+        content.classList.add("scale-95");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
+
+      // 5. HÀM GỌI API CHUẨN SECURITY KẾT HỢP MODAL
       async function executeAddToCart() {
         if (!selectedColor || !selectedSize) {
-          showNotification("Vui lòng chọn Màu sắc và Kích thước trước!");
+          showNotification("Please choose Color and Size first!");
           return false;
         }
         if (!selectedVariantId) return false;
@@ -570,9 +742,13 @@
             body: JSON.stringify(payload),
           });
 
-          // Xử lý chuyển hướng nếu chưa đăng nhập
+          // Bắt lỗi Chưa đăng nhập và hiển thị Modal
+          if (response.redirected && response.url.includes("/login")) {
+            showLoginModal();
+            return false;
+          }
           if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
+            showLoginModal();
             return false;
           }
 
@@ -604,7 +780,15 @@
           }
         } catch (err) {
           console.error(err);
-          showNotification("Lỗi kết nối tới Server!");
+          // Trường hợp lỗi mạng gãy ngang mà chứa HTML của trang login
+          if (
+            err.message === "UNAUTHORIZED" ||
+            err.message.includes("Unexpected token '<")
+          ) {
+            showLoginModal();
+          } else {
+            showNotification("Lỗi kết nối tới Server!");
+          }
           return false;
         }
       }
@@ -614,7 +798,7 @@
         const isSuccess = await executeAddToCart();
         if (isSuccess) {
           showNotification(
-            `Đã thêm ${selectedColor} (Size ${selectedSize}) vào giỏ hàng!`,
+            `${selectedColor} (Size ${selectedSize}) added to cart!`,
           );
         }
       });
@@ -622,9 +806,20 @@
       // Sự kiện click: MUA NGAY
       buyNowBtn.addEventListener("click", function () {
         if (!selectedColor || !selectedSize || !selectedVariantId) {
-          showNotification("Vui lòng chọn Màu sắc và Kích thước!");
+          showNotification("Please choose Color and Size!");
           return;
         }
+
+        // Kiểm tra trạng thái đăng nhập thông qua biến user từ GlobalControllerAdvice
+        const currentUserId = /*[[${user != null ? user.id : null}]]*/ null;
+
+        if (!currentUserId) {
+          // Nếu chưa đăng nhập, hiển thị Modal chặn lại
+          showLoginModal();
+          return;
+        }
+
+        // Nếu đã đăng nhập hợp lệ, thực hiện chuyển hướng sang trang thanh toán
         window.location.href = `/checkout?buyNow=true&variantId=${selectedVariantId}&qty=1`;
       });
 
@@ -634,8 +829,14 @@
         if (existing) existing.remove();
 
         const notification = document.createElement("div");
+        
+        // Đổi bottom-8 thành top-24 để thông báo hiển thị ở góc trên bên phải
         notification.className =
-          "notification fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg font-bold animate-slideIn z-[100]";
+          "notification fixed top-24 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg font-bold animate-slideIn z-[100]";
+        
+        // (Tùy chọn) Nếu bạn muốn nó hiển thị ở CHÍNH GIỮA bên trên, hãy dùng dòng này thay thế dòng trên:
+        // notification.className = "notification fixed top-24 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-4 rounded-full shadow-lg font-bold animate-slideIn z-[100]";
+
         notification.textContent = message;
         document.body.appendChild(notification);
 
@@ -681,7 +882,7 @@
 
             if (data.reviews.content.length === 0 && !append) {
               reviewListContainer.innerHTML =
-                '<p class="text-slate-500 italic py-8 text-center">Sản phẩm này chưa có đánh giá nào ở mức sao này.</p>';
+                '<p class="text-slate-500 italic py-8 text-center">This product has no reviews at this star level yet.</p>';
             } else {
               data.reviews.content.forEach((review) => {
                 reviewListContainer.insertAdjacentHTML(
@@ -698,23 +899,38 @@
             }
           }
         } catch (error) {
-          console.error("Lỗi tải đánh giá:", error);
+          console.error("Error loading review:", error);
         }
       }
 
       // CẬP NHẬT GIAO DIỆN THỐNG KÊ (Bên trái)
+      // CẬP NHẬT GIAO DIỆN THỐNG KÊ (Cả Header và Mục Review)
       function updateReviewSummary(data) {
-        const total = data.totalReviews || 0;
-        const avg = data.averageRating || 0;
-        const counts = data.ratingCounts || {};
+        let total = data.totalReviews || 0;
+        let avg = data.averageRating || 0;
+        let counts = data.ratingCounts || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
+        // Fallback: Tự tính toán điểm trung bình nếu Backend chưa hỗ trợ trả về averageRating
+        if (total === 0 && data.reviews && data.reviews.content) {
+          total = data.reviews.totalElements || data.reviews.content.length;
+          if (total > 0) {
+            let sum = 0;
+            data.reviews.content.forEach((r) => {
+              sum += r.rating;
+              counts[r.rating] = (counts[r.rating] || 0) + 1;
+            });
+            avg = sum / total;
+          }
+        }
+
+        // Cập nhật phần dưới cùng (Review Section)
         document.getElementById("total-reviews-text").textContent = total;
         document.getElementById("avg-rating-number").textContent =
           avg.toFixed(1);
 
         let starsHtml = "";
         for (let i = 1; i <= 5; i++) {
-          starsHtml += `<span class="material-symbols-outlined text-xl ${i <= Math.round(avg) ? "fill-1" : ""}">star</span>`;
+          starsHtml += `<span class="material-symbols-outlined text-xl ${i <= Math.round(avg) ? "filled" : "text-slate-600"}">star</span>`;
         }
         document.getElementById("avg-rating-stars").innerHTML = starsHtml;
 
@@ -725,6 +941,23 @@
           document.getElementById(`bar-${i}`).style.width = `${pct}%`;
           document.getElementById(`pct-${i}`).textContent = `${pct}%`;
         }
+
+        // Cập nhật phần Header (Top Section)
+        const topStarsContainer = document.getElementById(
+          "top-avg-rating-stars",
+        );
+        const topNumber = document.getElementById("top-avg-rating-number");
+        const topTotal = document.getElementById("top-total-reviews");
+
+        if (topStarsContainer) {
+          let topStarsHtml = "";
+          for (let i = 1; i <= 5; i++) {
+            topStarsHtml += `<span class="material-symbols-outlined text-sm ${i <= Math.round(avg) ? "filled text-primary" : "text-slate-600"}">star</span>`;
+          }
+          topStarsContainer.innerHTML = topStarsHtml;
+        }
+        if (topNumber) topNumber.textContent = avg > 0 ? avg.toFixed(1) : "0.0";
+        if (topTotal) topTotal.textContent = `(${total} đánh giá)`;
       }
 
       // TẠO HTML CHO TỪNG BÀI ĐÁNH GIÁ
@@ -733,7 +966,8 @@
 
         let starsHtml = "";
         for (let i = 1; i <= 5; i++) {
-          starsHtml += `<span class="material-symbols-outlined text-xs ${i <= review.rating ? "fill-1" : ""}">star</span>`;
+          // Thay fill-1 thành filled để hiện rõ sao
+          starsHtml += `<span class="material-symbols-outlined text-xs ${i <= review.rating ? "filled text-primary" : "text-slate-600"}">star</span>`;
         }
 
         const initial = review.fullName
@@ -749,14 +983,14 @@
                 <div class="flex items-center gap-3">
                     ${avatarHtml}
                     <div>
-                        <h5 class="font-bold text-sm">${review.fullName || "Người dùng ẩn danh"}</h5>
+                        <h5 class="font-bold text-sm">${review.fullName || "Anonymous user"}</h5>
                         <div class="flex items-center gap-2">
-                            <div class="flex text-primary text-[10px]">
+                            <div class="flex text-[10px]">
                                 ${starsHtml}
                             </div>
                             <span class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[10px]">check_circle</span>
-                                Đã mua hàng
+                                Purchased
                             </span>
                         </div>
                     </div>
@@ -788,10 +1022,10 @@
           selectedRating = parseInt(this.getAttribute("data-val"));
           starSelector.forEach((s) => {
             if (parseInt(s.getAttribute("data-val")) <= selectedRating) {
-              s.classList.add("text-primary", "fill-1");
+              s.classList.add("text-primary", "filled");
               s.classList.remove("text-slate-500");
             } else {
-              s.classList.remove("text-primary", "fill-1");
+              s.classList.remove("text-primary", "filled");
               s.classList.add("text-slate-500");
             }
           });
@@ -801,7 +1035,7 @@
       // ĐẨY FORM ĐÁNH GIÁ (CHUẨN SECURITY, BỎ USERID MOCK)
       submitReviewBtn.addEventListener("click", async () => {
         if (selectedRating === 0) {
-          showNotification("Vui lòng chọn số sao!");
+          showNotification("Please choose the number of stars!");
           return;
         }
 
@@ -816,7 +1050,7 @@
         };
 
         try {
-          submitReviewBtn.textContent = "Đang gửi...";
+          submitReviewBtn.textContent = "Sending...";
           submitReviewBtn.disabled = true;
 
           const res = await fetch("/api/v1/reviews", {
@@ -826,7 +1060,7 @@
           });
 
           if (res.ok) {
-            showNotification("Đánh giá của bạn đã được ghi nhận!");
+            showNotification("Your review has been noted!");
             reviewFormSection.classList.add("hidden");
 
             document.getElementById("review-title").value = "";
@@ -847,14 +1081,42 @@
             showNotification("Lỗi: " + errorData);
           }
         } catch (err) {
-          showNotification("Lỗi kết nối tới Server!");
+          showNotification("Error connecting to Server!");
         } finally {
-          submitReviewBtn.textContent = "Gửi Đánh Giá";
+          submitReviewBtn.textContent = "Send Review";
           submitReviewBtn.disabled = false;
         }
       });
 
       fetchReviews();
+
+      // Các hàm điều khiển Modal Hướng Dẫn Size
+      function showSizeGuideModal() {
+        const modal = document.getElementById("size-guide-modal");
+        const content = document.getElementById("size-guide-content");
+        if (!modal) return;
+
+        modal.classList.remove("hidden");
+        // Delay 10ms để CSS nhận diện thay đổi trạng thái và chạy Animation mượt mà
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+        }, 10);
+      }
+
+      function hideSizeGuideModal() {
+        const modal = document.getElementById("size-guide-modal");
+        const content = document.getElementById("size-guide-content");
+        if (!modal) return;
+
+        modal.classList.add("opacity-0");
+        content.classList.add("scale-95");
+
+        // Đợi 300ms cho hiệu ứng Fade Out chạy xong rồi mới ẩn hẳn khối HTML
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
     </script>
   </body>
 </html>

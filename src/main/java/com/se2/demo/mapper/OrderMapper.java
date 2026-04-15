@@ -26,6 +26,7 @@ public interface OrderMapper {
     OrderResponse toResponse(Order order);
 
     @Mapping(target = "productName", source = "productDetail.product.name")
+    @Mapping(target = "productSlug", source = "productDetail.product.slug")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "variantInfo", expression = "java(\"Size: \" + entity.getProductDetail().getSize().getSizeDescription() + \" | Color: \" + entity.getProductDetail().getColor().getColorName())")
     @Mapping(target = "imageUrl", expression = "java(getMainImageUrl(entity.getProductDetail()))")

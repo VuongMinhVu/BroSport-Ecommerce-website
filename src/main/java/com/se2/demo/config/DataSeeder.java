@@ -61,7 +61,12 @@ public class DataSeeder {
                                 }
                                 if (needUpdate) {
                                         productRepository.saveAll(existingProducts);
-                                        log.info("Scaled down all high product prices to match new format.");
+                                        for (Product p : existingProducts) {
+                                                this.publisher.publishEvent(
+                                                                new ProductEvent(this.productMapper.toDocument(p),
+                                                                                Constant.PRODUCT_UPDATED_EVENT));
+                                        }
+                                        log.info("Scaled down all high product prices to match new format and synced to Elasticsearch.");
                                 }
                         }
 
@@ -269,11 +274,13 @@ public class DataSeeder {
                                         BigDecimal basePrice = BigDecimal.valueOf(random.nextInt(151) + 50); // $50 to $200
                                         BigDecimal originPrice = basePrice;
                                         BigDecimal showPrice = basePrice;
-                                        
+
                                         // 30% có giá khuyến mại (giá bán thấp hơn giá gốc)
                                         if (random.nextInt(100) < 30) {
-                                            originPrice = basePrice.multiply(BigDecimal.valueOf(1.2)); // Tăng giá gốc lên 20%
-                                            showPrice = basePrice; // Bán giá hiện tại (giảm giá)
+                                                originPrice = basePrice.multiply(BigDecimal.valueOf(1.2)); // Tăng giá
+                                                                                                           // gốc lên
+                                                                                                           // 20%
+                                                showPrice = basePrice; // Bán giá hiện tại (giảm giá)
                                         }
 
                                         Product product = Product.builder()
@@ -655,72 +662,72 @@ public class DataSeeder {
                                 // 10. Seed Chatbox
                                 if (chatConversationRepository.count() == 0) {
                                         log.info("Seeding Chatbox Data...");
-                                        
+
                                         ChatConversation conv1 = ChatConversation.builder()
-                                                .user(customer1)
-                                                .userUnreadCount(1)
-                                                .adminUnreadCount(0)
-                                                .lastMessage("We've shipped your order!")
-                                                .updatedAt(LocalDateTime.now())
-                                                .build();
+                                                        .user(customer1)
+                                                        .userUnreadCount(1)
+                                                        .adminUnreadCount(0)
+                                                        .lastMessage("We've shipped your order!")
+                                                        .updatedAt(LocalDateTime.now())
+                                                        .build();
                                         chatConversationRepository.save(conv1);
 
                                         chatMessageRepository.save(ChatMessage.builder()
-                                                .conversation(conv1)
-                                                .senderEmail(customer1.getEmail())
-                                                .content("Hello, do you have size 42 for the Nike running shoes?")
-                                                .timestamp(LocalDateTime.now().minusHours(2))
-                                                .isRead(true)
-                                                .build());
+                                                        .conversation(conv1)
+                                                        .senderEmail(customer1.getEmail())
+                                                        .content("Hello, do you have size 42 for the Nike running shoes?")
+                                                        .timestamp(LocalDateTime.now().minusHours(2))
+                                                        .isRead(true)
+                                                        .build());
 
                                         chatMessageRepository.save(ChatMessage.builder()
-                                                .conversation(conv1)
-                                                .senderEmail(admin.getEmail())
-                                                .content("Yes we do! You can place an order directly.")
-                                                .timestamp(LocalDateTime.now().minusHours(1))
-                                                .isRead(true)
-                                                .build());
+                                                        .conversation(conv1)
+                                                        .senderEmail(admin.getEmail())
+                                                        .content("Yes we do! You can place an order directly.")
+                                                        .timestamp(LocalDateTime.now().minusHours(1))
+                                                        .isRead(true)
+                                                        .build());
 
                                         chatMessageRepository.save(ChatMessage.builder()
-                                                .conversation(conv1)
-                                                .senderEmail(admin.getEmail())
-                                                .content("We've shipped your order!")
-                                                .timestamp(LocalDateTime.now().minusMinutes(5))
-                                                .isRead(false)
-                                                .build());
+                                                        .conversation(conv1)
+                                                        .senderEmail(admin.getEmail())
+                                                        .content("We've shipped your order!")
+                                                        .timestamp(LocalDateTime.now().minusMinutes(5))
+                                                        .isRead(false)
+                                                        .build());
 
                                         ChatConversation conv2 = ChatConversation.builder()
-                                                .user(customer2)
-                                                .userUnreadCount(0)
-                                                .adminUnreadCount(1)
-                                                .lastMessage("How can I return an item?")
-                                                .updatedAt(LocalDateTime.now())
-                                                .build();
+                                                        .user(customer2)
+                                                        .userUnreadCount(0)
+                                                        .adminUnreadCount(1)
+                                                        .lastMessage("How can I return an item?")
+                                                        .updatedAt(LocalDateTime.now())
+                                                        .build();
                                         chatConversationRepository.save(conv2);
 
                                         chatMessageRepository.save(ChatMessage.builder()
-                                                .conversation(conv2)
-                                                .senderEmail(customer2.getEmail())
-                                                .content("Hi Admin!")
-                                                .timestamp(LocalDateTime.now().minusDays(1))
-                                                .isRead(true)
-                                                .build());
+                                                        .conversation(conv2)
+                                                        .senderEmail(customer2.getEmail())
+                                                        .content("Hi Admin!")
+                                                        .timestamp(LocalDateTime.now().minusDays(1))
+                                                        .isRead(true)
+                                                        .build());
 
                                         chatMessageRepository.save(ChatMessage.builder()
-                                                .conversation(conv2)
-                                                .senderEmail(admin.getEmail())
-                                                .content("Hello, how can I help you?")
-                                                .timestamp(LocalDateTime.now().minusDays(1).plusMinutes(5))
-                                                .isRead(true)
-                                                .build());
+                                                        .conversation(conv2)
+                                                        .senderEmail(admin.getEmail())
+                                                        .content("Hello, how can I help you?")
+                                                        .timestamp(LocalDateTime.now().minusDays(1).plusMinutes(5))
+                                                        .isRead(true)
+                                                        .build());
 
                                         chatMessageRepository.save(ChatMessage.builder()
-                                                .conversation(conv2)
-                                                .senderEmail(customer2.getEmail())
-                                                .content("How can I return an item?")
-                                                .timestamp(LocalDateTime.now().minusMinutes(30))
-                                                .isRead(false)
-                                                .build());
+                                                        .conversation(conv2)
+                                                        .senderEmail(customer2.getEmail())
+                                                        .content("How can I return an item?")
+                                                        .timestamp(LocalDateTime.now().minusMinutes(30))
+                                                        .isRead(false)
+                                                        .build());
                                 }
                         }
 

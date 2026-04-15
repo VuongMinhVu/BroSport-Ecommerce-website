@@ -38,10 +38,12 @@ public class EmailServiceImpl implements EmailService {
 
             // header
             StringBuilder html = new StringBuilder();
-            html.append("<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>");
+            html.append(
+                    "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>");
             html.append("<h2 style='color: #FF5A5F; text-align: center;'>Cảm ơn bạn đã mua hàng!</h2>");
             html.append("<p>Xin chào <b>").append(order.getFullName()).append("</b>,</p>");
-            html.append("<p>BroSport đã nhận được đơn đặt hàng <b>").append(order.getOrderCode()).append("</b> của bạn.</p>");
+            html.append("<p>BroSport đã nhận được đơn đặt hàng <b>").append(order.getOrderCode())
+                    .append("</b> của bạn.</p>");
 
             // bảng chi tiết sản phẩm
             html.append("<table style='width: 100%; border-collapse: collapse; margin-top: 20px;'>");
@@ -53,25 +55,35 @@ public class EmailServiceImpl implements EmailService {
 
             for (OrderItem item : order.getOrderItems()) {
                 String productName = item.getProductDetail().getProduct().getName();
-                String color = item.getProductDetail().getColor().getColorName() != null ? item.getProductDetail().getColor().getColorName() : "N/A";
-                String size = item.getProductDetail().getSize().getSizeDescription() != null ? item.getProductDetail().getSize().getSizeDescription() : "N/A";
+                String color = item.getProductDetail().getColor().getColorName() != null
+                        ? item.getProductDetail().getColor().getColorName()
+                        : "N/A";
+                String size = item.getProductDetail().getSize().getSizeDescription() != null
+                        ? item.getProductDetail().getSize().getSizeDescription()
+                        : "N/A";
 
                 html.append("<tr>");
                 html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
                         .append(productName).append("<br/>")
-                        .append("<small style='color: gray;'>Màu: ").append(color).append(" | Size: ").append(size).append("</small></td>");
-                html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>").append(item.getQuantity()).append("</td>");
-                html.append("<td style='padding: 10px; border: 1px solid #ddd;'>").append(item.getPrice()).append(" VNĐ</td>");
+                        .append("<small style='color: gray;'>Màu: ").append(color).append(" | Size: ").append(size)
+                        .append("</small></td>");
+                html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+                        .append(item.getQuantity()).append("</td>");
+                html.append("<td style='padding: 10px; border: 1px solid #ddd;'>").append(item.getPrice())
+                        .append(" VNĐ</td>");
                 html.append("</tr>");
             }
             html.append("</table>");
 
             // Tổng kết tiền
-            html.append("<h3 style='text-align: right; margin-top: 20px;'>Tổng thanh toán: <span style='color: #FF5A5F;'>").append(order.getTotalPrice()).append(" VNĐ</span></h3>");
+            html.append(
+                    "<h3 style='text-align: right; margin-top: 20px;'>Tổng thanh toán: <span style='color: #FF5A5F;'>")
+                    .append(order.getTotalPrice()).append(" VNĐ</span></h3>");
             html.append("<p><b>Phương thức thanh toán:</b> ").append(order.getPaymentMethod()).append("</p>");
             html.append("<p><b>Địa chỉ nhận hàng:</b> ").append(order.getShippingAddressFull()).append("</p>");
             html.append("<hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'/>");
-            html.append("<p style='text-align: center; color: gray; font-size: 12px;'>Đội ngũ BroSport xin chân thành cảm ơn.</p>");
+            html.append(
+                    "<p style='text-align: center; color: gray; font-size: 12px;'>Đội ngũ BroSport xin chân thành cảm ơn.</p>");
             html.append("</div>");
 
             helper.setText(html.toString(), true);
@@ -95,20 +107,25 @@ public class EmailServiceImpl implements EmailService {
 
             // --- VẼ GIAO DIỆN HTML CHO EMAIL OTP ---
             StringBuilder html = new StringBuilder();
-            html.append("<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>");
+            html.append(
+                    "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>");
             html.append("<h2 style='color: #FF5A5F; text-align: center;'>Yêu cầu đặt lại mật khẩu</h2>");
             html.append("<p>Xin chào,</p>");
-            html.append("<p>Hệ thống BroSport vừa nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Vui lòng nhập mã xác thực (OTP) dưới đây để hoàn tất:</p>");
+            html.append(
+                    "<p>Hệ thống BroSport vừa nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Vui lòng nhập mã xác thực (OTP) dưới đây để hoàn tất:</p>");
 
             // Mã OTP được làm to, in đậm và có background nổi bật
             html.append("<div style='text-align: center; margin: 30px 0;'>");
-            html.append("<span style='font-size: 32px; font-weight: bold; letter-spacing: 10px; color: #333; background: #f4f4f4; padding: 15px 30px; border-radius: 5px;'>")
+            html.append(
+                    "<span style='font-size: 32px; font-weight: bold; letter-spacing: 10px; color: #333; background: #f4f4f4; padding: 15px 30px; border-radius: 5px;'>")
                     .append(otp).append("</span>");
             html.append("</div>");
 
-            html.append("<p style='color: red; font-size: 14px; text-align: center;'>Lưu ý: Mã xác thực này có hiệu lực trong phiên làm việc của bạn. TUYỆT ĐỐI KHÔNG chia sẻ mã này cho bất kỳ ai!</p>");
+            html.append(
+                    "<p style='color: red; font-size: 14px; text-align: center;'>Lưu ý: Mã xác thực này có hiệu lực trong phiên làm việc của bạn. TUYỆT ĐỐI KHÔNG chia sẻ mã này cho bất kỳ ai!</p>");
             html.append("<hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'/>");
-            html.append("<p style='text-align: center; color: gray; font-size: 12px;'>Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.</p>");
+            html.append(
+                    "<p style='text-align: center; color: gray; font-size: 12px;'>Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.</p>");
             html.append("</div>");
 
             helper.setText(html.toString(), true);

@@ -68,10 +68,266 @@
       .nav-link {
         @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
       }
-    </style>
+  </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+    <style>
+      /* Swiper pagination */
+      .hero-swiper .swiper-pagination-bullet {
+        width: 32px !important;
+        height: 6px !important;
+        border-radius: 99px !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+        opacity: 1 !important;
+        transition: all 0.3s ease;
+      }
+      .hero-swiper .swiper-pagination-bullet-active {
+        background: #ff7a00 !important;
+        width: 48px !important;
+      }
+      /* Flash sale countdown */
+      .bg-orange-box {
+        background-color: #ff7a00 !important;
+        box-shadow: 0 10px 25px -5px rgba(255, 122, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      /* Skeleton shimmer */
+      @keyframes shimmer {
+        0% {
+          background-position: -1000px 0;
+        }
+        100% {
+          background-position: 1000px 0;
+        }
+      }
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #1a1a1a 25%,
+          #2a2a2a 50%,
+          #1a1a1a 75%
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      .skeleton-light {
+        background: linear-gradient(
+          90deg,
+          #e5e7eb 25%,
+          #f3f4f6 50%,
+          #e5e7eb 75%
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      /* Product card hover */
+      .product-card:hover {
+        box-shadow: 0 20px 40px rgba(255, 102, 0, 0.15);
+        transform: translateY(-4px);
+      }
+      .product-card {
+        transition: all 0.3s ease;
+      }
+      /* New arrivals card */
+      .arrival-card:hover {
+        border-color: #ff6600;
+      }
+      /* Sport icon card */
+      .sport-card:hover .sport-icon {
+        color: #ff6600;
+        transform: scale(1.1);
+      }
+      .sport-icon {
+        transition: all 0.3s ease;
+      }
+      /* Color dot */
+      .color-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.2s;
+      }
+      /* Chat messages */
+      #chat-messages {
+        scroll-behavior: smooth;
+      }
+      .chat-bubble-ai {
+        animation: fadeInUp 0.3s ease;
+      }
+      .chat-bubble-user {
+        animation: fadeInUp 0.3s ease;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff6600;
+        animation: typing 1.2s infinite;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        30% {
+          transform: translateY(-6px);
+          opacity: 1;
+        }
+      }
+    </style>
+    <style>
+      /* Swiper Container Custom */
+      .arrivals-swiper {
+        padding: 10px 0 !important;
+        /* Giúp nút next/prev có thể nằm ngoài khung nếu cần */
+        overflow: visible !important;
+      }
+
+      /* Đảm bảo khung Slide bằng nhau và căn giữa ảnh */
+      .arrivals-swiper .swiper-slide {
+        /* THAY ĐỔI: Đổi sang tỷ lệ 3:4 để ảnh dài ra */
+        aspect-ratio: 3 / 4;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      /* Tùy chỉnh ảnh trong slide */
+      .arrivals-swiper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Đảm bảo ảnh lấp đầy khung */
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .arrivals-swiper .swiper-slide:hover img {
+        transform: scale(1.03);
+      }
+
+      /* === TẠO MŨI TÊN CHO NÚT ĐIỀU HƯỚNG === */
+      .arrivals-swiper .swiper-button-next,
+      .arrivals-swiper .swiper-button-prev {
+        background-color: rgba(0, 0, 0, 0.7); /* Nền đen đậm hơn */
+        width: 45px !important;
+        height: 45px !important;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* THAY ĐỔI: Vị trí của nút */
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .arrivals-swiper .swiper-button-next {
+        right: -15px; /* Nằm ngoài khung ảnh một chút */
+      }
+
+      .arrivals-swiper .swiper-button-prev {
+        left: -15px; /* Nằm ngoài khung ảnh một chút */
+      }
+
+      /* CSS tạo mũi tên (Mặc định của Swiper) */
+      .arrivals-swiper .swiper-button-next:after,
+      .arrivals-swiper .swiper-button-prev:after {
+        font-family: swiper-icons; /* Sử dụng Swiper Icons */
+        font-size: 18px !important;
+        font-weight: bold;
+        color: white;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+        display: block;
+      }
+
+      /* Định hình mũi tên Next */
+      .arrivals-swiper .swiper-button-next:after {
+        content: "next" !important; /* Mũi tên mặc định của Swiper */
+      }
+
+      /* Định hình mũi tên Prev */
+      .arrivals-swiper .swiper-button-prev:after {
+        content: "prev" !important; /* Mũi tên mặc định của Swiper */
+      }
+
+      /* Hiệu ứng Hover cho nút */
+      .arrivals-swiper .swiper-button-next:hover,
+      .arrivals-swiper .swiper-button-prev:hover {
+        background-color: #ff6600; /* Màu Primary */
+        border-color: #ff6600;
+        transform: translateY(-50%) scale(1.1);
+      }
+    </style>
+
+    <style>
+      .sports-swiper .swiper-button-next,
+      .sports-swiper .swiper-button-prev {
+        background-color: rgba(0, 0, 0, 0.6);
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50%;
+        color: white !important;
+        transition: all 0.3s ease;
+      }
+
+      .sports-swiper .swiper-button-next:after,
+      .sports-swiper .swiper-button-prev:after {
+        font-size: 16px !important;
+        font-weight: bold;
+      }
+
+      .sports-swiper .swiper-button-next:hover,
+      .sports-swiper .swiper-button-prev:hover {
+        background-color: #ff6600;
+      }
+
+      /* Thiết lập khung hình chữ nhật đứng cho Sport Swiper */
+      .sports-swiper .swiper-slide {
+        aspect-ratio: 3 / 4 !important; /* Tỷ lệ 3 rộng : 4 cao */
+        height: auto !important;
+        overflow: hidden;
+      }
+
+      .sports-swiper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Giúp ảnh lấp đầy khung hình chữ nhật mà không bị dãn */
+        display: block;
+        transition: transform 0.5s ease-out;
+      }
+
+      .active-dot {
+        outline: 2px solid #ff6600;
+        outline-offset: 2px;
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
   <style>
     /* Swiper pagination */
     .hero-swiper .swiper-pagination-bullet {
@@ -201,7 +457,6 @@
     }
 
     @keyframes typing {
-
       0%,
       60%,
       100% {
@@ -550,12 +805,11 @@
     <!-- API: GET /api/v1/products?size=8&sort=id,desc -->
     <section class="py-20 bg-background-dark overflow-hidden border-t border-border-dark">
       <div class="mx-auto max-w-[95%] px-2">
-        <!-- Header -->
         <div class="mb-10 flex items-center justify-between">
           <h3 class="text-3xl font-black uppercase italic tracking-tighter text-white">
             NEW <span class="text-primary">ARRIVAL</span>
           </h3>
-          <a href="http://localhost:8080/products"
+          <a href="/products"
             class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors">
             See All
             <span
@@ -563,16 +817,12 @@
           </a>
         </div>
 
-        <!-- Swiper Container -->
         <div class="swiper arrivals-swiper relative">
-          <!-- Wrapper cho các Slide -->
           <div id="arrivals-container" class="swiper-wrapper">
-            <!-- Skeleton Loading: Thay đổi aspect-[2/3] thành aspect-[3/4] để ảnh dài ra -->
             <div class="swiper-slide skeleton aspect-[3/4] rounded-sm opacity-20"
               th:each="i : ${#numbers.sequence(1,5)}"></div>
           </div>
 
-          <!-- Nút điều hướng: Loại bỏ các class !w-10 !h-10 cũ để sử dụng size từ CSS tùy chỉnh -->
           <div class="swiper-button-next hidden md:flex"></div>
           <div class="swiper-button-prev hidden md:flex"></div>
         </div>
@@ -638,6 +888,7 @@
             <h3 class="text-5xl font-black uppercase italic tracking-tighter">
               ELITE <span class="text-primary">ACCESSORIES</span>
             </h3>
+
             <p class="text-slate-400 mt-2 font-medium tracking-wide">
               Essential components for your performance ecosystem.
             </p>
@@ -647,6 +898,7 @@
         <div id="accessories-skeleton" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           <div th:each="i : ${#numbers.sequence(1,10)}" class="skeleton h-80 rounded-2xl"></div>
         </div>
+
 
         <div id="accessories-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"></div>
         <div class="mt-16 flex justify-center w-full">
@@ -753,6 +1005,22 @@
         </div>
       </div>
     </div>
+    <label
+      class="cursor-pointer flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white shadow-[0_10px_40px_rgba(255,102,0,0.5)] transition-all hover:scale-110 active:scale-95 group"
+      for="chat-toggle" id="chat-trigger">
+      <span class="material-symbols-outlined filled text-3xl open-icon">sports_mma</span>
+      <span class="material-symbols-outlined text-3xl close-icon">keyboard_arrow_down</span>
+    </label>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION ==================== -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] hidden">
+    <div
+      class="bg-[#1a1a1a] border border-border-dark text-white px-6 py-3 rounded-full font-bold text-sm flex items-center gap-3 shadow-2xl">
+      <span id="toast-icon" class="material-symbols-outlined text-primary text-base">check_circle</span>
+      <span id="toast-msg">Item added to cart!</span>
+    </div>
+
   </div>
 
   <!-- ==================== JAVASCRIPT ==================== -->
@@ -898,6 +1166,16 @@
       }).join("");
     }
 
+      // Color dot selection
+      function selectColorDot(el) {
+        // 1. Xóa hết trạng thái của các chấm cùng cụm
+        const siblings = el.parentElement.querySelectorAll(".color-dot");
+        siblings.forEach((s) => {
+          s.style.outline = "none";
+          s.style.outlineOffset = "0px";
+          s.style.transform = "scale(1)";
+        });
+      }
 
     // Color dot selection
     function selectColorDot(el, imageUrl, productId) {
@@ -970,6 +1248,7 @@
       const data = await apiFetch("/brands");
       const list = document.getElementById("brands-list");
 
+
       if (!data || (Array.isArray(data) && data.length === 0)) {
         // Keep skeleton, show placeholder message
         document.getElementById("brands-skeleton").innerHTML =
@@ -986,7 +1265,9 @@
           : `<span class="font-black text-white uppercase tracking-widest text-base">${brand.name}</span>`
         }
             </div>
-        `).join('');
+        `,
+          )
+          .join("");
 
       showContent("brands-skeleton", "brands-list");
     }
@@ -1024,6 +1305,7 @@
           const originPriceFmt = hasDifferentPrice(product) ? formatUSD(product.originPrice) : "";
           const brand = product.brand || "BROSPORT";
 
+
           return `
         <div class="product-card group cursor-pointer flex flex-col h-full"
              onclick="window.location='/product/${product.slug || product.id}'"
@@ -1046,6 +1328,7 @@
                 <h3 class="font-medium text-[15px] text-gray-900 leading-tight transition-colors duration-200 group-hover:text-[#FF7A00] line-clamp-2">
                     ${product.name}
                 </h3>
+
 
                 <div class="flex items-center justify-between mt-auto pt-2">
                     <div class="flex items-baseline gap-2">
@@ -1275,6 +1558,7 @@
 
       const products = Array.isArray(data) ? data : data.content || [];
 
+
       // 2. Render theo cấu trúc của Flash Sale
       grid.innerHTML = products.map(product => {
         const colors = getUniqueColors(product);
@@ -1313,6 +1597,7 @@
                     ${product.name}
                 </h3>
 
+
                 <div class="flex items-center justify-between mt-auto pt-2">
                     <div class="flex items-baseline gap-2">
                         <span class="text-primary font-black text-lg">${showPriceFmt}</span>
@@ -1331,6 +1616,7 @@
       showContent("accessories-skeleton", "accessories-grid");
     }
 
+
     /* =========================================================
      8. ADD TO CART
      ========================================================= */
@@ -1344,6 +1630,7 @@
         const detailId = detail.id;
         const userInputElement = document.getElementById("currentUserId");
         const userId = userInputElement ? parseInt(userInputElement.value) || 1 : 1;
+
 
         fetch(`/api/v1/carts/my-cart`)
           .then((response) => {
@@ -1525,5 +1812,4 @@
     });
   </script>
 </body>
-
 </html>

@@ -40,6 +40,43 @@
         },
       };
     </script>
+    <style type="text/tailwindcss">
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .filled {
+        font-variation-settings: "FILL" 1;
+      }
+      #chat-toggle:checked ~ #chat-window {
+        display: flex;
+      }
+      #chat-toggle:checked ~ #chat-trigger .open-icon {
+        display: none;
+      }
+      #chat-toggle:checked ~ #chat-trigger .close-icon {
+        display: block;
+      }
+      .close-icon {
+        display: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .nav-link {
+        @apply text-[13px] font-black uppercase tracking-wider text-white hover:text-primary transition-colors duration-200;
+      }
+    </style>
   </head>
   <body class="font-display bg-[#050505] text-[#f5f5f5]">
     <div class="min-h-screen bg-gradient-to-b from-[#090909] to-[#050505]">
@@ -55,11 +92,10 @@
         <section>
           <div class="mb-7">
             <h1 class="text-[28px] md:text-[38px] font-extrabold mb-2.5">
-              Chỉnh sửa hồ sơ
+              Edit Profile
             </h1>
             <p class="max-w-[520px] text-[#8f949c] text-[14px] leading-relaxed">
-              Cập nhật thông tin cá nhân của bạn để trải nghiệm dịch vụ tốt
-              nhất.
+              Update your personal information to experience the best service.
             </p>
           </div>
 
@@ -124,7 +160,7 @@
                   <div>
                     <label
                       class="inline-block mb-2 text-[11px] font-bold text-[#7e848e] tracking-widest uppercase"
-                      >Họ và tên</label
+                      >Full Name</label
                     >
                     <div
                       class="h-12 border border-[#23252b] rounded-[10px] bg-[#090909] flex items-center gap-2.5 px-3.5 text-[#7f8691] focus-within:border-primary transition-colors"
@@ -147,7 +183,7 @@
                   <div>
                     <label
                       class="inline-block mb-2 text-[11px] font-bold text-[#7e848e] tracking-widest uppercase"
-                      >Số điện thoại</label
+                      >Phone Number</label
                     >
                     <div
                       class="h-12 border border-[#23252b] rounded-[10px] bg-[#090909] flex items-center gap-2.5 px-3.5 text-[#7f8691] focus-within:border-primary transition-colors"
@@ -171,7 +207,7 @@
                 <div class="mb-4">
                   <label
                     class="inline-block mb-2 text-[11px] font-bold text-[#7e848e] tracking-widest uppercase"
-                    >Địa chỉ giao hàng</label
+                    >Address</label
                   >
                   <div
                     class="border border-[#23252b] rounded-[10px] bg-[#090909] flex items-start gap-2.5 px-3.5 pt-3.5 pb-2 text-[#7f8691] focus-within:border-primary transition-colors"
@@ -180,7 +216,7 @@
                     <textarea
                       th:field="*{address}"
                       rows="3"
-                      placeholder="Nhập địa chỉ giao hàng..."
+                      placeholder="Enter your address..."
                       class="w-full bg-transparent border-none outline-none text-[#f5f5f5] text-[14px] focus:ring-0 p-0 resize-y min-h-[50px]"
                     ></textarea>
                   </div>
@@ -197,13 +233,13 @@
                   <a
                     th:href="@{/}"
                     class="flex items-center justify-center h-[42px] px-4 rounded-[10px] font-bold text-[13px] bg-transparent text-[#c0c4ca] hover:text-white transition-colors"
-                    >Hủy</a
+                    >Cancel</a
                   >
                   <button
                     type="submit"
                     class="h-[42px] px-4 rounded-[10px] font-bold text-[13px] bg-gradient-to-r from-[#ff6600] to-[#ff8a1d] text-white inline-flex items-center gap-2 hover:opacity-90 transition-opacity"
                   >
-                    <i class="fa-regular fa-floppy-disk"></i> Lưu thay đổi
+                    <i class="fa-regular fa-floppy-disk"></i> Save
                   </button>
                 </div>
               </div>
